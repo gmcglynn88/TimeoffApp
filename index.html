@@ -136,7 +136,7 @@
 
     <div id="TimeOffBalances" class="tabcontent">
         <h3>Select Agent</h3>
-        <select id="agent-select">
+        <select id="agent-select" onchange="updateTables()">
             <option value="Gerard McGlynn" selected>Gerard McGlynn</option>
             <option value="Rhys Turner">Rhys Turner</option>
             <!-- Add more agents as needed -->
@@ -197,7 +197,7 @@
             <option value="no">No</option>
         </select>
         
-        <label for="num-ttables">If Yes, how many tables are required, please list:</label>
+        <label for="num-tables">If Yes, how many tables are required, please list:</label>
         <textarea id="num-tables"></textarea>
     </div>
 
@@ -218,8 +218,8 @@
 
         document.getElementById("defaultOpen").click();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const balancesData = [
+        const balancesData = {
+            "Gerard McGlynn": [
                 {
                     agentName: 'Gerard McGlynn',
                     team: 'Customer Service 1',
@@ -227,7 +227,9 @@
                     holidayCurrentYear: 26,
                     holidayNextYear: 237,
                     timeOffInLieu: 10
-                },
+                }
+            ],
+            "Rhys Turner": [
                 {
                     agentName: 'Rhys Turner',
                     team: 'Customer Service 2',
@@ -236,9 +238,11 @@
                     holidayNextYear: 320,
                     timeOffInLieu: -6
                 }
-            ];
+            ]
+        };
 
-            const detailsData = [
+        const detailsData = {
+            "Gerard McGlynn": [
                 {
                     agentName: 'Gerard McGlynn',
                     team: 'Customer Service 1',
@@ -262,7 +266,9 @@
                     timeOffStart: '12/10/2024',
                     timeOffEnd: '14/10/2024',
                     balanceDeduction: 16
-                },
+                }
+            ],
+            "Rhys Turner": [
                 {
                     agentName: 'Rhys Turner',
                     team: 'Customer Service 1',
@@ -287,13 +293,21 @@
                     timeOffEnd: '14/10/2025',
                     balanceDeduction: 16
                 }
-            ];
+            ]
+        };
+
+        function updateTables() {
+            const selectedAgent = document.getElementById('agent-select').value;
 
             const balancesTableBody = document.getElementById('balances-table-body');
             const detailsTableBody = document.getElementById('details-table-body');
 
+            // Clear existing rows
+            balancesTableBody.innerHTML = '';
+            detailsTableBody.innerHTML = '';
+
             // Populate the balances table with editable fields
-            balancesData.forEach(data => {
+            balancesData[selectedAgent].forEach(data => {
                 const row = document.createElement('tr');
                 Object.keys(data).forEach(key => {
                     const cell = document.createElement('td');
@@ -311,7 +325,7 @@
             });
 
             // Populate the details table
-            detailsData.forEach(data => {
+            detailsData[selectedAgent].forEach(data => {
                 const row = document.createElement('tr');
                 Object.values(data).forEach(value => {
                     const cell = document.createElement('td');
@@ -320,10 +334,15 @@
                 });
                 detailsTableBody.appendChild(row);
             });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTables(); // Initial load
         });
 
         function saveChanges() {
             // Implement the save functionality here
+            const selectedAgent = document.getElementById('agent-select').value;
             const balancesTableBody = document.getElementById('balances-table-body');
             const balancesRows = balancesTableBody.getElementsByTagName('tr');
             let balancesData = [];
@@ -340,7 +359,7 @@
                 });
             }
             
-            console.log('Saved Balances Data:', balancesData);
+            console.log('Saved Balances Data for ' + selectedAgent + ':', balancesData);
 
             const holidayYear = document.getElementById('holiday-year').value;
             const timeOffCodes = document.getElementById('time-off-codes').value;
