@@ -144,8 +144,7 @@
     <div id="TimeOffBalances" class="tabcontent">
         <h3>Select Agent</h3>
         <select id="agent-select">
-            <option value="Gerard McGlynn" selected>Gerard McGlynn</option>
-            <!-- Add more agents as needed -->
+            <!-- Options will be populated dynamically -->
         </select>
         
         <h3>Time off Balances</h3>
@@ -194,13 +193,14 @@
         client.setEnvironment('mypurecloud.ie');
 
         // Authenticate using Client Credentials
-        const clientId = '80d7c7c9-600e-478e-8d41-1bfb7b8c6bc1';
-        const clientSecret = 'BQQBxTIiCO-mY1RFm9TL0NcmhtRewKlqozD0GUdiMdE';
+        const clientId = 'YOUR_CLIENT_ID';
+        const clientSecret = 'YOUR_CLIENT_SECRET';
 
         async function authenticate() {
             try {
                 const data = await client.loginClientCredentialsGrant(clientId, clientSecret);
                 console.log('Authenticated:', data);
+                await populateDropdown();
                 await populateTable();
             } catch (error) {
                 console.error('Error during authentication:', error);
@@ -221,6 +221,23 @@
                 console.error('Error fetching data table rows:', error);
                 return [];
             }
+        }
+
+        // Populate the dropdown with agent names
+        async function populateDropdown() {
+            const rows = await fetchDataTableRows();
+            const agentSelect = document.getElementById('agent-select');
+            
+            // Clear existing options
+            agentSelect.innerHTML = '';
+
+            // Populate the dropdown with fetched data
+            rows.forEach(row => {
+                const option = document.createElement('option');
+                option.value = row.Name;
+                option.textContent = row.Name;
+                agentSelect.appendChild(option);
+            });
         }
 
         // Call fetchDataTableRows and populate the HTML table
