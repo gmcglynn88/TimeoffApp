@@ -232,12 +232,19 @@
             const balancesTableBody = document.getElementById('balances-table-body');
             const detailsTableBody = document.getElementById('details-table-body');
 
-            // Populate the balances table
+            // Populate the balances table with editable fields
             balancesData.forEach(data => {
                 const row = document.createElement('tr');
-                Object.values(data).forEach(value => {
+                Object.keys(data).forEach(key => {
                     const cell = document.createElement('td');
-                    cell.textContent = value;
+                    if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = data[key];
+                        cell.appendChild(input);
+                    } else {
+                        cell.textContent = data[key];
+                    }
                     row.appendChild(cell);
                 });
                 balancesTableBody.appendChild(row);
