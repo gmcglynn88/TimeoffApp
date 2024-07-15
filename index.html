@@ -15,12 +15,11 @@
 
         header {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             padding: 20px;
             background-color: #63AB8F; /* Custom Teal */
             color: white;
-            position: relative;
         }
 
         header h1 {
@@ -29,14 +28,20 @@
 
         .logo {
             height: 50px;
-            position: absolute;
-            right: 20px;
+        }
+
+        .tab-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+            padding: 0 20px;
         }
 
         .tab {
+            display: flex;
             overflow: hidden;
-            background-color: #f0f0f0;
-            border-bottom: 1px solid #ddd;
         }
 
         .tab button {
@@ -56,6 +61,15 @@
         .tab button.active {
             background-color: #63AB8F;
             color: white;
+        }
+
+        .save-button {
+            padding: 10px 20px;
+            background-color: #63AB8F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
         .tabcontent {
@@ -109,42 +123,22 @@
 <body>
     <header>
         <h1>Your Time by IPI</h1>
-        <img src="https://gmcglynn88.github.io/TimeoffApp/IPI%20SandE%20Transparent.png" alt="IPI Success & Enablement Logo" class="logo">
+        <img src="https://gmcglynn88.github.io/TimeoffApp/IPI%20SandE.JPG" alt="IPI Success & Enablement Logo" class="logo">
     </header>
 
-    <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'ConfigurationRequirements')" id="defaultOpen">Configuration Requirements</button>
-        <button class="tablinks" onclick="openTab(event, 'TimeOffBalances')">Time Off Balances</button>
-    </div>
-
-    <div id="ConfigurationRequirements" class="tabcontent">
-        <h3>Configuration Requirements</h3>
-        <label for="holiday-year">Holiday Year:</label>
-        <select id="holiday-year">
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-        </select>
-        
-        <label for="time-off-codes">Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
-        <textarea id="time-off-codes"></textarea>
-        
-        <label for="bus">Please list BU's to enable on:</label>
-        <textarea id="bus"></textarea>
-        
-        <label for="data-tables-required">Are separate Data tables required for the above BU's?</label>
-        <select id="data-tables-required">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-        
-        <label for="num-tables">If Yes, how many tables are required, please list:</label>
-        <textarea id="num-tables"></textarea>
+    <div class="tab-container">
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'TimeOffBalances')" id="defaultOpen">Time Off Balances</button>
+            <button class="tablinks" onclick="openTab(event, 'ConfigurationRequirements')">Configuration Requirements</button>
+        </div>
+        <button class="save-button" onclick="saveChanges()">Save</button>
     </div>
 
     <div id="TimeOffBalances" class="tabcontent">
         <h3>Select Agent</h3>
         <select id="agent-select">
-            <!-- Options will be populated dynamically -->
+            <option value="Gerard McGlynn" selected>Gerard McGlynn</option>
+            <!-- Add more agents as needed -->
         </select>
         
         <h3>Time off Balances</h3>
@@ -182,129 +176,31 @@
         </table>
     </div>
 
-    <!-- Include Genesys Cloud JavaScript SDK -->
-    <script src="https://sdk-cdn.mypurecloud.com/javascript-sdk/58.0.0/purecloud-platform-client-v2.min.js"></script>
-    <script>
-        // Initialize Genesys Cloud SDK
-        const platformClient = require('platformClient');
-        const client = platformClient.ApiClient.instance;
+    <div id="ConfigurationRequirements" class="tabcontent">
+        <h3>Configuration Requirements</h3>
+        <label for="holiday-year">Holiday Year:</label>
+        <select id="holiday-year">
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+        </select>
         
-        // Set the environment
-        client.setEnvironment('mypurecloud.ie');
+        <label for="time-off-codes">Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
+        <textarea id="time-off-codes"></textarea>
+        
+        <label for="bus">Please list BU's to enable on:</label>
+        <textarea id="bus"></textarea>
+        
+        <label for="data-tables-required">Are separate Data tables required for the above BU's?</label>
+        <select id="data-tables-required">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+        
+        <label for="num-tables">If Yes, how many tables are required, please list:</label>
+        <textarea id="num-tables"></textarea>
+    </div>
 
-        // Authenticate using Client Credentials
-        const clientId = '80d7c7c9-600e-478e-8d41-1bfb7b8c6bc1';
-        const clientSecret = 'BQQBxTIiCO-mY1RFm9TL0NcmhtRewKlqozD0GUdiMdE';
-
-        let agentData = [];
-
-        async function authenticate() {
-            try {
-                const data = await client.loginClientCredentialsGrant(clientId, clientSecret);
-                console.log('Authenticated:', data);
-                await populateDropdown();
-                await populateTable();
-            } catch (error) {
-                console.error('Error during authentication:', error);
-            }
-        }
-
-        async function fetchDataTableRows() {
-            const routingApi = new platformClient.RoutingApi();
-
-            try {
-                const data = await routingApi.getRoutingDatatableRow('3bcf89ba-8aed-4fdb-b143-a726c3887a27', {
-                    pageSize: 100, // Adjust the page size as needed
-                    pageNumber: 1
-                });
-                console.log('Data table rows:', data);
-                agentData = data.entities; // Store the data globally
-                return agentData;
-            } catch (error) {
-                console.error('Error fetching data table rows:', error);
-                return [];
-            }
-        }
-
-        // Populate the dropdown with agent names
-        async function populateDropdown() {
-            const rows = await fetchDataTableRows();
-            const agentSelect = document.getElementById('agent-select');
-            
-            // Clear existing options
-            agentSelect.innerHTML = '';
-
-            console.log('Populating dropdown with rows:', rows);
-
-            // Populate the dropdown with fetched data
-            rows.forEach(row => {
-                const option = document.createElement('option');
-                option.value = row.Name;
-                option.textContent = row.Name;
-                agentSelect.appendChild(option);
-            });
-
-            // Add event listener to populate balances on change
-            agentSelect.addEventListener('change', populateBalances);
-        }
-
-        // Populate the balances table based on selected agent
-        function populateBalances() {
-            const selectedAgentName = document.getElementById('agent-select').value;
-            const balancesTableBody = document.getElementById('balances-table-body');
-            
-            console.log('Selected agent:', selectedAgentName);
-
-            // Clear existing rows
-            balancesTableBody.innerHTML = '';
-
-            // Find the selected agent's data
-            const selectedAgent = agentData.find(agent => agent.Name === selectedAgentName);
-
-            if (selectedAgent) {
-                console.log('Selected agent data:', selectedAgent);
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${selectedAgent.Name}</td>
-                    <td>${selectedAgent['Work Team']}</td>
-                    <td>${selectedAgent['Management Unit']}</td>
-                    <td><input type="text" value="${selectedAgent['Remaining Holiday Balance (Current Year)']}"></td>
-                    <td><input type="text" value="${selectedAgent['Remaining Holiday Balance (Next Year)']}"></td>
-                    <td><input type="text" value="${selectedAgent['TOIL']}"></td>
-                `;
-                balancesTableBody.appendChild(tr);
-            } else {
-                console.log('No data found for selected agent');
-            }
-        }
-
-        // Call fetchDataTableRows and populate the HTML table
-        async function populateTable() {
-            const rows = await fetchDataTableRows();
-            const detailsTableBody = document.getElementById('details-table-body');
-            
-            // Clear existing rows
-            detailsTableBody.innerHTML = '';
-
-            // Populate the details table with fetched data
-            rows.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${row.Name}</td>
-                    <td>${row['Work Team']}</td>
-                    <td>${row['Management Unit']}</td>
-                    <td>${row['Time off Start']}</td>
-                    <td>${row['Time off End']}</td>
-                    <td>${row['Balance Deduction (Hrs)']}</td>
-                `;
-                detailsTableBody.appendChild(tr);
-            });
-
-            // Populate the balances for the first agent by default
-            populateBalances();
-        }
-
+    <script>
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
@@ -321,7 +217,114 @@
 
         document.getElementById("defaultOpen").click();
 
-        document.addEventListener('DOMContentLoaded', authenticate);
+        document.addEventListener('DOMContentLoaded', () => {
+            const balancesData = [
+                {
+                    agentName: 'Gerard McGlynn',
+                    team: 'Customer Service 1',
+                    managementUnit: 'Customer Service',
+                    holidayCurrentYear: 26,
+                    holidayNextYear: 237,
+                    timeOffInLieu: 10
+                }
+            ];
+
+            const detailsData = [
+                {
+                    agentName: 'Gerard McGlynn',
+                    team: 'Customer Service 1',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '01/07/2024',
+                    timeOffEnd: '01/07/2024',
+                    balanceDeduction: 8
+                },
+                {
+                    agentName: 'Gerard McGlynn',
+                    team: 'Customer Service 2',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '01/09/2024',
+                    timeOffEnd: '07/09/2024',
+                    balanceDeduction: 40
+                },
+                {
+                    agentName: 'Gerard McGlynn',
+                    team: 'Customer Service 3',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '12/10/2024',
+                    timeOffEnd: '14/10/2024',
+                    balanceDeduction: 16
+                }
+            ];
+
+            const balancesTableBody = document.getElementById('balances-table-body');
+            const detailsTableBody = document.getElementById('details-table-body');
+
+            // Populate the balances table with editable fields
+            balancesData.forEach(data => {
+                const row = document.createElement('tr');
+                Object.keys(data).forEach(key => {
+                    const cell = document.createElement('td');
+                    if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = data[key];
+                        cell.appendChild(input);
+                    } else {
+                        cell.textContent = data[key];
+                    }
+                    row.appendChild(cell);
+                });
+                balancesTableBody.appendChild(row);
+            });
+
+            // Populate the details table
+            detailsData.forEach(data => {
+                const row = document.createElement('tr');
+                Object.values(data).forEach(value => {
+                    const cell = document.createElement('td');
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+                detailsTableBody.appendChild(row);
+            });
+        });
+
+        function saveChanges() {
+            // Implement the save functionality here
+            const balancesTableBody = document.getElementById('balances-table-body');
+            const balancesRows = balancesTableBody.getElementsByTagName('tr');
+            let balancesData = [];
+            
+            for (let row of balancesRows) {
+                let cells = row.getElementsByTagName('td');
+                balancesData.push({
+                    agentName: cells[0].textContent,
+                    team: cells[1].textContent,
+                    managementUnit: cells[2].textContent,
+                    holidayCurrentYear: cells[3].getElementsByTagName('input')[0].value,
+                    holidayNextYear: cells[4].getElementsByTagName('input')[0].value,
+                    timeOffInLieu: cells[5].getElementsByTagName('input')[0].value
+                });
+            }
+            
+            console.log('Saved Balances Data:', balancesData);
+
+            const holidayYear = document.getElementById('holiday-year').value;
+            const timeOffCodes = document.getElementById('time-off-codes').value;
+            const bus = document.getElementById('bus').value;
+            const dataTablesRequired = document.getElementById('data-tables-required').value;
+            const numTables = document.getElementById('num-tables').value;
+
+            console.log('Saved Configuration Requirements:', {
+                holidayYear,
+                timeOffCodes,
+                bus,
+                dataTablesRequired,
+                numTables
+            });
+
+            alert('Changes saved successfully!');
+        }
     </script>
 </body>
 </html>
