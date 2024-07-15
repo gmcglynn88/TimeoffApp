@@ -118,6 +118,12 @@
         .tabcontent textarea {
             height: 100px;
         }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -135,12 +141,22 @@
     </div>
 
     <div id="TimeOffBalances" class="tabcontent">
-        <h3>Select Agent</h3>
-        <select id="agent-select" onchange="updateTables()">
-            <option value="Gerard McGlynn" selected>Gerard McGlynn</option>
-            <option value="Rhys Turner">Rhys Turner</option>
-            <!-- Add more agents as needed -->
-        </select>
+        <div class="filters">
+            <div>
+                <h3>Select Agent</h3>
+                <select id="agent-select" onchange="updateTables()">
+                    <option value="Gerard McGlynn" selected>Gerard McGlynn</option>
+                    <option value="Rhys Turner">Rhys Turner</option>
+                </select>
+            </div>
+            <div>
+                <h3>Select Year</h3>
+                <select id="year-select" onchange="updateTables()">
+                    <option value="2024" selected>2024</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+        </div>
         
         <h3>Time off Balances</h3>
         <table>
@@ -298,6 +314,7 @@
 
         function updateTables() {
             const selectedAgent = document.getElementById('agent-select').value;
+            const selectedYear = document.getElementById('year-select').value;
 
             const balancesTableBody = document.getElementById('balances-table-body');
             const detailsTableBody = document.getElementById('details-table-body');
@@ -326,13 +343,17 @@
 
             // Populate the details table
             detailsData[selectedAgent].forEach(data => {
-                const row = document.createElement('tr');
-                Object.values(data).forEach(value => {
-                    const cell = document.createElement('td');
-                    cell.textContent = value;
-                    row.appendChild(cell);
-                });
-                detailsTableBody.appendChild(row);
+                const startDate = new Date(data.timeOffStart);
+                const endDate = new Date(data.timeOffEnd);
+                if (startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                    const row = document.createElement('tr');
+                    Object.values(data).forEach(value => {
+                        const cell = document.createElement('td');
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+                    detailsTableBody.appendChild(row);
+                }
             });
         }
 
