@@ -138,6 +138,7 @@
         <h3>Select Agent</h3>
         <select id="agent-select">
             <option value="Gerard McGlynn" selected>Gerard McGlynn</option>
+            <option value="Rhys Turner">Rhys Turner</option>
             <!-- Add more agents as needed -->
         </select>
         
@@ -196,7 +197,7 @@
             <option value="no">No</option>
         </select>
         
-        <label for="num-tables">If Yes, how many tables are required, please list:</label>
+        <label for="num-ttables">If Yes, how many tables are required, please list:</label>
         <textarea id="num-tables"></textarea>
     </div>
 
@@ -226,6 +227,14 @@
                     holidayCurrentYear: 26,
                     holidayNextYear: 237,
                     timeOffInLieu: 10
+                },
+                {
+                    agentName: 'Rhys Turner',
+                    team: 'Customer Service 2',
+                    managementUnit: 'Customer Service',
+                    holidayCurrentYear: 70,
+                    holidayNextYear: 320,
+                    timeOffInLieu: -6
                 }
             ];
 
@@ -252,6 +261,30 @@
                     managementUnit: 'Customer Service',
                     timeOffStart: '12/10/2024',
                     timeOffEnd: '14/10/2024',
+                    balanceDeduction: 16
+                },
+                {
+                    agentName: 'Rhys Turner',
+                    team: 'Customer Service 1',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '01/10/2024',
+                    timeOffEnd: '01/10/2024',
+                    balanceDeduction: 8
+                },
+                {
+                    agentName: 'Rhys Turner',
+                    team: 'Customer Service 2',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '01/09/2024',
+                    timeOffEnd: '06/09/2024',
+                    balanceDeduction: 32
+                },
+                {
+                    agentName: 'Rhys Turner',
+                    team: 'Customer Service 3',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '12/10/2025',
+                    timeOffEnd: '14/10/2025',
                     balanceDeduction: 16
                 }
             ];
