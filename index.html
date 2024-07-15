@@ -193,8 +193,10 @@
         client.setEnvironment('mypurecloud.ie');
 
         // Authenticate using Client Credentials
-        const clientId = 'YOUR_CLIENT_ID';
+        const clientId = 'BQQBxTIiCO-mY1RFm9TL0NcmhtRewKlqozD0GUdiMdE';
         const clientSecret = 'YOUR_CLIENT_SECRET';
+
+        let agentData = [];
 
         async function authenticate() {
             try {
@@ -216,7 +218,8 @@
                     pageNumber: 1
                 });
                 console.log('Data table rows:', data);
-                return data.entities;
+                agentData = data.entities; // Store the data globally
+                return agentData;
             } catch (error) {
                 console.error('Error fetching data table rows:', error);
                 return [];
@@ -238,29 +241,60 @@
                 option.textContent = row.Name;
                 agentSelect.appendChild(option);
             });
+
+            // Add event listener to populate balances on change
+            agentSelect.addEventListener('change', populateBalances);
         }
 
-        // Call fetchDataTableRows and populate the HTML table
-        async function populateTable() {
-            const rows = await fetchDataTableRows();
+        // Populate the balances table based on selected agent
+        function populateBalances() {
+            const selectedAgentName = document.getElementById('agent-select').value;
             const balancesTableBody = document.getElementById('balances-table-body');
             
             // Clear existing rows
             balancesTableBody.innerHTML = '';
 
-            // Populate the table with fetched data
+            // Find the selected agent's data
+            const selectedAgent = agentData.find(agent => agent.Name === selectedAgentName);
+
+            if (selectedAgent) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${selectedAgent.Name}</td>
+                    <td>${selectedAgent.Team}</td>
+                    <td>${selectedAgent.ManagementUnit}</td>
+                    <td><input type="text" value="${selectedAgent['Holiday (Current Year)']}"></td>
+                    <td><input type="text" value="${selectedAgent['Holiday (Next Year)']}"></td>
+                    <td><input type="text" value="${selectedAgent['Time off In Lieu']}"></td>
+                `;
+                balancesTableBody.appendChild(tr);
+            }
+        }
+
+        // Call fetchDataTableRows and populate the HTML table
+        async function populateTable() {
+            const rows = await fetchDataTableRows();
+            const detailsTableBody = document.getElementById('details-table-body');
+            
+            // Clear existing rows
+            detailsTableBody.innerHTML = '';
+
+            // Populate the details table with fetched data
             rows.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${row.agentName}</td>
-                    <td>${row.team}</td>
-                    <td>${row.managementUnit}</td>
-                    <td><input type="text" value="${row.holidayCurrentYear}"></td>
-                    <td><input type="text" value="${row.holidayNextYear}"></td>
-                    <td><input type="text" value="${row.timeOffInLieu}"></td>
+                    <td>${row.Name}</td>
+                    <td>${row.Team}</td>
+                    <td>${row.ManagementUnit}</td>
+                    <td>${row['Time off Start']}</td>
+                    <td>${row['Time off End']}</td>
+                    <td>${row['Balance Deduction (Hrs)']}</td>
                 `;
-                balancesTableBody.appendChild(tr);
+                detailsTableBody.appendChild(tr);
             });
+
+            // Populate the balances for the first agent by default
+            populateBalances();
         }
 
         function openTab(evt, tabName) {
