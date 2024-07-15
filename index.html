@@ -110,8 +110,32 @@
     </header>
 
     <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'TimeOffBalances')" id="defaultOpen">Time Off Balances</button>
-        <button class="tablinks" onclick="openTab(event, 'ConfigurationRequirements')">Configuration Requirements</button>
+        <button class="tablinks" onclick="openTab(event, 'ConfigurationRequirements')" id="defaultOpen">Configuration Requirements</button>
+        <button class="tablinks" onclick="openTab(event, 'TimeOffBalances')">Time Off Balances</button>
+    </div>
+
+    <div id="ConfigurationRequirements" class="tabcontent">
+        <h3>Configuration Requirements</h3>
+        <label for="holiday-year">Holiday Year:</label>
+        <select id="holiday-year">
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+        </select>
+        
+        <label for="time-off-codes">Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
+        <textarea id="time-off-codes"></textarea>
+        
+        <label for="bus">Please list BU's to enable on:</label>
+        <textarea id="bus"></textarea>
+        
+        <label for="data-tables-required">Are separate Data tables required for the above BU's?</label>
+        <select id="data-tables-required">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+        
+        <label for="num-tables">If Yes, how many tables are required, please list:</label>
+        <textarea id="num-tables"></textarea>
     </div>
 
     <div id="TimeOffBalances" class="tabcontent">
@@ -154,30 +178,6 @@
                 <!-- Data rows go here -->
             </tbody>
         </table>
-    </div>
-
-    <div id="ConfigurationRequirements" class="tabcontent">
-        <h3>Configuration Requirements</h3>
-        <label for="holiday-year">Holiday Year:</label>
-        <select id="holiday-year">
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-        </select>
-        
-        <label for="time-off-codes">Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
-        <textarea id="time-off-codes"></textarea>
-        
-        <label for="bus">Please list BU's to enable on:</label>
-        <textarea id="bus"></textarea>
-        
-        <label for="data-tables-required">Are separate Data tables required for the above BU's?</label>
-        <select id="data-tables-required">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-        
-        <label for="num-tables">If Yes, how many tables are required, please list:</label>
-        <textarea id="num-tables"></textarea>
     </div>
 
     <script>
