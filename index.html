@@ -150,9 +150,9 @@
         }
 
         .export-buttons {
-            margin-top: 20px;
             display: flex;
             gap: 10px;
+            margin-bottom: 10px;
         }
 
         .export-button, .import-button-label {
@@ -263,6 +263,14 @@
                 </select>
             </div>
         </div>
+
+        <div class="export-buttons">
+            <button class="export-button" onclick="exportTableToCSV('balances-table', 'time_off_balances.csv')">Export Time Off Balances</button>
+            <label class="import-button-label">
+                Import Balances
+                <input type="file" id="import-file" accept=".csv" onchange="importTableFromCSV(event)">
+            </label>
+        </div>
                 
         <h3>Time off Balances</h3>
         <table id="balances-table">
@@ -280,13 +288,6 @@
                 <!-- Data rows go here -->
             </tbody>
         </table>
-        <div class="export-buttons">
-            <button class="export-button" onclick="exportTableToCSV('balances-table', 'time_off_balances.csv')">Export Time Off Balances</button>
-            <label class="import-button-label">
-                Import Balances
-                <input type="file" id="import-file" accept=".csv" onchange="importTableFromCSV(event)">
-            </label>
-        </div>
 
         <h3>Time off Details</h3>
         <table id="details-table">
