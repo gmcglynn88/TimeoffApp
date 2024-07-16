@@ -151,19 +151,22 @@
 
         .export-buttons {
             margin-top: 20px;
+            display: flex;
+            gap: 10px;
         }
 
-        .export-button, .import-button {
+        .export-button, .import-button-label {
             padding: 10px 20px;
             background-color: #63AB8F;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-right: 10px;
+            text-align: center;
+            line-height: 20px;
         }
 
-        .import-button input {
+        .import-button-label input {
             display: none;
         }
     </style>
@@ -276,7 +279,7 @@
         </table>
         <div class="export-buttons">
             <button class="export-button" onclick="exportTableToCSV('balances-table', 'time_off_balances.csv')">Export Time Off Balances</button>
-            <label class="import-button">
+            <label class="import-button-label">
                 Import Balances
                 <input type="file" id="import-file" accept=".csv" onchange="importTableFromCSV(event)">
             </label>
