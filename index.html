@@ -148,6 +148,20 @@
         .checkbox-container label {
             margin-left: 10px;
         }
+
+        .export-buttons {
+            margin-top: 20px;
+        }
+
+        .export-button {
+            padding: 10px 20px;
+            background-color: #63AB8F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -256,6 +270,9 @@
                 <!-- Data rows go here -->
             </tbody>
         </table>
+        <div class="export-buttons">
+            <button class="export-button" onclick="exportTableToCSV('balances-table', 'time_off_balances.csv')">Export Time Off Balances</button>
+        </div>
 
         <h3>Time off Details</h3>
         <table>
@@ -273,6 +290,9 @@
                 <!-- Data rows go here -->
             </tbody>
         </table>
+        <div class="export-buttons">
+            <button class="export-button" onclick="exportTableToCSV('details-table', 'time_off_details.csv')">Export Time Off Details</button>
+        </div>
     </div>
 
     <script>
@@ -497,6 +517,31 @@
             });
 
             alert('Changes saved successfully!');
+        }
+
+        function exportTableToCSV(tableID, filename) {
+            var csv = [];
+            var rows = document.querySelectorAll(`#${tableID} tr`);
+            
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll("td, th");
+                
+                for (var j = 0; j < cols.length; j++) {
+                    row.push(cols[j].innerText);
+                }
+                
+                csv.push(row.join(","));
+            }
+
+            // Create a CSV file and download it
+            var csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+            var downloadLink = document.createElement("a");
+            downloadLink.download = filename;
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
         }
     </script>
 </body>
