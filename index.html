@@ -167,6 +167,7 @@
             <div>
                 <h3>Select Agent</h3>
                 <select id="agent-select" onchange="updateTables()">
+                    <option value="Select" selected>Please Select</option>
                     <option value="all" selected>Select All</option>
                     <option value="Gerard McGlynn">Gerard McGlynn</option>
                     <option value="Rhys Turner">Rhys Turner</option>
@@ -175,9 +176,18 @@
             <div>
                 <h3>Select Year</h3>
                 <select id="year-select" onchange="updateTables()">
+                    <option value="Select" selected>Please Select</option>
                     <option value="2024" selected>2024</option>
                     <option value="2025">2025</option>
                 </select>
+            <div>
+                <h3>Select Year</h3>
+                <select id="Management Unit Select" onchange="updateTables()">
+                    <option value="Select" selected>Please Select</option>
+                    <option value="CS" selected>Customer Service</option>
+                    <option value="Sales">Sales & Retentions</option>
+                </select>
+
             </div>
         </div>
         
