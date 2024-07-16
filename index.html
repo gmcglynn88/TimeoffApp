@@ -154,17 +154,61 @@
     <header>
         <h1>Your Time by IPI</h1>
         <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/Consultinglogo.png" alt="Consulting Logo" class="logo" style="background-color: white;">
-
     </header>
 
     <hr class="divider">
 
     <div class="tab-container">
         <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'TimeOffBalances')" id="defaultOpen">Time Off Balances</button>
-            <button class="tablinks" onclick="openTab(event, 'ConfigurationRequirements')">Configuration Requirements</button>
+            <button class="tablinks" onclick="openTab(event, 'Settings')" id="defaultOpen">Settings</button>
+            <button class="tablinks" onclick="openTab(event, 'TimeOffBalances')">Time Off Balances</button>
         </div>
         <button class="save-button" onclick="saveChanges()">Save</button>
+    </div>
+
+    <div id="Settings" class="tabcontent">
+        <h3>Settings</h3>
+        <label for="holiday-year">Holiday Year:</label>
+        <select id="holiday-year">
+        <option value="1">Please Select</option>
+        <option value="2">1st Jan - 31st Dec</option>
+        <option value="3">1st April - 31st Mar</option>
+        <option value="4">Other</option>
+        </select>
+        
+        <label>Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
+        <div class="checkbox-container">
+            <input type="checkbox" id="holiday" name="time-off-codes" value="Holiday">
+            <label for="holiday">Holiday</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" id="emergency-holiday" name="time-off-codes" value="Emergency Holiday">
+            <label for="emergency-holiday">Emergency Holiday</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" id="toil" name="time-off-codes" value="TOIL">
+            <label for="toil">TOIL</label>
+        </div>
+        
+        <label for="bus">Please list Business Units that require integration:</label>
+        <textarea id="bus"></textarea>
+        
+        <label for="data-tables-required">Do you require separate time off Data Tables for the above Business Units?</label>
+        <select id="data-tables-required">
+            <option value="Selection">Please Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+        
+        <label for="num-tables"> How many tables are required, please select:</label>
+        <select id="num-tables">
+            <option value="1">Please Select</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
     </div>
 
     <div id="TimeOffBalances" class="tabcontent">
@@ -229,51 +273,6 @@
                 <!-- Data rows go here -->
             </tbody>
         </table>
-    </div>
-
-    <div id="ConfigurationRequirements" class="tabcontent">
-        <h3>Configuration Requirements</h3>
-        <label for="holiday-year">Holiday Year:</label>
-        <select id="holiday-year">
-        <option value="1">Please Select</option>
-        <option value="2">1st Jan - 31st Dec</option>
-        <option value="3">1st April - 31st Mar</option>
-        <option value="4">Other</option>
-        </select>
-        
-        <label>Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
-        <div class="checkbox-container">
-            <input type="checkbox" id="holiday" name="time-off-codes" value="Holiday">
-            <label for="holiday">Holiday</label>
-        </div>
-        <div class="checkbox-container">
-            <input type="checkbox" id="emergency-holiday" name="time-off-codes" value="Emergency Holiday">
-            <label for="emergency-holiday">Emergency Holiday</label>
-        </div>
-        <div class="checkbox-container">
-            <input type="checkbox" id="toil" name="time-off-codes" value="TOIL">
-            <label for="toil">TOIL</label>
-        </div>
-        
-        <label for="bus">Please list Business Units that require integration:</label>
-        <textarea id="bus"></textarea>
-        
-        <label for="data-tables-required">Do you require separate time off Data Tables for the above Business Units?</label>
-        <select id="data-tables-required">
-            <option value="Selection">Please Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-        
-        <label for="num-tables"> How many tables are required, please select:</label>
-        <select id="num-tables">
-            <option value="1">Please Select</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
     </div>
 
     <script>
