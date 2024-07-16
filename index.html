@@ -153,7 +153,7 @@
             margin-top: 20px;
         }
 
-        .export-button {
+        .export-button, .import-button {
             padding: 10px 20px;
             background-color: #63AB8F;
             color: white;
@@ -161,6 +161,10 @@
             border-radius: 5px;
             cursor: pointer;
             margin-right: 10px;
+        }
+
+        .import-button input {
+            display: none;
         }
     </style>
 </head>
@@ -272,6 +276,10 @@
         </table>
         <div class="export-buttons">
             <button class="export-button" onclick="exportTableToCSV('balances-table', 'time_off_balances.csv')">Export Time Off Balances</button>
+            <label class="import-button">
+                Import Balances
+                <input type="file" id="import-file" accept=".csv" onchange="importTableFromCSV(event)">
+            </label>
         </div>
 
         <h3>Time off Details</h3>
@@ -527,7 +535,11 @@
                 var row = [], cols = rows[i].querySelectorAll("td, th");
                 
                 for (var j = 0; j < cols.length; j++) {
-                    row.push(cols[j].innerText);
+                    if (cols[j].querySelector('input')) {
+                        row.push(cols[j].querySelector('input').value);
+                    } else {
+                        row.push(cols[j].innerText);
+                    }
                 }
                 
                 csv.push(row.join(","));
@@ -542,6 +554,38 @@
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
+        }
+
+        function importTableFromCSV(event) {
+            const input = event.target;
+            const reader = new FileReader();
+            reader.onload = function() {
+                const csv = reader.result;
+                const rows = csv.split("\n").map(row => row.split(","));
+                const balancesTableBody = document.getElementById('balances-table-body');
+
+                balancesTableBody.innerHTML = '';
+
+                rows.forEach((row, index) => {
+                    if (index === 0) return; // Skip header row
+
+                    const tr = document.createElement('tr');
+                    row.forEach((cell, cellIndex) => {
+                        const td = document.createElement('td');
+                        if (cellIndex > 2) { // For columns with input fields
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.value = cell.trim();
+                            td.appendChild(input);
+                        } else {
+                            td.textContent = cell.trim();
+                        }
+                        tr.appendChild(td);
+                    });
+                    balancesTableBody.appendChild(tr);
+                });
+            };
+            reader.readAsText(input.files[0]);
         }
     </script>
 </body>
