@@ -133,12 +133,22 @@
             gap: 20px;
             margin-bottom: 20px;
         }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Your Time by IPI</h1>
-        <img src="https://github.com/gmcglynn88/TimeoffApp/raw/main/Consulting_logo.JPG" alt="IPI Consulting Logo" class="logo">
+        <img src="https://github.com/gmcglynn88/TimeoffApp/raw/main/Consulting_logo.png" alt="IPI Consulting Logo" class="logo">
     </header>
 
     <hr class="divider">
@@ -214,15 +224,15 @@
         </select>
         
         <label>Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
-        <div>
+        <div class="checkbox-container">
             <input type="checkbox" id="holiday" name="time-off-codes" value="Holiday">
             <label for="holiday">Holiday</label>
         </div>
-        <div>
+        <div class="checkbox-container">
             <input type="checkbox" id="emergency-holiday" name="time-off-codes" value="Emergency Holiday">
             <label for="emergency-holiday">Emergency Holiday</label>
         </div>
-        <div>
+        <div class="checkbox-container">
             <input type="checkbox" id="toil" name="time-off-codes" value="TOIL">
             <label for="toil">TOIL</label>
         </div>
