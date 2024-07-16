@@ -132,6 +132,11 @@
             display: flex;
             gap: 20px;
             margin-bottom: 20px;
+            justify-content: space-between;
+        }
+
+        .filters > div {
+            flex: 1;
         }
 
         .checkbox-container {
@@ -162,7 +167,7 @@
         <button class="save-button" onclick="saveChanges()">Save</button>
     </div>
 
-        <div id="TimeOffBalances" class="tabcontent">
+    <div id="TimeOffBalances" class="tabcontent">
         <div class="filters">
             <div>
                 <h3>Select Agent</h3>
