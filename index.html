@@ -156,7 +156,8 @@
             <div>
                 <h3>Select Agent</h3>
                 <select id="agent-select" onchange="updateTables()">
-                    <option value="Gerard McGlynn" selected>Gerard McGlynn</option>
+                    <option value="all" selected>Select All</option>
+                    <option value="Gerard McGlynn">Gerard McGlynn</option>
                     <option value="Rhys Turner">Rhys Turner</option>
                 </select>
             </div>
@@ -335,37 +336,76 @@
             detailsTableBody.innerHTML = '';
 
             // Populate the balances table with editable fields
-            balancesData[selectedAgent].forEach(data => {
-                const row = document.createElement('tr');
-                Object.keys(data).forEach(key => {
-                    const cell = document.createElement('td');
-                    if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.value = data[key];
-                        cell.appendChild(input);
-                    } else {
-                        cell.textContent = data[key];
-                    }
-                    row.appendChild(cell);
-                });
-                balancesTableBody.appendChild(row);
-            });
-
-            // Populate the details table
-            detailsData[selectedAgent].forEach(data => {
-                const startDate = new Date(data.timeOffStart);
-                const endDate = new Date(data.timeOffEnd);
-                if (startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+            if (selectedAgent === 'all') {
+                for (let agent in balancesData) {
+                    balancesData[agent].forEach(data => {
+                        const row = document.createElement('tr');
+                        Object.keys(data).forEach(key => {
+                            const cell = document.createElement('td');
+                            if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                                const input = document.createElement('input');
+                                input.type = 'text';
+                                input.value = data[key];
+                                cell.appendChild(input);
+                            } else {
+                                cell.textContent = data[key];
+                            }
+                            row.appendChild(cell);
+                        });
+                        balancesTableBody.appendChild(row);
+                    });
+                }
+            } else {
+                balancesData[selectedAgent].forEach(data => {
                     const row = document.createElement('tr');
-                    Object.values(data).forEach(value => {
+                    Object.keys(data).forEach(key => {
                         const cell = document.createElement('td');
-                        cell.textContent = value;
+                        if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.value = data[key];
+                            cell.appendChild(input);
+                        } else {
+                            cell.textContent = data[key];
+                        }
                         row.appendChild(cell);
                     });
-                    detailsTableBody.appendChild(row);
+                    balancesTableBody.appendChild(row);
+                });
+            }
+
+            // Populate the details table
+            if (selectedAgent === 'all') {
+                for (let agent in detailsData) {
+                    detailsData[agent].forEach(data => {
+                        const startDate = new Date(data.timeOffStart);
+                        const endDate = new Date(data.timeOffEnd);
+                        if (startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                            const row = document.createElement('tr');
+                            Object.values(data).forEach(value => {
+                                const cell = document.createElement('td');
+                                cell.textContent = value;
+                                row.appendChild(cell);
+                            });
+                            detailsTableBody.appendChild(row);
+                        }
+                    });
                 }
-            });
+            } else {
+                detailsData[selectedAgent].forEach(data => {
+                    const startDate = new Date(data.timeOffStart);
+                    const endDate = new Date(data.timeOffEnd);
+                    if (startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                        const row = document.createElement('tr');
+                        Object.values(data).forEach(value => {
+                            const cell = document.createElement('td');
+                            cell.textContent = value;
+                            row.appendChild(cell);
+                        });
+                        detailsTableBody.appendChild(row);
+                    }
+                });
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
