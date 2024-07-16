@@ -172,6 +172,12 @@
         .import-button-label input {
             display: none;
         }
+
+        .import-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -264,14 +270,13 @@
             </div>
         </div>
 
-        <div class="export-buttons">
-            <button class="export-button" onclick="exportTableToCSV('balances-table', 'time_off_balances.csv')">Export Time Off Balances</button>
+        <div class="import-container">
             <label class="import-button-label">
                 Import Balances
                 <input type="file" id="import-file" accept=".csv" onchange="importTableFromCSV(event)">
             </label>
         </div>
-                
+
         <h3>Time off Balances</h3>
         <table id="balances-table">
             <thead>
@@ -288,6 +293,9 @@
                 <!-- Data rows go here -->
             </tbody>
         </table>
+        <div class="export-buttons">
+            <button class="export-button" onclick="exportTableToCSV('balances-table', 'time_off_balances.csv')">Export Time Off Balances</button>
+        </div>
 
         <h3>Time off Details</h3>
         <table id="details-table">
