@@ -471,7 +471,7 @@
                     detailsData[agent].forEach(data => {
                         const startDate = new Date(data.timeOffStart);
                         const endDate = new Date(data.timeOffEnd);
-                        if (startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                        if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
                             const row = document.createElement('tr');
                             Object.values(data).forEach(value => {
                                 const cell = document.createElement('td');
@@ -486,7 +486,7 @@
                 detailsData[selectedAgent].forEach(data => {
                     const startDate = new Date(data.timeOffStart);
                     const endDate = new Date(data.timeOffEnd);
-                    if (startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                    if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
                         const row = document.createElement('tr');
                         Object.values(data).forEach(value => {
                             const cell = document.createElement('td');
