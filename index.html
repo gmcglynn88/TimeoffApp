@@ -73,13 +73,22 @@
             color: white;
         }
 
-        .save-button {
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .save-button, .import-button-label {
             padding: 10px 20px;
             background-color: #63AB8F;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+        }
+
+        .import-button-label input {
+            display: none;
         }
 
         .tabcontent {
@@ -156,7 +165,7 @@
             margin-bottom: 10px;
         }
 
-        .export-button, .import-button-label {
+        .export-button {
             padding: 10px 20px;
             background-color: #63AB8F;
             color: white;
@@ -168,16 +177,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .import-button-label input {
-            display: none;
-        }
-
-        .import-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -194,17 +193,23 @@
             <button class="tablinks" onclick="openTab(event, 'Settings')" id="defaultOpen">Settings</button>
             <button class="tablinks" onclick="openTab(event, 'TimeOffBalances')">Time Off Balances</button>
         </div>
-        <button class="save-button" onclick="saveChanges()">Save</button>
+        <div class="button-container">
+            <button class="save-button" onclick="saveChanges()">Save</button>
+            <label class="import-button-label">
+                Import Balances
+                <input type="file" id="import-file" accept=".csv" onchange="importTableFromCSV(event)">
+            </label>
+        </div>
     </div>
 
     <div id="Settings" class="tabcontent">
         <h3>Settings</h3>
         <label for="holiday-year">Holiday Year:</label>
         <select id="holiday-year">
-        <option value="1">Please Select</option>
-        <option value="2">1st Jan - 31st Dec</option>
-        <option value="3">1st April - 31st Mar</option>
-        <option value="4">Other</option>
+            <option value="1">Please Select</option>
+            <option value="2">1st Jan - 31st Dec</option>
+            <option value="3">1st April - 31st Mar</option>
+            <option value="4">Other</option>
         </select>
         
         <label>Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
@@ -231,7 +236,7 @@
             <option value="no">No</option>
         </select>
         
-        <label for="num-tables"> How many tables are required, please select:</label>
+        <label for="num-ttables"> How many tables are required, please select:</label>
         <select id="num-tables">
             <option value="1">Please Select</option>
             <option value="1">1</option>
@@ -271,13 +276,6 @@
                     <option value="Sales">Sales & Retentions</option>
                 </select>
             </div>
-        </div>
-
-        <div class="import-container">
-            <label class="import-button-label">
-                Import Balances
-                <input type="file" id="import-file" accept=".csv" onchange="importTableFromCSV(event)">
-            </label>
         </div>
 
         <h3>Time off Balances</h3>
