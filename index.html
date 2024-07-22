@@ -28,6 +28,7 @@
 
         .logo {
             height: 50px;
+            background-color: transparent; /* Ensure the background is transparent */
         }
 
         .divider {
@@ -183,7 +184,7 @@
 <body>
     <header>
         <h1>Your Time by IPI</h1>
-        <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/Consultinglogo.png" alt="Consulting Logo" class="logo" style="background-color: white;">
+        <img src="Consultinglogo.png" alt="Consulting Logo" class="logo">
     </header>
 
     <hr class="divider">
@@ -325,11 +326,11 @@
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+                tabcontent[i.style.display = "none";
             }
             tablinks = document.getElementsByClassName("tablinks");
             for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
+                tablinks[i.className = tablinks[i.className.replace(" active", "");
             }
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
@@ -549,13 +550,13 @@
             var rows = document.querySelectorAll(`#${tableID} tr`);
             
             for (var i = 0; i < rows.length; i++) {
-                var row = [], cols = rows[i].querySelectorAll("td, th");
+                var row = [], cols = rows[i.querySelectorAll("td, th");
                 
                 for (var j = 0; j < cols.length; j++) {
-                    if (cols[j].querySelector('input')) {
-                        row.push(cols[j].querySelector('input').value);
+                    if (cols[j.querySelector('input')) {
+                        row.push(cols[j.querySelector('input').value);
                     } else {
-                        row.push(cols[j].innerText);
+                        row.push(cols[j.innerText);
                     }
                 }
                 
