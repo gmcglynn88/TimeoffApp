@@ -28,6 +28,7 @@
 
         .logo {
             height: 50px;
+            background-color: transparent;
         }
 
         .divider {
@@ -183,7 +184,7 @@
 <body>
     <header>
         <h1>Your Time by IPI</h1>
-        <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/Consultinglogo.png" alt="Consulting Logo" class="logo" style="background-color: white;">
+        <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/Consultinglogo.png" alt="Consulting Logo" class="logo">
     </header>
 
     <hr class="divider">
@@ -546,7 +547,7 @@
 
         function exportTableToCSV(tableID, filename) {
             var csv = [];
-            var rows = document.querySelectorAll(#${tableID} tr);
+            var rows = document.querySelectorAll(`#${tableID} tr`);
             
             for (var i = 0; i < rows.length; i++) {
                 var row = [], cols = rows[i].querySelectorAll("td, th");
