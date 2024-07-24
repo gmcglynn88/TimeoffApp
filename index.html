@@ -425,34 +425,38 @@
             balancesTableBody.innerHTML = '';
             detailsTableBody.innerHTML = '';
 
-            // Load data from local storage if available
-            let savedBalancesData = localStorage.getItem('balancesData-' + selectedAgent);
-            if (savedBalancesData) {
-                savedBalancesData = JSON.parse(savedBalancesData);
-            } else {
-                savedBalancesData = balancesData[selectedAgent] || [];
-            }
-
-            // Populate the balances table with editable fields
-            savedBalancesData.forEach(data => {
-                const row = document.createElement('tr');
-                Object.keys(data).forEach(key => {
-                    const cell = document.createElement('td');
-                    if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.value = data[key];
-                        cell.appendChild(input);
-                    } else {
-                        cell.textContent = data[key];
-                    }
-                    row.appendChild(cell);
-                });
-                balancesTableBody.appendChild(row);
-            });
-
-            // Populate the details table
             if (selectedAgent === 'all') {
+                // Aggregate data for all agents
+                let allBalancesData = [];
+                for (let agent in balancesData) {
+                    let agentData = localStorage.getItem('balancesData-' + agent);
+                    if (agentData) {
+                        agentData = JSON.parse(agentData);
+                    } else {
+                        agentData = balancesData[agent];
+                    }
+                    allBalancesData = allBalancesData.concat(agentData);
+                }
+
+                // Populate the balances table with editable fields
+                allBalancesData.forEach(data => {
+                    const row = document.createElement('tr');
+                    Object.keys(data).forEach(key => {
+                        const cell = document.createElement('td');
+                        if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.value = data[key];
+                            cell.appendChild(input);
+                        } else {
+                            cell.textContent = data[key];
+                        }
+                        row.appendChild(cell);
+                    });
+                    balancesTableBody.appendChild(row);
+                });
+
+                // Populate the details table for all agents
                 for (let agent in detailsData) {
                     detailsData[agent].forEach(data => {
                         const startDate = new Date(data.timeOffStart);
@@ -469,6 +473,33 @@
                     });
                 }
             } else {
+                // Load data from local storage if available
+                let savedBalancesData = localStorage.getItem('balancesData-' + selectedAgent);
+                if (savedBalancesData) {
+                    savedBalancesData = JSON.parse(savedBalancesData);
+                } else {
+                    savedBalancesData = balancesData[selectedAgent] || [];
+                }
+
+                // Populate the balances table with editable fields
+                savedBalancesData.forEach(data => {
+                    const row = document.createElement('tr');
+                    Object.keys(data).forEach(key => {
+                        const cell = document.createElement('td');
+                        if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.value = data[key];
+                            cell.appendChild(input);
+                        } else {
+                            cell.textContent = data[key];
+                        }
+                        row.appendChild(cell);
+                    });
+                    balancesTableBody.appendChild(row);
+                });
+
+                // Populate the details table for the selected agent
                 detailsData[selectedAgent].forEach(data => {
                     const startDate = new Date(data.timeOffStart);
                     const endDate = new Date(data.timeOffEnd);
@@ -508,7 +539,14 @@
             }
 
             // Save to local storage
-            localStorage.setItem('balancesData-' + selectedAgent, JSON.stringify(balancesData));
+            if (selectedAgent !== 'all') {
+                localStorage.setItem('balancesData-' + selectedAgent, JSON.stringify(balancesData));
+            } else {
+                for (let agent in balancesData) {
+                    let agentData = balancesData.filter(data => data.agentName === agent);
+                    localStorage.setItem('balancesData-' + agent, JSON.stringify(agentData));
+                }
+            }
 
             alert('Changes saved successfully!');
         }
