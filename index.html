@@ -183,7 +183,7 @@
 <body>
     <header>
         <h1>Your Time by IPI</h1>
-        <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary Identity_Corporate_REVERSED_ECC.png" alt="Consulting Logo" class="logo">
+        <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary%20Identity_Corporate_REVERSED_ECC.png" alt="Consulting Logo" class="logo">
     </header>
 
     <hr class="divider">
@@ -425,44 +425,31 @@
             balancesTableBody.innerHTML = '';
             detailsTableBody.innerHTML = '';
 
-            // Populate the balances table with editable fields
-            if (selectedAgent === 'all') {
-                for (let agent in balancesData) {
-                    balancesData[agent].forEach(data => {
-                        const row = document.createElement('tr');
-                        Object.keys(data).forEach(key => {
-                            const cell = document.createElement('td');
-                            if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
-                                const input = document.createElement('input');
-                                input.type = 'text';
-                                input.value = data[key];
-                                cell.appendChild(input);
-                            } else {
-                                cell.textContent = data[key];
-                            }
-                            row.appendChild(cell);
-                        });
-                        balancesTableBody.appendChild(row);
-                    });
-                }
+            // Load data from local storage if available
+            let savedBalancesData = localStorage.getItem('balancesData-' + selectedAgent);
+            if (savedBalancesData) {
+                savedBalancesData = JSON.parse(savedBalancesData);
             } else {
-                balancesData[selectedAgent].forEach(data => {
-                    const row = document.createElement('tr');
-                    Object.keys(data).forEach(key => {
-                        const cell = document.createElement('td');
-                        if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
-                            const input = document.createElement('input');
-                            input.type = 'text';
-                            input.value = data[key];
-                            cell.appendChild(input);
-                        } else {
-                            cell.textContent = data[key];
-                        }
-                        row.appendChild(cell);
-                    });
-                    balancesTableBody.appendChild(row);
-                });
+                savedBalancesData = balancesData[selectedAgent] || [];
             }
+
+            // Populate the balances table with editable fields
+            savedBalancesData.forEach(data => {
+                const row = document.createElement('tr');
+                Object.keys(data).forEach(key => {
+                    const cell = document.createElement('td');
+                    if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = data[key];
+                        cell.appendChild(input);
+                    } else {
+                        cell.textContent = data[key];
+                    }
+                    row.appendChild(cell);
+                });
+                balancesTableBody.appendChild(row);
+            });
 
             // Populate the details table
             if (selectedAgent === 'all') {
@@ -503,12 +490,11 @@
         });
 
         function saveChanges() {
-            // Implement the save functionality here
             const selectedAgent = document.getElementById('agent-select').value;
             const balancesTableBody = document.getElementById('balances-table-body');
             const balancesRows = balancesTableBody.getElementsByTagName('tr');
             let balancesData = [];
-            
+
             for (let row of balancesRows) {
                 let cells = row.getElementsByTagName('td');
                 balancesData.push({
@@ -520,25 +506,9 @@
                     timeOffInLieu: cells[5].getElementsByTagName('input')[0].value
                 });
             }
-            
-            console.log('Saved Balances Data for ' + selectedAgent + ':', balancesData);
 
-            const holidayYear = document.getElementById('holiday-year').value;
-            const timeOffCodes = [];
-            document.querySelectorAll('input[name="time-off-codes"]:checked').forEach(checkbox => {
-                timeOffCodes.push(checkbox.value);
-            });
-            const bus = document.getElementById('bus').value;
-            const dataTablesRequired = document.getElementById('data-tables-required').value;
-            const numTables = document.getElementById('num-tables').value;
-
-            console.log('Saved Configuration Requirements:', {
-                holidayYear,
-                timeOffCodes,
-                bus,
-                dataTablesRequired,
-                numTables
-            });
+            // Save to local storage
+            localStorage.setItem('balancesData-' + selectedAgent, JSON.stringify(balancesData));
 
             alert('Changes saved successfully!');
         }
@@ -546,10 +516,10 @@
         function exportTableToCSV(tableID, filename) {
             var csv = [];
             var rows = document.querySelectorAll(`#${tableID} tr`);
-            
+
             for (var i = 0; i < rows.length; i++) {
                 var row = [], cols = rows[i].querySelectorAll("td, th");
-                
+
                 for (var j = 0; j < cols.length; j++) {
                     if (cols[j].querySelector('input')) {
                         row.push(cols[j].querySelector('input').value);
@@ -557,7 +527,7 @@
                         row.push(cols[j].innerText);
                     }
                 }
-                
+
                 csv.push(row.join(","));
             }
 
