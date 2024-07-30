@@ -470,7 +470,7 @@
                                 row.appendChild(cell);
                                 if (index === 5) { // After balanceDeduction cell, add Days cell
                                     const daysCell = document.createElement('td');
-                                    daysCell.textContent = (value / 8).toFixed(2); // Assuming 8 hours per day
+                                    daysCell.textContent = (value / 8).toFixed(1); // Assuming 8 hours per day
                                     row.appendChild(daysCell);
                                 }
                             });
