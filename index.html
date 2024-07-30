@@ -308,6 +308,7 @@
                     <th>Time off Start</th>
                     <th>Time off End</th>
                     <th>Balance Deduction (Hrs)</th>
+                    <th>Days</th>
                 </tr>
             </thead>
             <tbody id="details-table-body">
@@ -463,10 +464,15 @@
                         const endDate = new Date(data.timeOffEnd);
                         if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
                             const row = document.createElement('tr');
-                            Object.values(data).forEach(value => {
+                            Object.values(data).forEach((value, index) => {
                                 const cell = document.createElement('td');
                                 cell.textContent = value;
                                 row.appendChild(cell);
+                                if (index === 5) { // After balanceDeduction cell, add Days cell
+                                    const daysCell = document.createElement('td');
+                                    daysCell.textContent = (value / 8).toFixed(2); // Assuming 8 hours per day
+                                    row.appendChild(daysCell);
+                                }
                             });
                             detailsTableBody.appendChild(row);
                         }
@@ -505,10 +511,15 @@
                     const endDate = new Date(data.timeOffEnd);
                     if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
                         const row = document.createElement('tr');
-                        Object.values(data).forEach(value => {
+                        Object.values(data).forEach((value, index) => {
                             const cell = document.createElement('td');
                             cell.textContent = value;
                             row.appendChild(cell);
+                            if (index === 5) { // After balanceDeduction cell, add Days cell
+                                const daysCell = document.createElement('td');
+                                daysCell.textContent = (value / 8).toFixed(2); // Assuming 8 hours per day
+                                row.appendChild(daysCell);
+                            }
                         });
                         detailsTableBody.appendChild(row);
                     }
