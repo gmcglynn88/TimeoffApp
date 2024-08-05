@@ -254,8 +254,16 @@
                 <select id="agent-select" onchange="updateTables()">
                     <option value="Select" selected>Please Select</option>
                     <option value="all">Select All</option>
+                    <option value="Craig Farley">Craig Farley</option>
+                    <option value="Sasha Smith">Sasha Smith</option>
+                    <option value="Lisa Lowe">Lisa Lowe</option>
+                    <option value="Sian Gibbs">Sian Gibbs</option>
+                    <option value="John Thompson">John Thompson</option>
+                    <option value="Olivia Jenson">Olivia Jenson</option>
+                    <option value="Ethan Reynolds">Ethan Reynolds</option>
+                    <option value="Ava Mitchell">Ava Mitchell</option>
                     <option value="Gerard McGlynn">Gerard McGlynn</option>
-                    <option value="Rhys Turner">Rhys Turner</option>
+                    <option value="Tom Collins">Tom Collins</option>
                 </select>
             </div>
             <div>
@@ -337,6 +345,222 @@
 
         document.getElementById("defaultOpen").click();
 
+        const balancesData = {
+            "Craig Farley": [
+                {
+                    agentName: 'Craig Farley',
+                    team: 'Team Reading',
+                    managementUnit: 'Sales & Retentions',
+                    holidayCurrentYear: 10,
+                    holidayNextYear: 190,
+                    timeOffInLieu: -3
+                }
+            ],
+            "Sasha Smith": [
+                {
+                    agentName: 'Sasha Smith',
+                    team: 'Team Reading',
+                    managementUnit: 'Sales & Retentions',
+                    holidayCurrentYear: 1.5,
+                    holidayNextYear: 50,
+                    timeOffInLieu: 2
+                }
+            ],
+            "Lisa Lowe": [
+                {
+                    agentName: 'Lisa Lowe',
+                    team: 'Team Sheffield',
+                    managementUnit: 'Customer Service',
+                    holidayCurrentYear: 42,
+                    holidayNextYear: 237,
+                    timeOffInLieu: -10
+                }
+            ],
+            "Sian Gibbs": [
+                {
+                    agentName: 'Sian Gibbs',
+                    team: 'Team Manchester',
+                    managementUnit: 'Customer Service',
+                    holidayCurrentYear: 87,
+                    holidayNextYear: 237,
+                    timeOffInLieu: 0
+                }
+            ],
+            "John Thompson": [
+                {
+                    agentName: 'John Thompson',
+                    team: 'Team Sheffield',
+                    managementUnit: 'Customer Service',
+                    holidayCurrentYear: 41,
+                    holidayNextYear: 186,
+                    timeOffInLieu: 10
+                }
+            ],
+            "Olivia Jenson": [
+                {
+                    agentName: 'Olivia Jenson',
+                    team: 'Team Reading',
+                    managementUnit: 'Sales & Retentions',
+                    holidayCurrentYear: 65,
+                    holidayNextYear: 237,
+                    timeOffInLieu: 3.25
+                }
+            ],
+            "Ethan Reynolds": [
+                {
+                    agentName: 'Ethan Reynolds',
+                    team: 'Team Manchester',
+                    managementUnit: 'Customer Service',
+                    holidayCurrentYear: 109,
+                    holidayNextYear: 237,
+                    timeOffInLieu: 0
+                }
+            ],
+            "Ava Mitchell": [
+                {
+                    agentName: 'Ava Mitchell',
+                    team: 'Team Sheffield',
+                    managementUnit: 'Sales & Retentions',
+                    holidayCurrentYear: 234,
+                    holidayNextYear: 237,
+                    timeOffInLieu: -4
+                }
+            ],
+            "Gerard McGlynn": [
+                {
+                    agentName: 'Gerard McGlynn',
+                    team: 'Team Sheffield',
+                    managementUnit: 'Customer Service',
+                    holidayCurrentYear: 128,
+                    holidayNextYear: 237,
+                    timeOffInLieu: 24
+                }
+            ],
+            "Tom Collins": [
+                {
+                    agentName: 'Tom Collins',
+                    team: 'Team Reading',
+                    managementUnit: 'Customer Service',
+                    holidayCurrentYear: 10,
+                    holidayNextYear: 154,
+                    timeOffInLieu: 2
+                }
+            ]
+        };
+
+        const detailsData = {
+            "Craig Farley": [
+                {
+                    agentName: 'Craig Farley',
+                    team: 'Team Reading',
+                    managementUnit: 'Sales & Retentions',
+                    timeOffStart: '01/01/2024',
+                    timeOffEnd: '01/01/2024',
+                    balanceDeduction: 8,
+                    days: 1
+                }
+            ],
+            "Sasha Smith": [
+                {
+                    agentName: 'Sasha Smith',
+                    team: 'Team Reading',
+                    managementUnit: 'Sales & Retentions',
+                    timeOffStart: '01/02/2024',
+                    timeOffEnd: '01/02/2024',
+                    balanceDeduction: 8,
+                    days: 1
+                }
+            ],
+            "Lisa Lowe": [
+                {
+                    agentName: 'Lisa Lowe',
+                    team: 'Team Sheffield',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '01/03/2024',
+                    timeOffEnd: '01/03/2024',
+                    balanceDeduction: 8,
+                    days: 1
+                }
+            ],
+            "Sian Gibbs": [
+                {
+                    agentName: 'Sian Gibbs',
+                    team: 'Team Manchester',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '01/04/2024',
+                    timeOffEnd: '01/04/2024',
+                    balanceDeduction: 8,
+                    days: 1
+                }
+            ],
+            "John Thompson": [
+                {
+                    agentName: 'John Thompson',
+                    team: 'Team Sheffield',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '01/05/2024',
+                    timeOffEnd: '01/05/2024',
+                    balanceDeduction: 8,
+                    days: 1
+                }
+            ],
+            "Olivia Jenson": [
+                {
+                    agentName: 'Olivia Jenson',
+                    team: 'Team Reading',
+                    managementUnit: 'Sales & Retentions',
+                    timeOffStart: '01/06/2024',
+                    timeOffEnd: '01/06/2024',
+                    balanceDeduction: 8,
+                    days: 1
+                }
+            ],
+            "Ethan Reynolds": [
+                {
+                    agentName: 'Ethan Reynolds',
+                    team: 'Team Manchester',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '01/07/2024',
+                    timeOffEnd: '01/07/2024',
+                    balanceDeduction: 8,
+                    days: 1
+                }
+            ],
+            "Ava Mitchell": [
+                {
+                    agentName: 'Ava Mitchell',
+                    team: 'Team Sheffield',
+                    managementUnit: 'Sales & Retentions',
+                    timeOffStart: '01/08/2024',
+                    timeOffEnd: '01/08/2024',
+                    balanceDeduction: 8,
+                    days: 1
+                }
+            ],
+            "Gerard McGlynn": [
+                {
+                    agentName: 'Gerard McGlynn',
+                    team: 'Team Sheffield',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '01/09/2024',
+                    timeOffEnd: '01/09/2024',
+                    balanceDeduction: 8,
+                    days: 1
+                }
+            ],
+            "Tom Collins": [
+                {
+                    agentName: 'Tom Collins',
+                    team: 'Team Reading',
+                    managementUnit: 'Customer Service',
+                    timeOffStart: '01/10/2024',
+                    timeOffEnd: '01/10/2024',
+                    balanceDeduction: 8,
+                    days: 1
+                }
+            ]
+        };
+
         function updateTables() {
             const selectedAgent = document.getElementById('agent-select').value;
             const selectedYear = document.getElementById('year-select').value;
@@ -348,51 +572,105 @@
             balancesTableBody.innerHTML = '';
             detailsTableBody.innerHTML = '';
 
-            // Load data from local storage if available
-            let savedBalancesData = localStorage.getItem('balancesData-' + selectedAgent);
-            if (savedBalancesData) {
-                savedBalancesData = JSON.parse(savedBalancesData);
-            } else {
-                savedBalancesData = [];
-            }
-
-            // Populate the balances table with editable fields
-            savedBalancesData.forEach(data => {
-                const row = document.createElement('tr');
-                Object.keys(data).forEach(key => {
-                    const cell = document.createElement('td');
-                    if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.value = data[key];
-                        cell.appendChild(input);
+            if (selectedAgent === 'all') {
+                // Aggregate data for all agents
+                let allBalancesData = [];
+                for (let agent in balancesData) {
+                    let agentData = localStorage.getItem('balancesData-' + agent);
+                    if (agentData) {
+                        agentData = JSON.parse(agentData);
                     } else {
-                        cell.textContent = data[key];
+                        agentData = balancesData[agent];
                     }
-                    row.appendChild(cell);
-                });
-                balancesTableBody.appendChild(row);
-            });
+                    allBalancesData = allBalancesData.concat(agentData);
+                }
 
-            // Populate the details table for the selected agent
-            savedBalancesData.forEach(data => {
-                const startDate = new Date(data.timeOffStart);
-                const endDate = new Date(data.timeOffEnd);
-                if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                // Populate the balances table with editable fields
+                allBalancesData.forEach(data => {
                     const row = document.createElement('tr');
-                    Object.values(data).forEach((value, index) => {
+                    Object.keys(data).forEach(key => {
                         const cell = document.createElement('td');
-                        cell.textContent = value;
+                        if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.value = data[key];
+                            cell.appendChild(input);
+                        } else {
+                            cell.textContent = data[key];
+                        }
                         row.appendChild(cell);
-                        if (index === 5) { // After balanceDeduction cell, add Days cell
-                            const daysCell = document.createElement('td');
-                            daysCell.textContent = (value / 8).toFixed(2); // Assuming 8 hours per day
-                            row.appendChild(daysCell);
+                    });
+                    balancesTableBody.appendChild(row);
+                });
+
+                // Populate the details table for all agents
+                for (let agent in detailsData) {
+                    detailsData[agent].forEach(data => {
+                        const startDate = new Date(data.timeOffStart);
+                        const endDate = new Date(data.timeOffEnd);
+                        if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                            const row = document.createElement('tr');
+                            Object.values(data).forEach((value, index) => {
+                                const cell = document.createElement('td');
+                                cell.textContent = value;
+                                row.appendChild(cell);
+                                if (index === 5) { // After balanceDeduction cell, add Days cell
+                                    const daysCell = document.createElement('td');
+                                    daysCell.textContent = (value / 8).toFixed(1); // Assuming 8 hours per day
+                                    row.appendChild(daysCell);
+                                }
+                            });
+                            detailsTableBody.appendChild(row);
                         }
                     });
-                    detailsTableBody.appendChild(row);
                 }
-            });
+            } else {
+                // Load data from local storage if available
+                let savedBalancesData = localStorage.getItem('balancesData-' + selectedAgent);
+                if (savedBalancesData) {
+                    savedBalancesData = JSON.parse(savedBalancesData);
+                } else {
+                    savedBalancesData = balancesData[selectedAgent] || [];
+                }
+
+                // Populate the balances table with editable fields
+                savedBalancesData.forEach(data => {
+                    const row = document.createElement('tr');
+                    Object.keys(data).forEach(key => {
+                        const cell = document.createElement('td');
+                        if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.value = data[key];
+                            cell.appendChild(input);
+                        } else {
+                            cell.textContent = data[key];
+                        }
+                        row.appendChild(cell);
+                    });
+                    balancesTableBody.appendChild(row);
+                });
+
+                // Populate the details table for the selected agent
+                detailsData[selectedAgent]?.forEach(data => {
+                    const startDate = new Date(data.timeOffStart);
+                    const endDate = new Date(data.timeOffEnd);
+                    if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                        const row = document.createElement('tr');
+                        Object.values(data).forEach((value, index) => {
+                            const cell = document.createElement('td');
+                            cell.textContent = value;
+                            row.appendChild(cell);
+                            if (index === 5) { // After balanceDeduction cell, add Days cell
+                                const daysCell = document.createElement('td');
+                                daysCell.textContent = (value / 8).toFixed(2); // Assuming 8 hours per day
+                                row.appendChild(daysCell);
+                            }
+                        });
+                        detailsTableBody.appendChild(row);
+                    }
+                });
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
