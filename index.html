@@ -337,84 +337,6 @@
 
         document.getElementById("defaultOpen").click();
 
-        const balancesData = {
-            "Gerard McGlynn": [
-                {
-                    agentName: 'Gerard McGlynn',
-                    team: 'Customer Service 1',
-                    managementUnit: 'Customer Service',
-                    holidayCurrentYear: 26,
-                    holidayNextYear: 237,
-                    timeOffInLieu: 10
-                }
-            ],
-            "Rhys Turner": [
-                {
-                    agentName: 'Rhys Turner',
-                    team: 'Customer Service 2',
-                    managementUnit: 'Customer Service',
-                    holidayCurrentYear: 70,
-                    holidayNextYear: 320,
-                    timeOffInLieu: -6
-                }
-            ]
-        };
-
-        const detailsData = {
-            "Gerard McGlynn": [
-                {
-                    agentName: 'Gerard McGlynn',
-                    team: 'Customer Service 1',
-                    managementUnit: 'Customer Service',
-                    timeOffStart: '01/07/2024',
-                    timeOffEnd: '01/07/2024',
-                    balanceDeduction: 8
-                },
-                {
-                    agentName: 'Gerard McGlynn',
-                    team: 'Customer Service 1',
-                    managementUnit: 'Customer Service',
-                    timeOffStart: '01/09/2024',
-                    timeOffEnd: '07/09/2024',
-                    balanceDeduction: 40
-                },
-                {
-                    agentName: 'Gerard McGlynn',
-                    team: 'Customer Service 1',
-                    managementUnit: 'Customer Service',
-                    timeOffStart: '12/10/2024',
-                    timeOffEnd: '14/10/2024',
-                    balanceDeduction: 16
-                }
-            ],
-            "Rhys Turner": [
-                {
-                    agentName: 'Rhys Turner',
-                    team: 'Customer Service 2',
-                    managementUnit: 'Customer Service',
-                    timeOffStart: '01/10/2024',
-                    timeOffEnd: '01/10/2024',
-                    balanceDeduction: 8
-                },
-                {
-                    agentName: 'Rhys Turner',
-                    team: 'Customer Service 2',
-                    managementUnit: 'Customer Service',
-                    timeOffStart: '01/09/2024',
-                    timeOffEnd: '06/09/2024',
-                    balanceDeduction: 32
-                },
-                {
-                    agentName: 'Rhys Turner',
-                    team: 'Customer Service 2',
-                    managementUnit: 'Customer Service',
-                    timeOffStart: '12/10/2025',
-                    timeOffEnd: '14/10/2025',
-                    balanceDeduction: 16
-                }
-            ]
-        };
-
         function updateTables() {
             const selectedAgent = document.getElementById('agent-select').value;
             const selectedYear = document.getElementById('year-select').value;
@@ -426,105 +348,51 @@
             balancesTableBody.innerHTML = '';
             detailsTableBody.innerHTML = '';
 
-            if (selectedAgent === 'all') {
-                // Aggregate data for all agents
-                let allBalancesData = [];
-                for (let agent in balancesData) {
-                    let agentData = localStorage.getItem('balancesData-' + agent);
-                    if (agentData) {
-                        agentData = JSON.parse(agentData);
-                    } else {
-                        agentData = balancesData[agent];
-                    }
-                    allBalancesData = allBalancesData.concat(agentData);
-                }
-
-                // Populate the balances table with editable fields
-                allBalancesData.forEach(data => {
-                    const row = document.createElement('tr');
-                    Object.keys(data).forEach(key => {
-                        const cell = document.createElement('td');
-                        if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
-                            const input = document.createElement('input');
-                            input.type = 'text';
-                            input.value = data[key];
-                            cell.appendChild(input);
-                        } else {
-                            cell.textContent = data[key];
-                        }
-                        row.appendChild(cell);
-                    });
-                    balancesTableBody.appendChild(row);
-                });
-
-                // Populate the details table for all agents
-                for (let agent in detailsData) {
-                    detailsData[agent].forEach(data => {
-                        const startDate = new Date(data.timeOffStart);
-                        const endDate = new Date(data.timeOffEnd);
-                        if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
-                            const row = document.createElement('tr');
-                            Object.values(data).forEach((value, index) => {
-                                const cell = document.createElement('td');
-                                cell.textContent = value;
-                                row.appendChild(cell);
-                                if (index === 5) { // After balanceDeduction cell, add Days cell
-                                    const daysCell = document.createElement('td');
-                                    daysCell.textContent = (value / 8).toFixed(1); // Assuming 8 hours per day
-                                    row.appendChild(daysCell);
-                                }
-                            });
-                            detailsTableBody.appendChild(row);
-                        }
-                    });
-                }
+            // Load data from local storage if available
+            let savedBalancesData = localStorage.getItem('balancesData-' + selectedAgent);
+            if (savedBalancesData) {
+                savedBalancesData = JSON.parse(savedBalancesData);
             } else {
-                // Load data from local storage if available
-                let savedBalancesData = localStorage.getItem('balancesData-' + selectedAgent);
-                if (savedBalancesData) {
-                    savedBalancesData = JSON.parse(savedBalancesData);
-                } else {
-                    savedBalancesData = balancesData[selectedAgent] || [];
-                }
-
-                // Populate the balances table with editable fields
-                savedBalancesData.forEach(data => {
-                    const row = document.createElement('tr');
-                    Object.keys(data).forEach(key => {
-                        const cell = document.createElement('td');
-                        if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
-                            const input = document.createElement('input');
-                            input.type = 'text';
-                            input.value = data[key];
-                            cell.appendChild(input);
-                        } else {
-                            cell.textContent = data[key];
-                        }
-                        row.appendChild(cell);
-                    });
-                    balancesTableBody.appendChild(row);
-                });
-
-                // Populate the details table for the selected agent
-                detailsData[selectedAgent].forEach(data => {
-                    const startDate = new Date(data.timeOffStart);
-                    const endDate = new Date(data.timeOffEnd);
-                    if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
-                        const row = document.createElement('tr');
-                        Object.values(data).forEach((value, index) => {
-                            const cell = document.createElement('td');
-                            cell.textContent = value;
-                            row.appendChild(cell);
-                            if (index === 5) { // After balanceDeduction cell, add Days cell
-                                const daysCell = document.createElement('td');
-                                daysCell.textContent = (value / 8).toFixed(2); // Assuming 8 hours per day
-                                row.appendChild(daysCell);
-                            }
-                        });
-                        detailsTableBody.appendChild(row);
-                    }
-                });
+                savedBalancesData = [];
             }
+
+            // Populate the balances table with editable fields
+            savedBalancesData.forEach(data => {
+                const row = document.createElement('tr');
+                Object.keys(data).forEach(key => {
+                    const cell = document.createElement('td');
+                    if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = data[key];
+                        cell.appendChild(input);
+                    } else {
+                        cell.textContent = data[key];
+                    }
+                    row.appendChild(cell);
+                });
+                balancesTableBody.appendChild(row);
+            });
+
+            // Populate the details table for the selected agent
+            savedBalancesData.forEach(data => {
+                const startDate = new Date(data.timeOffStart);
+                const endDate = new Date(data.timeOffEnd);
+                if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                    const row = document.createElement('tr');
+                    Object.values(data).forEach((value, index) => {
+                        const cell = document.createElement('td');
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                        if (index === 5) { // After balanceDeduction cell, add Days cell
+                            const daysCell = document.createElement('td');
+                            daysCell.textContent = (value / 8).toFixed(2); // Assuming 8 hours per day
+                            row.appendChild(daysCell);
+                        }
+                    });
+                    detailsTableBody.appendChild(row);
+                }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
