@@ -178,6 +178,11 @@
             align-items: center;
             justify-content: center;
         }
+
+        .negative {
+            background-color: pink;
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -278,7 +283,7 @@
             </div>
             <div>
                 <h3>Select Management Unit</h3>
-                <select id="Management Unit Select" onchange="updateTables()">
+                <select id="management-unit-select" onchange="updateTables()">
                     <option value="Select" selected>Please Select</option>
                     <option value="all">Select All</option>
                     <option value="CS">Customer Service</option>
@@ -447,7 +452,7 @@
                     timeOffInLieu: 2
                 }
             ],
-                        "Rhys Turner": [
+            "Rhys Turner": [
                 {
                     agentName: 'Rhys Turner',
                     team: 'Team Manchester',
@@ -610,6 +615,7 @@
         function updateTables() {
             const selectedAgent = document.getElementById('agent-select').value;
             const selectedYear = document.getElementById('year-select').value;
+            const selectedManagementUnit = document.getElementById('management-unit-select').value;
 
             const balancesTableBody = document.getElementById('balances-table-body');
             const detailsTableBody = document.getElementById('details-table-body');
@@ -631,6 +637,11 @@
                     allBalancesData = allBalancesData.concat(agentData);
                 }
 
+                // Filter by management unit
+                if (selectedManagementUnit !== 'all') {
+                    allBalancesData = allBalancesData.filter(data => data.managementUnit === selectedManagementUnit);
+                }
+
                 // Populate the balances table with editable fields
                 allBalancesData.forEach(data => {
                     const row = document.createElement('tr');
@@ -640,6 +651,9 @@
                             const input = document.createElement('input');
                             input.type = 'text';
                             input.value = data[key];
+                            if (key === 'timeOffInLieu' && data[key] < 0) {
+                                input.classList.add('negative');
+                            }
                             cell.appendChild(input);
                         } else {
                             cell.textContent = data[key];
@@ -654,7 +668,8 @@
                     detailsData[agent].forEach(data => {
                         const startDate = new Date(data.timeOffStart);
                         const endDate = new Date(data.timeOffEnd);
-                        if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                        if ((selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) &&
+                            (selectedManagementUnit === 'all' || data.managementUnit === selectedManagementUnit)) {
                             const row = document.createElement('tr');
                             Object.values(data).forEach((value, index) => {
                                 const cell = document.createElement('td');
@@ -679,6 +694,11 @@
                     savedBalancesData = balancesData[selectedAgent] || [];
                 }
 
+                // Filter by management unit
+                if (selectedManagementUnit !== 'all') {
+                    savedBalancesData = savedBalancesData.filter(data => data.managementUnit === selectedManagementUnit);
+                }
+
                 // Populate the balances table with editable fields
                 savedBalancesData.forEach(data => {
                     const row = document.createElement('tr');
@@ -688,6 +708,9 @@
                             const input = document.createElement('input');
                             input.type = 'text';
                             input.value = data[key];
+                            if (key === 'timeOffInLieu' && data[key] < 0) {
+                                input.classList.add('negative');
+                            }
                             cell.appendChild(input);
                         } else {
                             cell.textContent = data[key];
@@ -701,7 +724,8 @@
                 detailsData[selectedAgent]?.forEach(data => {
                     const startDate = new Date(data.timeOffStart);
                     const endDate = new Date(data.timeOffEnd);
-                    if (selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) {
+                    if ((selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear) &&
+                        (selectedManagementUnit === 'all' || data.managementUnit === selectedManagementUnit)) {
                         const row = document.createElement('tr');
                         Object.values(data).forEach((value, index) => {
                             const cell = document.createElement('td');
@@ -803,6 +827,9 @@
                             const input = document.createElement('input');
                             input.type = 'text';
                             input.value = cell.trim();
+                            if (cellIndex === 5 && input.value < 0) {
+                                input.classList.add('negative');
+                            }
                             td.appendChild(input);
                         } else {
                             td.textContent = cell.trim();
