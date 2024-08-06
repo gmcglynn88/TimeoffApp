@@ -187,14 +187,15 @@
         .search-container {
             display: flex;
             align-items: center;
+            justify-content: center;
             margin-bottom: 20px;
         }
 
         .search-container input {
-            flex: 1;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            width: 300px;
         }
 
         .filters div h3 {
@@ -270,10 +271,6 @@
     </div>
 
     <div id="TimeOffBalances" class="tabcontent">
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search by agent name" onkeyup="filterTables()">
-        </div>
-
         <div class="filters">
             <div>
                 <h3>Select Agent</h3>
@@ -323,6 +320,10 @@
                     <option value="Customer Service 2">Customer Service 2</option>
                 </select>
             </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search by agent name" onkeyup="filterTables()">
         </div>
 
         <h3>Time off Balances</h3>
