@@ -172,9 +172,10 @@
             const balancesTableBody = document.getElementById('balances-table-body');
             balancesTableBody.innerHTML = ''; // Clear existing rows
 
-            if (data && data.entities) {
+            if (data && data.entities && data.entities.length > 0) {
                 console.log('Populating table with data...'); // Debugging log
                 data.entities.forEach(row => {
+                    console.log('Row data:', row); // Log each row data for debugging
                     const tableRow = document.createElement('tr');
                     tableRow.innerHTML = `
                         <td>${row.key}</td>
