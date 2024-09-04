@@ -95,12 +95,15 @@
         <table id="balances-table">
             <thead>
                 <tr>
-                    <th>Agent Name</th>
-                    <th>Team</th>
+                    <th>Key</th>
+                    <th>Name</th>
+                    <th>TOIL</th>
+                    <th>Holiday Balance (Current Year)</th>
+                    <th>Holiday Balance (Next Year)</th>
+                    <th>Wage ID</th>
+                    <th>Contract Hours</th>
                     <th>Management Unit</th>
-                    <th>Holiday (Current Year)</th>
-                    <th>Holiday (Next Year)</th>
-                    <th>Time off In Lieu</th>
+                    <th>Work Team</th>
                 </tr>
             </thead>
             <tbody id="balances-table-body">
@@ -174,12 +177,15 @@
                 data.entities.forEach(row => {
                     const tableRow = document.createElement('tr');
                     tableRow.innerHTML = `
+                        <td>${row.key}</td>
                         <td>${row.Name}</td>
-                        <td>${row['Work Team']}</td>
-                        <td>${row['Management Unit']}</td>
+                        <td>${row.TOIL}</td>
                         <td>${row['Remaining Holiday Balance (Current Year)']}</td>
                         <td>${row['Remaining Holiday Balance (Next Year)']}</td>
-                        <td>${row['TOIL']}</td>
+                        <td>${row['Wage ID']}</td>
+                        <td>${row['Contract Hours']}</td>
+                        <td>${row['Management Unit']}</td>
+                        <td>${row['Work Team']}</td>
                     `;
                     balancesTableBody.appendChild(tableRow);
                 });
