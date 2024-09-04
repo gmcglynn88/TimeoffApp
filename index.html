@@ -117,24 +117,27 @@
     <script src="https://sdk-cdn.mypurecloud.com/javascript/v2/purecloud-platform-client-v2.min.js"></script>
     
     <script>
-        // Use the correct SDK reference
-        const platformClient = window.platformClient; // Correct reference to the Genesys Cloud SDK
-        const client = platformClient.ApiClient.instance;
-        
-        // Set the environment
-        client.setEnvironment(platformClient.PureCloudRegionHosts['eu_west_1']); // Replace with your specific region
+        // Ensure SDK is loaded before using it
+        window.onload = function() {
+            const platformClient = window.platformClient; // Correct reference to the Genesys Cloud SDK
+            const client = platformClient.ApiClient.instance;
+            
+            // Set the environment
+            client.setEnvironment(platformClient.PureCloudRegionHosts['eu_west_1']); // Replace with your specific region
 
-        console.log('SDK Loaded:', platformClient); // Debugging
+            console.log('SDK Loaded:', platformClient); // Debugging
 
-        // Authenticate using client credentials
-        client.loginClientCredentialsGrant('80d7c7c9-600e-478e-8d41-1bfb7b8c6bc1', 'BQQBxTIiCO-mY1RFm9TL0NcmhtRewKlqozD0GUdiMdE')
-            .then(() => {
-                console.log('Logged in successfully');
-                fetchData(); // Call function to fetch data after authentication
-            })
-            .catch(err => console.error('There was a failure during login', err));
+            // Authenticate using client credentials
+            client.loginClientCredentialsGrant('80d7c7c9-600e-478e-8d41-1bfb7b8c6bc1', 'BQQBxTIiCO-mY1RFm9TL0NcmhtRewKlqozD0GUdiMdE')
+                .then(() => {
+                    console.log('Logged in successfully');
+                    fetchData(); // Call function to fetch data after authentication
+                })
+                .catch(err => console.error('There was a failure during login', err));
+        };
 
         function fetchData() {
+            const platformClient = window.platformClient;
             let architectApi = new platformClient.ArchitectApi();
             let datatableId = "3bcf89ba-8aed-4fdb-b143-a726c3887a27";
             let opts = { 
