@@ -117,24 +117,28 @@
     <script src="https://sdk-cdn.mypurecloud.com/javascript/v2/purecloud-platform-client-v2.min.js"></script>
     
     <script>
-        // Ensure SDK is loaded before using it
-        window.onload = function() {
-            const platformClient = window.platformClient; // Correct reference to the Genesys Cloud SDK
-            const client = platformClient.ApiClient.instance;
-            
-            // Set the environment
-            client.setEnvironment(platformClient.PureCloudRegionHosts['eu_west_1']); // Replace with your specific region
+        // Wait for the SDK script to load
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.platformClient) {
+                console.log('SDK Loaded:', window.platformClient); // Debugging
 
-            console.log('SDK Loaded:', platformClient); // Debugging
+                const platformClient = window.platformClient; // Correct reference to the Genesys Cloud SDK
+                const client = platformClient.ApiClient.instance;
+                
+                // Set the environment
+                client.setEnvironment(platformClient.PureCloudRegionHosts['eu_west_1']); // Replace with your specific region
 
-            // Authenticate using client credentials
-            client.loginClientCredentialsGrant('80d7c7c9-600e-478e-8d41-1bfb7b8c6bc1', 'BQQBxTIiCO-mY1RFm9TL0NcmhtRewKlqozD0GUdiMdE')
-                .then(() => {
-                    console.log('Logged in successfully');
-                    fetchData(); // Call function to fetch data after authentication
-                })
-                .catch(err => console.error('There was a failure during login', err));
-        };
+                // Authenticate using client credentials
+                client.loginClientCredentialsGrant('80d7c7c9-600e-478e-8d41-1bfb7b8c6bc1', 'BQQBxTIiCO-mY1RFm9TL0NcmhtRewKlqozD0GUdiMdE')
+                    .then(() => {
+                        console.log('Logged in successfully');
+                        fetchData(); // Call function to fetch data after authentication
+                    })
+                    .catch(err => console.error('There was a failure during login', err));
+            } else {
+                console.error('Genesys Cloud SDK not loaded');
+            }
+        });
 
         function fetchData() {
             const platformClient = window.platformClient;
