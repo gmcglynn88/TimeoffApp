@@ -18,7 +18,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            background-color: #63AB8F; /* Custom Teal */
+            background-color: #63AB8F;
             color: white;
         }
 
@@ -57,7 +57,7 @@
         }
 
         th {
-            background-color: #63AB8F; /* Custom Teal */
+            background-color: #63AB8F;
             color: white;
         }
 
@@ -114,14 +114,17 @@
     </div>
 
     <!-- Include Genesys Cloud JavaScript SDK -->
-    <script src="https://sdk-cdn.mypurecloud.com/javascript/purecloud-platform-client-v2/latest/purecloud-platform-client-v2.min.js"></script>
+    <script src="https://sdk-cdn.mypurecloud.com/javascript/v2/purecloud-platform-client-v2.min.js"></script>
     
     <script>
-        const platformClient = purecloud.PlatformClient; // Use the SDK
+        // Use the correct SDK reference
+        const platformClient = window.purecloud.platformClient; // Ensure the SDK is correctly loaded
         const client = platformClient.ApiClient.instance;
         
         // Set the environment
-        client.setEnvironment(platformClient.PureCloudRegionHosts['eu_west_1']); // Replace with the appropriate region
+        client.setEnvironment(platformClient.PureCloudRegionHosts['eu_west_1']); // Replace with your specific region
+
+        console.log('SDK Loaded:', platformClient); // Debugging
 
         // Authenticate using client credentials
         client.loginClientCredentialsGrant('80d7c7c9-600e-478e-8d41-1bfb7b8c6bc1', 'BQQBxTIiCO-mY1RFm9TL0NcmhtRewKlqozD0GUdiMdE')
