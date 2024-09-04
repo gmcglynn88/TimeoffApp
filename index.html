@@ -178,14 +178,14 @@
                     const tableRow = document.createElement('tr');
                     tableRow.innerHTML = `
                         <td>${row.key}</td>
-                        <td>${row.data['Name']}</td>
-                        <td>${row.data['TOIL']}</td>
-                        <td>${row.data['Remaining Holiday Balance (Current Year)']}</td>
-                        <td>${row.data['Remaining Holiday Balance (Next Year)']}</td>
-                        <td>${row.data['Wage ID']}</td>
-                        <td>${row.data['Contract Hours']}</td>
-                        <td>${row.data['Management Unit']}</td>
-                        <td>${row.data['Work Team']}</td>
+                        <td>${row.Name}</td>
+                        <td>${row.TOIL}</td>
+                        <td>${row['Remaining Holiday Balance (Current Year)']}</td>
+                        <td>${row['Remaining Holiday Balance (Next Year)']}</td>
+                        <td>${row['Wage ID']}</td>
+                        <td>${row['Contract Hours']}</td>
+                        <td>${row['Management Unit']}</td>
+                        <td>${row['Work Team']}</td>
                     `;
                     balancesTableBody.appendChild(tableRow);
                 });
