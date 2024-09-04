@@ -113,30 +113,27 @@
         <button class="export-button" onclick="exportTableToCSV('balances-table', 'time_off_balances.csv')">Export Time Off Balances</button>
     </div>
 
-    <!-- Include Genesys Cloud JavaScript SDK -->
-    <script src="https://sdk-cdn.mypurecloud.com/javascript/v2/purecloud-platform-client-v2.min.js"></script>
+    <!-- Correct Genesys Cloud JavaScript SDK URL using unpkg CDN -->
+    <script src="https://unpkg.com/purecloud-platform-client-v2/dist/purecloud-platform-client-v2.min.js"></script>
     
     <script>
-        // Check if the SDK script is loaded properly
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof window.platformClient === 'undefined') {
                 console.error('Genesys Cloud SDK not loaded - Check if the script URL is correct and accessible.');
                 return;
             }
 
-            const platformClient = window.platformClient; // Correct reference to the Genesys Cloud SDK
+            const platformClient = window.platformClient;
             const client = platformClient.ApiClient.instance;
             
-            // Set the environment
-            client.setEnvironment(platformClient.PureCloudRegionHosts['eu_west_1']); // Replace with your specific region
+            client.setEnvironment(platformClient.PureCloudRegionHosts['eu_west_1']); 
 
-            console.log('SDK Loaded:', platformClient); // Debugging
+            console.log('SDK Loaded:', platformClient);
 
-            // Authenticate using client credentials
             client.loginClientCredentialsGrant('80d7c7c9-600e-478e-8d41-1bfb7b8c6bc1', 'BQQBxTIiCO-mY1RFm9TL0NcmhtRewKlqozD0GUdiMdE')
                 .then(() => {
                     console.log('Logged in successfully');
-                    fetchData(); // Call function to fetch data after authentication
+                    fetchData(); 
                 })
                 .catch(err => console.error('There was a failure during login', err));
         });
@@ -152,7 +149,6 @@
                 sortOrder: "ascending"
             };
 
-            // Call the API to get rows
             architectApi.getFlowsDatatableRows(datatableId, opts)
                 .then((data) => {
                     console.log(`getFlowsDatatableRows success! Data: ${JSON.stringify(data, null, 2)}`);
@@ -166,10 +162,10 @@
 
         function updateTable(data) {
             const balancesTableBody = document.getElementById('balances-table-body');
-            balancesTableBody.innerHTML = ''; // Clear existing rows
+            balancesTableBody.innerHTML = ''; 
 
             if (data && data.entities && data.entities.length > 0) {
-                console.log('Populating table with data...'); // Debugging log
+                console.log('Populating table with data...'); 
                 data.entities.forEach(row => {
                     const tableRow = document.createElement('tr');
                     tableRow.innerHTML = `
@@ -204,7 +200,6 @@
                 csv.push(row.join(","));
             }
 
-            // Create a CSV file and download it
             var csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
             var downloadLink = document.createElement("a");
             downloadLink.download = filename;
