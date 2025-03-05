@@ -201,9 +201,8 @@
 </head>
 <body>
     <header>
-        <!-- Replaced the text 'Your Time by IPI' with the Your Time_Logo1.png image -->
-        <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/Your%Time_Logo_Reversed.png"
-             alt="Your Time Logo" class="logo">
+        <!-- Replacing Your Time_Logo1.png with image.png -->
+        <img src="image.png" alt="Your Time Logo" class="logo">
         <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary%20Identity_Corporate_REVERSED_ECC.png"
              alt="Consulting Logo" class="logo">
     </header>
@@ -233,7 +232,7 @@
             <option value="3">1st April - 31st Mar</option>
             <option value="4">Other</option>
         </select>
-
+        
         <label>Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
         <div class="checkbox-container">
             <input type="checkbox" id="holiday" name="time-off-codes" value="Holiday">
@@ -247,17 +246,17 @@
             <input type="checkbox" id="toil" name="time-off-codes" value="TOIL">
             <label for="toil">TOIL</label>
         </div>
-
+        
         <label for="bus">Please list Business Units that require integration:</label>
         <textarea id="bus"></textarea>
-
+        
         <label for="data-tables-required">Do you require separate time off Data Tables for the above Business Units?</label>
         <select id="data-tables-required">
             <option value="Selection">Please Select</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
         </select>
-
+        
         <label for="num-ttables"> How many tables are required, please select:</label>
         <select id="num-tables">
             <option value="1">Please Select</option>
@@ -507,6 +506,7 @@
                     timeOffEnd: '01/01/2024',
                     balanceDeduction: 8
                 }
+                // More random days off...
             ],
             'Sasha Smith': [
                 {
@@ -517,6 +517,7 @@
                     timeOffEnd: '01/02/2025',
                     balanceDeduction: 8
                 }
+                // More random days off...
             ],
             'Lisa Lowe': [
                 {
@@ -527,6 +528,7 @@
                     timeOffEnd: '01/03/2024',
                     balanceDeduction: 4.25
                 }
+                // More random days off...
             ],
             'Sian Gibbs': [
                 {
@@ -537,6 +539,7 @@
                     timeOffEnd: '03/04/2024',
                     balanceDeduction: 24
                 }
+                // More random days off...
             ],
             'John Thompson': [
                 {
@@ -547,6 +550,7 @@
                     timeOffEnd: '04/05/2024',
                     balanceDeduction: 32
                 }
+                // More random days off...
             ],
             'Olivia Jenson': [
                 {
@@ -557,6 +561,7 @@
                     timeOffEnd: '07/06/2024',
                     balanceDeduction: 40
                 }
+                // More random days off...
             ],
             'Ethan Reynolds': [
                 {
@@ -567,6 +572,7 @@
                     timeOffEnd: '01/07/2024',
                     balanceDeduction: 8
                 }
+                // More random days off...
             ],
             'Ava Mitchell': [
                 {
@@ -577,6 +583,7 @@
                     timeOffEnd: '01/08/2024',
                     balanceDeduction: 8
                 }
+                // More random days off...
             ],
             'Gerard McGlynn': [
                 {
@@ -603,6 +610,7 @@
                     timeOffEnd: '14/10/2025',
                     balanceDeduction: 16
                 }
+                // More random days off...
             ],
             'Rhys Turner': [
                 {
@@ -621,6 +629,7 @@
                     timeOffEnd: '06/09/2024',
                     balanceDeduction: 32
                 }
+                // More random days off...
             ],
             'Tom Collins': [
                 {
@@ -631,6 +640,7 @@
                     timeOffEnd: '01/10/2024',
                     balanceDeduction: 8
                 }
+                // More random days off...
             ]
         };
 
@@ -677,12 +687,8 @@
 
             // Filter by management unit
             if (selectedManagementUnit !== 'all') {
-                allBalancesData = allBalancesData.filter(
-                    data => data.managementUnit === selectedManagementUnit
-                );
-                allDetailsData = allDetailsData.filter(
-                    data => data.managementUnit === selectedManagementUnit
-                );
+                allBalancesData = allBalancesData.filter(data => data.managementUnit === selectedManagementUnit);
+                allDetailsData = allDetailsData.filter(data => data.managementUnit === selectedManagementUnit);
             }
 
             // Filter by team
@@ -707,11 +713,7 @@
                 const row = document.createElement('tr');
                 Object.keys(data).forEach(key => {
                     const cell = document.createElement('td');
-                    if (
-                        key === 'holidayCurrentYear' ||
-                        key === 'holidayNextYear' ||
-                        key === 'timeOffInLieu'
-                    ) {
+                    if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
                         const input = document.createElement('input');
                         input.type = 'text';
                         input.value = data[key];
@@ -734,7 +736,7 @@
                     const cell = document.createElement('td');
                     cell.textContent = value;
                     row.appendChild(cell);
-                    // After balanceDeduction cell, add Days cell
+                    // Add a Days cell after the balanceDeduction cell
                     if (index === 5) {
                         const daysCell = document.createElement('td');
                         daysCell.textContent = (value / 8).toFixed(1); // Assuming 8 hours per day
@@ -746,7 +748,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            updateTables(); // Load once on page load
+            updateTables(); // Initial load
         });
 
         function saveChanges() {
@@ -771,9 +773,9 @@
             if (selectedAgent !== 'all') {
                 localStorage.setItem('balancesData-' + selectedAgent, JSON.stringify(balancesData));
             } else {
-                for (let agentRow of balancesData) {
-                    const agentName = agentRow.agentName;
-                    const agentSpecificData = balancesData.filter(data => data.agentName === agentName);
+                for (let agentObj of balancesData) {
+                    const agentName = agentObj.agentName;
+                    const agentSpecificData = balancesData.filter(item => item.agentName === agentName);
                     localStorage.setItem('balancesData-' + agentName, JSON.stringify(agentSpecificData));
                 }
             }
@@ -820,8 +822,7 @@
                 balancesTableBody.innerHTML = '';
 
                 rows.forEach((row, index) => {
-                    // Skip header row
-                    if (index === 0) return;
+                    if (index === 0) return; // Skip header row
 
                     const tr = document.createElement('tr');
                     row.forEach((cell, cellIndex) => {
