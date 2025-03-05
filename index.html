@@ -22,10 +22,6 @@
             color: white;
         }
 
-        header h1 {
-            margin: 0;
-        }
-
         .logo {
             height: 50px;
             background-color: transparent;
@@ -205,8 +201,11 @@
 </head>
 <body>
     <header>
-        <h1>Your Time by IPI</h1>
-        <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary%20Identity_Corporate_REVERSED_ECC.png" alt="Consulting Logo" class="logo">
+        <!-- Replaced the text 'Your Time by IPI' with the Your Time_Logo1.png image -->
+        <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/Your%20Time_Logo1.png"
+             alt="Your Time Logo" class="logo">
+        <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary%20Identity_Corporate_REVERSED_ECC.png"
+             alt="Consulting Logo" class="logo">
     </header>
 
     <hr class="divider">
@@ -234,7 +233,7 @@
             <option value="3">1st April - 31st Mar</option>
             <option value="4">Other</option>
         </select>
-        
+
         <label>Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
         <div class="checkbox-container">
             <input type="checkbox" id="holiday" name="time-off-codes" value="Holiday">
@@ -248,17 +247,17 @@
             <input type="checkbox" id="toil" name="time-off-codes" value="TOIL">
             <label for="toil">TOIL</label>
         </div>
-        
+
         <label for="bus">Please list Business Units that require integration:</label>
         <textarea id="bus"></textarea>
-        
+
         <label for="data-tables-required">Do you require separate time off Data Tables for the above Business Units?</label>
         <select id="data-tables-required">
             <option value="Selection">Please Select</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
         </select>
-        
+
         <label for="num-ttables"> How many tables are required, please select:</label>
         <select id="num-tables">
             <option value="1">Please Select</option>
@@ -371,22 +370,22 @@
     <script>
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
+            tabcontent = document.getElementsByClassName('tabcontent');
             for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+                tabcontent[i].style.display = 'none';
             }
-            tablinks = document.getElementsByClassName("tablinks");
+            tablinks = document.getElementsByClassName('tablinks');
             for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
+                tablinks[i].className = tablinks[i].className.replace(' active', '');
             }
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.className += " active";
+            document.getElementById(tabName).style.display = 'block';
+            evt.currentTarget.className += ' active';
         }
 
-        document.getElementById("defaultOpen").click();
+        document.getElementById('defaultOpen').click();
 
         const balancesData = {
-            "Craig Farley": [
+            'Craig Farley': [
                 {
                     agentName: 'Craig Farley',
                     team: 'Team Reading',
@@ -396,7 +395,7 @@
                     timeOffInLieu: -3
                 }
             ],
-            "Sasha Smith": [
+            'Sasha Smith': [
                 {
                     agentName: 'Sasha Smith',
                     team: 'Team Reading',
@@ -406,7 +405,7 @@
                     timeOffInLieu: 2
                 }
             ],
-            "Lisa Lowe": [
+            'Lisa Lowe': [
                 {
                     agentName: 'Lisa Lowe',
                     team: 'Team Sheffield',
@@ -416,7 +415,7 @@
                     timeOffInLieu: -10
                 }
             ],
-            "Sian Gibbs": [
+            'Sian Gibbs': [
                 {
                     agentName: 'Sian Gibbs',
                     team: 'Team Manchester',
@@ -426,7 +425,7 @@
                     timeOffInLieu: 0
                 }
             ],
-            "John Thompson": [
+            'John Thompson': [
                 {
                     agentName: 'John Thompson',
                     team: 'Team Sheffield',
@@ -436,7 +435,7 @@
                     timeOffInLieu: 10
                 }
             ],
-            "Olivia Jenson": [
+            'Olivia Jenson': [
                 {
                     agentName: 'Olivia Jenson',
                     team: 'Team Reading',
@@ -446,7 +445,7 @@
                     timeOffInLieu: 3.25
                 }
             ],
-            "Ethan Reynolds": [
+            'Ethan Reynolds': [
                 {
                     agentName: 'Ethan Reynolds',
                     team: 'Team Manchester',
@@ -456,7 +455,7 @@
                     timeOffInLieu: 0
                 }
             ],
-            "Ava Mitchell": [
+            'Ava Mitchell': [
                 {
                     agentName: 'Ava Mitchell',
                     team: 'Team Sheffield',
@@ -466,7 +465,7 @@
                     timeOffInLieu: -4
                 }
             ],
-            "Gerard McGlynn": [
+            'Gerard McGlynn': [
                 {
                     agentName: 'Gerard McGlynn',
                     team: 'Team Sheffield',
@@ -476,7 +475,7 @@
                     timeOffInLieu: 24
                 }
             ],
-            "Tom Collins": [
+            'Tom Collins': [
                 {
                     agentName: 'Tom Collins',
                     team: 'Team Reading',
@@ -486,7 +485,7 @@
                     timeOffInLieu: 2
                 }
             ],
-            "Rhys Turner": [
+            'Rhys Turner': [
                 {
                     agentName: 'Rhys Turner',
                     team: 'Team Manchester',
@@ -495,106 +494,98 @@
                     holidayNextYear: 237,
                     timeOffInLieu: 4
                 }
-            ]                            
+            ]
         };
 
         const detailsData = {
-            "Craig Farley": [
+            'Craig Farley': [
                 {
                     agentName: 'Craig Farley',
                     team: 'Team Reading',
                     managementUnit: 'Sales & Retentions',
                     timeOffStart: '01/01/2024',
                     timeOffEnd: '01/01/2024',
-                    balanceDeduction: 8,
+                    balanceDeduction: 8
                 }
-                // Add more random days off here for Craig Farley
             ],
-            "Sasha Smith": [
+            'Sasha Smith': [
                 {
                     agentName: 'Sasha Smith',
                     team: 'Team Reading',
                     managementUnit: 'Sales & Retentions',
                     timeOffStart: '01/02/2025',
                     timeOffEnd: '01/02/2025',
-                    balanceDeduction: 8,
+                    balanceDeduction: 8
                 }
-                // Add more random days off here for Sasha Smith
             ],
-            "Lisa Lowe": [
+            'Lisa Lowe': [
                 {
                     agentName: 'Lisa Lowe',
                     team: 'Team Sheffield',
                     managementUnit: 'Customer Service',
                     timeOffStart: '01/03/2024',
                     timeOffEnd: '01/03/2024',
-                    balanceDeduction: 4.25,
+                    balanceDeduction: 4.25
                 }
-                // Add more random days off here for Lisa Lowe
             ],
-            "Sian Gibbs": [
+            'Sian Gibbs': [
                 {
                     agentName: 'Sian Gibbs',
                     team: 'Team Manchester',
                     managementUnit: 'Customer Service',
                     timeOffStart: '01/04/2024',
                     timeOffEnd: '03/04/2024',
-                    balanceDeduction: 24,
+                    balanceDeduction: 24
                 }
-                // Add more random days off here for Sian Gibbs
             ],
-            "John Thompson": [
+            'John Thompson': [
                 {
                     agentName: 'John Thompson',
                     team: 'Team Sheffield',
                     managementUnit: 'Customer Service',
                     timeOffStart: '01/05/2024',
                     timeOffEnd: '04/05/2024',
-                    balanceDeduction: 32,
+                    balanceDeduction: 32
                 }
-                // Add more random days off here for John Thompson
             ],
-            "Olivia Jenson": [
+            'Olivia Jenson': [
                 {
                     agentName: 'Olivia Jenson',
                     team: 'Team Reading',
                     managementUnit: 'Sales & Retentions',
                     timeOffStart: '01/06/2024',
                     timeOffEnd: '07/06/2024',
-                    balanceDeduction: 40,
+                    balanceDeduction: 40
                 }
-                // Add more random days off here for Olivia Jenson
             ],
-            "Ethan Reynolds": [
+            'Ethan Reynolds': [
                 {
                     agentName: 'Ethan Reynolds',
                     team: 'Team Manchester',
                     managementUnit: 'Customer Service',
                     timeOffStart: '01/07/2024',
                     timeOffEnd: '01/07/2024',
-                    balanceDeduction: 8,
+                    balanceDeduction: 8
                 }
-                // Add more random days off here for Ethan Reynolds
             ],
-            "Ava Mitchell": [
+            'Ava Mitchell': [
                 {
                     agentName: 'Ava Mitchell',
                     team: 'Team Sheffield',
                     managementUnit: 'Sales & Retentions',
                     timeOffStart: '01/08/2024',
                     timeOffEnd: '01/08/2024',
-                    balanceDeduction: 8,
+                    balanceDeduction: 8
                 }
-                // Add more random days off here for Ava Mitchell
             ],
-            "Gerard McGlynn": [
+            'Gerard McGlynn': [
                 {
                     agentName: 'Gerard McGlynn',
                     team: 'Team Sheffield',
                     managementUnit: 'Customer Service',
                     timeOffStart: '01/07/2025',
                     timeOffEnd: '01/07/2025',
-                    balanceDeduction: 8,
+                    balanceDeduction: 8
                 },
                 {
                     agentName: 'Gerard McGlynn',
@@ -602,7 +593,7 @@
                     managementUnit: 'Customer Service',
                     timeOffStart: '01/09/2024',
                     timeOffEnd: '07/09/2024',
-                    balanceDeduction: 40,
+                    balanceDeduction: 40
                 },
                 {
                     agentName: 'Gerard McGlynn',
@@ -610,18 +601,17 @@
                     managementUnit: 'Customer Service',
                     timeOffStart: '12/10/2025',
                     timeOffEnd: '14/10/2025',
-                    balanceDeduction: 16,
+                    balanceDeduction: 16
                 }
-                // Add more random days off here for Gerard McGlynn
             ],
-            "Rhys Turner": [
+            'Rhys Turner': [
                 {
                     agentName: 'Rhys Turner',
                     team: 'Team Manchester',
                     managementUnit: 'Customer Service',
                     timeOffStart: '01/10/2025',
                     timeOffEnd: '01/10/2025',
-                    balanceDeduction: 8,
+                    balanceDeduction: 8
                 },
                 {
                     agentName: 'Rhys Turner',
@@ -629,20 +619,18 @@
                     managementUnit: 'Customer Service',
                     timeOffStart: '01/09/2024',
                     timeOffEnd: '06/09/2024',
-                    balanceDeduction: 32,
+                    balanceDeduction: 32
                 }
-                // Add more random days off here for Rhys Turner
             ],
-            "Tom Collins": [
+            'Tom Collins': [
                 {
                     agentName: 'Tom Collins',
                     team: 'Team Reading',
                     managementUnit: 'Customer Service',
                     timeOffStart: '01/10/2024',
                     timeOffEnd: '01/10/2024',
-                    balanceDeduction: 8,
+                    balanceDeduction: 8
                 }
-                // Add more random days off here for Tom Collins
             ]
         };
 
@@ -673,7 +661,6 @@
                     }
                     allBalancesData = allBalancesData.concat(agentData);
                 }
-
                 for (let agent in detailsData) {
                     allDetailsData = allDetailsData.concat(detailsData[agent]);
                 }
@@ -690,8 +677,12 @@
 
             // Filter by management unit
             if (selectedManagementUnit !== 'all') {
-                allBalancesData = allBalancesData.filter(data => data.managementUnit === selectedManagementUnit);
-                allDetailsData = allDetailsData.filter(data => data.managementUnit === selectedManagementUnit);
+                allBalancesData = allBalancesData.filter(
+                    data => data.managementUnit === selectedManagementUnit
+                );
+                allDetailsData = allDetailsData.filter(
+                    data => data.managementUnit === selectedManagementUnit
+                );
             }
 
             // Filter by team
@@ -700,11 +691,15 @@
                 allDetailsData = allDetailsData.filter(data => data.team === selectedTeam);
             }
 
-            // Filter by year
+            // Filter by year (for details only)
             allDetailsData = allDetailsData.filter(data => {
                 const startDate = new Date(data.timeOffStart);
                 const endDate = new Date(data.timeOffEnd);
-                return selectedYear === 'all' || startDate.getFullYear() == selectedYear || endDate.getFullYear() == selectedYear;
+                return (
+                    selectedYear === 'all' ||
+                    startDate.getFullYear() == selectedYear ||
+                    endDate.getFullYear() == selectedYear
+                );
             });
 
             // Populate the balances table with editable fields
@@ -712,7 +707,11 @@
                 const row = document.createElement('tr');
                 Object.keys(data).forEach(key => {
                     const cell = document.createElement('td');
-                    if (key === 'holidayCurrentYear' || key === 'holidayNextYear' || key === 'timeOffInLieu') {
+                    if (
+                        key === 'holidayCurrentYear' ||
+                        key === 'holidayNextYear' ||
+                        key === 'timeOffInLieu'
+                    ) {
                         const input = document.createElement('input');
                         input.type = 'text';
                         input.value = data[key];
@@ -735,7 +734,8 @@
                     const cell = document.createElement('td');
                     cell.textContent = value;
                     row.appendChild(cell);
-                    if (index === 5) { // After balanceDeduction cell, add Days cell
+                    // After balanceDeduction cell, add Days cell
+                    if (index === 5) {
                         const daysCell = document.createElement('td');
                         daysCell.textContent = (value / 8).toFixed(1); // Assuming 8 hours per day
                         row.appendChild(daysCell);
@@ -746,7 +746,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            updateTables(); // Initial load
+            updateTables(); // Load once on page load
         });
 
         function saveChanges() {
@@ -771,9 +771,10 @@
             if (selectedAgent !== 'all') {
                 localStorage.setItem('balancesData-' + selectedAgent, JSON.stringify(balancesData));
             } else {
-                for (let agent in balancesData) {
-                    let agentData = balancesData.filter(data => data.agentName === agent);
-                    localStorage.setItem('balancesData-' + agent, JSON.stringify(agentData));
+                for (let agentRow of balancesData) {
+                    const agentName = agentRow.agentName;
+                    const agentSpecificData = balancesData.filter(data => data.agentName === agentName);
+                    localStorage.setItem('balancesData-' + agentName, JSON.stringify(agentSpecificData));
                 }
             }
 
@@ -781,29 +782,28 @@
         }
 
         function exportTableToCSV(tableID, filename) {
-            var csv = [];
-            var rows = document.querySelectorAll(`#${tableID} tr`);
+            const csv = [];
+            const rows = document.querySelectorAll(`#${tableID} tr`);
 
-            for (var i = 0; i < rows.length; i++) {
-                var row = [], cols = rows[i].querySelectorAll("td, th");
-
-                for (var j = 0; j < cols.length; j++) {
+            for (let i = 0; i < rows.length; i++) {
+                const row = [];
+                const cols = rows[i].querySelectorAll('td, th');
+                for (let j = 0; j < cols.length; j++) {
                     if (cols[j].querySelector('input')) {
                         row.push(cols[j].querySelector('input').value);
                     } else {
                         row.push(cols[j].innerText);
                     }
                 }
-
-                csv.push(row.join(","));
+                csv.push(row.join(','));
             }
 
             // Create a CSV file and download it
-            var csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
-            var downloadLink = document.createElement("a");
+            const csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
+            const downloadLink = document.createElement('a');
             downloadLink.download = filename;
-            downloadLink.href = window.URL.createObjectURL(csvFile);
-            downloadLink.style.display = "none";
+            downloadLink.href = URL.createObjectURL(csvFile);
+            downloadLink.style.display = 'none';
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
@@ -814,22 +814,24 @@
             const reader = new FileReader();
             reader.onload = function() {
                 const csv = reader.result;
-                const rows = csv.split("\n").map(row => row.split(","));
+                const rows = csv.split('\\n').map(row => row.split(','));
                 const balancesTableBody = document.getElementById('balances-table-body');
 
                 balancesTableBody.innerHTML = '';
 
                 rows.forEach((row, index) => {
-                    if (index === 0) return; // Skip header row
+                    // Skip header row
+                    if (index === 0) return;
 
                     const tr = document.createElement('tr');
                     row.forEach((cell, cellIndex) => {
                         const td = document.createElement('td');
-                        if (cellIndex > 2) { // For columns with input fields
+                        // For columns with input fields
+                        if (cellIndex > 2) {
                             const input = document.createElement('input');
                             input.type = 'text';
                             input.value = cell.trim();
-                            if (cellIndex === 5 && input.value < 0) {
+                            if (cellIndex === 5 && parseFloat(input.value) < 0) {
                                 input.classList.add('negative');
                             }
                             td.appendChild(input);
@@ -849,16 +851,12 @@
             const balancesTableBody = document.getElementById('balances-table-body');
             const detailsTableBody = document.getElementById('details-table-body');
 
-            const filterTable = (tableBody) => {
+            const filterTable = tableBody => {
                 const rows = tableBody.getElementsByTagName('tr');
                 for (let row of rows) {
                     const agentNameCell = row.getElementsByTagName('td')[0];
-                    const agentName = agentNameCell.textContent.toLowerCase();
-                    if (agentName.includes(searchInput)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
+                    const agentName = agentNameCell ? agentNameCell.textContent.toLowerCase() : '';
+                    row.style.display = agentName.includes(searchInput) ? '' : 'none';
                 }
             };
 
