@@ -35,8 +35,7 @@
 
     /* Calculator-specific */
     :root { --primary-color:#63AB8F; --border-color:#ddd; --light-bg:#f5f7fa; --card-bg:#fff; }
-    #Calculator .calc-container,
-    #Calculator .calc-container * { white-space:nowrap; }
+    #Calculator .calc-container, #Calculator .calc-container * { white-space:nowrap; }
     #Calculator .calc-container { max-width:1200px; margin:0 auto; background:var(--card-bg); border-radius:8px; box-shadow:0 2px 15px rgba(0,0,0,0.05); padding:20px; overflow-x:auto; }
     .calc-header { display:flex; align-items:center; margin-bottom:20px; }
     .calc-header img { width:80px; margin-right:20px; }
@@ -46,7 +45,7 @@
     .left-panel { flex:1 0 auto; }
     .right-panel { flex:2 0 auto; max-height:70vh; overflow-y:auto; }
     .section-title { font-weight:bold; color:var(--primary-color); margin-bottom:10px; font-size:1.1em; }
-    table.calc-table { width:auto; border-collapse:collapse; margin-bottom:15px; table-layout:auto; }
+    table.calc-table { width:auto; border-collapse:collapse; margin-bottom:15px; }
     table.calc-table th, table.calc-table td { border:1px solid var(--border-color); padding:8px; text-align:left; }
     table.calc-table th { background:var(--primary-color); color:white; }
     .input-cell { box-sizing:border-box; padding:4px 6px; border:1px solid var(--border-color); border-radius:3px; background:#f8f9fa; }
@@ -73,7 +72,6 @@
     </div>
   </div>
 
-  <!-- Settings Tab -->
   <div id="Settings" class="tabcontent">
     <h3>Settings</h3>
     <label for="holiday-year">Holiday Year:</label>
@@ -83,7 +81,7 @@
       <option value="3">1st April - 31st Mar</option>
       <option value="4">Other</option>
     </select>
-    <label>Please list WFM time off codes to be included: (These should be agent selectable codes ONLY)</label>
+    <label>Please list WFM time off codes...</label>
     <div class="checkbox-container">
       <input type="checkbox" id="holiday" name="time-off-codes" value="Holiday">
       <label for="holiday">Holiday</label>
@@ -96,15 +94,15 @@
       <input type="checkbox" id="toil" name="time-off-codes" value="TOIL">
       <label for="toil">TOIL</label>
     </div>
-    <label for="bus">Please list Business Units that require integration:</label>
+    <label for="bus">Please list Business Units...</label>
     <textarea id="bus"></textarea>
-    <label for="data-tables-required">Do you require separate time off Data Tables for the above Business Units?</label>
+    <label for="data-tables-required">Do you require...</label>
     <select id="data-tables-required">
       <option value="Selection">Please Select</option>
       <option value="yes">Yes</option>
       <option value="no">No</option>
     </select>
-    <label for="num-tables">How many tables are required, please select:</label>
+    <label for="num-tables">How many tables...</label>
     <select id="num-tables">
       <option value="1">Please Select</option>
       <option value="1">1</option>
@@ -115,13 +113,12 @@
     </select>
   </div>
 
-  <!-- Time Off Balances Tab -->
   <div id="TimeOffBalances" class="tabcontent">
     <div class="filters">
       <div>
         <h3>Select Agent</h3>
         <select id="agent-select" onchange="updateTables()">
-          <option value="Select" selected>Please Select</option>
+          <option value="Select">Please Select</option>
           <option value="all">Select All</option>
           <option value="Craig Farley">Craig Farley</option>
           <option value="Sasha Smith">Sasha Smith</option>
@@ -139,7 +136,7 @@
       <div>
         <h3>Select Year</h3>
         <select id="year-select" onchange="updateTables()">
-          <option value="Select" selected>Please Select</option>
+          <option value="Select">Please Select</option>
           <option value="all">Select All</option>
           <option value="2024">2024</option>
           <option value="2025">2025</option>
@@ -148,7 +145,7 @@
       <div>
         <h3>Select Management Unit</h3>
         <select id="management-unit-select" onchange="updateTables()">
-          <option value="Select" selected>Please Select</option>
+          <option value="Select">Please Select</option>
           <option value="all">Select All</option>
           <option value="Customer Service">Customer Service</option>
           <option value="Sales & Retentions">Sales & Retentions</option>
@@ -157,7 +154,7 @@
       <div>
         <h3>Select Work Team</h3>
         <select id="team-select" onchange="updateTables()">
-          <option value="Select" selected>Please Select</option>
+          <option value="Select">Please Select</option>
           <option value="all">Select All</option>
           <option value="Sales & Retentions">Sales & Retentions</option>
           <option value="Team Reading">Team Reading</option>
@@ -173,30 +170,19 @@
     <h3>Time off Balances</h3>
     <table id="balances-table">
       <thead>
-        <tr>
-          <th>Agent Name</th><th>Team</th><th>Management Unit</th><th>Holiday (Current Year)</th><th>Holiday (Next Year)</th><th>Time off In Lieu</th>
-        </tr>
+        <tr><th>Agent Name</th><th>Team</th><th>Management Unit</th><th>Holiday (Current Year)</th><th>Holiday (Next Year)</th><th>Time off In Lieu</th></tr>
       </thead>
       <tbody id="balances-table-body"></tbody>
     </table>
-    <div class="export-buttons">
-      <button class="export-button" onclick="exportTableToCSV('balances-table','time_off_balances.csv')">Export Time Off Balances</button>
-    </div>
+    <div class="export-buttons"><button class="export-button" onclick="exportTableToCSV('balances-table','time_off_balances.csv')">Export Time Off Balances</button></div>
     <h3>Time off Details</h3>
     <table id="details-table">
-      <thead>
-        <tr>
-          <th>Agent Name</th><th>Team</th><th>Management Unit</th><th>Time off Start</th><th>Time off End</th><th>Balance Deduction (Hrs)</th><th>Days</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Agent Name</th><th>Team</th><th>Management Unit</th><th>Time off Start</th><th>Time off End</th><th>Balance Deduction (Hrs)</th><th>Days</th></tr></thead>
       <tbody id="details-table-body"></tbody>
     </table>
-    <div class="export-buttons">
-      <button class="export-button" onclick="exportTableToCSV('details-table','time_off_details.csv')">Export Time Off Details</button>
-    </div>
+    <div class="export-buttons"><button class="export-button" onclick="exportTableToCSV('details-table','time_off_details.csv')">Export Time Off Details</button></div>
   </div>
 
-  <!-- Calculator Tab -->
   <div id="Calculator" class="tabcontent">
     <div class="calc-container">
       <div class="calc-header">
@@ -205,7 +191,7 @@
       </div>
       <div class="flex-container">
         <div class="left-panel">
-          <div class="section-title">FTE &amp; Leave Settings</div>
+          <div class="section-title">FTE & Leave Settings</div>
           <table class="calc-table"><tr><th>Variable</th><th>Value</th></tr><tr><td>FTE definition (Hours)</td><td><input type="number" id="fte-hours" class="input-cell" value="40" min="1"></td></tr><tr><td>Annual Leave Allocation (Days)</td><td><input type="number" id="annual-leave-days" class="input-cell" value="33" min="0"></td></tr></table>
           <div class="section-title">Staffing Inputs</div>
           <table class="calc-table"><tr><th>Variable</th><th>Value</th></tr><tr><td>Agents In Staffing Group</td><td><input type="number" id="agents-count" class="input-cell" value="100" min="1"></td></tr><tr><td>Average Weekly Hours Per Agent</td><td><input type="number" id="avg-weekly-hours" class="input-cell" value="32" min="1" max="40"></td></tr><tr><td>Holiday Weekly Target/Maximum %</td><td><input type="number" id="holiday-percentage" class="input-cell" value="14" min="0" max="100"><span class="percent-symbol"></span></td></tr></table>
@@ -220,7 +206,7 @@
             <tr><td>Thu</td><td><input type="number" id="thu-percent" class="input-cell" value="15" min="0" max="100"><span class="percent-symbol"></span></td><td id="thu-hours" class="calculation-cell"></td></tr>
             <tr><td>Fri</td><td><input type="number" id="fri-percent" class="input-cell" value="14" min="0" max="100"><span class="percent-symbol"></span></td><td id="fri-hours" class="calculation-cell"></td></tr>
             <tr><td>Sat</td><td><input type="number" id="sat-percent" class="input-cell" value="10" min="0" max="100"><span class="percent-symbol"></span></td><td id="sat-hours" class="calculation-cell"></td></tr>
-            <tr><td>Sun</td><td><input type="number" id="sun-percent" class="input-cell" value="8" min="0" max="100"><span class="percent-symbol"></span></td><td id="sun-hours" class="calculation-cell"></td></tr>
+            <tr><td>Sun</td><td><input type="number" id="sun-percent" class="input-cell" value="8" min="0"></td><td id="sun-hours" class="calculation-cell"></td></tr>
             <tr><td><strong>Total</strong></td><td id="total-percent" class="calculation-cell"></td><td id="total-hours" class="calculation-cell"></td></tr>
           </table>
         </div>
@@ -228,45 +214,4 @@
           <div class="section-title">Monthly Allocation %</div>
           <table class="calc-table"><tbody id="monthly-inputs"></tbody></table>
           <div class="section-title">Daily Allocation By Month</div>
-          <table class="calc-table"><thead><tr><th>Month</th><th>%</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr></thead><tbody id="month-allocation"></tbody></table>
-        </div>
-      </div>
-      <div class="left-panel" style="margin-top:20px;">
-        <div class="section-title">Summary</div>
-        <table class="calc-table"><tr><th>Metric</th><th>Value</th></tr><tr><td>Contracted Hours</td><td id="contracted-hours" class="calculation-cell"></td></tr><tr><td>Allocated Hours</td><td id="allocated-hours" class="calculation-cell"></td></tr></table>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function openTab(evt,name){
-      document.querySelectorAll('.tabcontent').forEach(tc=>tc.style.display='none');
-      document.querySelectorAll('.tablinks').forEach(tb=>tb.classList.remove('active'));
-      document.getElementById(name).style.display='block';
-      evt.currentTarget.classList.add('active');
-    }
-    document.getElementById('defaultOpen').click();
-
-    // TimeOffBalances JS...
-    const balancesData = {/*...*/};
-    const detailsData = {/*...*/};
-    function updateTables(){/*...*/}
-    function saveChanges(){/*...*/}
-    function exportTableToCSV(tableID,filename){/*...*/}
-    function importTableFromCSV(event){/*...*/}
-    function filterTables(){/*...*/}
-
-    // Calculator JS
-    const monthlyAllocations = [
-      {month:'Jan',allocation:10},{month:'Feb',allocation:12},{month:'Mar',allocation:14},
-      {month:'Apr',allocation:14},{month:'May',allocation:12},{month:'Jun',allocation:10},
-      {month:'Jul',allocation:16},{month:'Aug',allocation:18},{month:'Sep',allocation:10},
-      {month:'Oct',allocation:8},{month:'Nov',allocation:8},{month:'Dec',allocation:25}
-    ];
-    function buildMonthlyInputs(){/*...*/}
-    function calculate(){/*...*/}
-    document.querySelectorAll('#fte-hours,#annual-leave-days,#agents-count,#avg-weekly-hours,#holiday-percentage,#day-distribution input').forEach(i=>i.addEventListener('input',calculate));
-    buildMonthlyInputs(); calculate();
-  </script>
-</body>
-</html>
+          <table class="calc-table"><thead><tr><th>Month</th><th>%</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun
