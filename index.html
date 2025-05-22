@@ -842,7 +842,7 @@
         document.getElementById(`${day}-hours`).textContent = hours.toFixed(2);
       });
       
-      document.getElementById("total-percent").textContent = totalPercent.toFixed(0) + "%";
+      document.getElementById("total-percent").textContent = totalPercent.toFixed(0);
       document.getElementById("total-hours").textContent = weeklyHolidayHours.toFixed(2);
     }
 
@@ -883,7 +883,7 @@
         totalMonthlyPercent += monthPercent;
         
         const row = document.createElement("tr");
-        let rowHTML = `<td>${month.charAt(0).toUpperCase() + month.slice(1)}</td><td>${monthPercent.toFixed(2)}%</td>`;
+        let rowHTML = `<td>${month.charAt(0).toUpperCase() + month.slice(1)}</td><td>${monthPercent.toFixed(2)}</td>`;
         let dayTotal = 0;
         
         days.forEach(day => {
@@ -901,7 +901,7 @@
       
       // Check if total monthly percentage is 100%
       if (Math.abs(totalMonthlyPercent - 100) > 0.1) {
-        alert(`Warning: Monthly percentages total ${totalMonthlyPercent.toFixed(2)}%. They should sum to 100%.`);
+        alert(`Warning: Monthly percentages total ${totalMonthlyPercent.toFixed(2)}. They should sum to 100%.`);
       }
     }
 
