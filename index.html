@@ -216,6 +216,10 @@
       flex-direction: column;
       justify-content: space-between;
     }
+    .calendar .day.empty {
+      background-color: var(--light-bg);
+      border: 1px dashed var(--border-color);
+    }
     .calendar .day .date {
       font-weight: 600;
       margin-bottom: 6px;
@@ -389,6 +393,10 @@
                   <td>Annual Leave Allocation (Days)</td>
                   <td><input type="number" id="annual-leave-days" class="input-cell" value="33" min="0"></td>
                 </tr>
+                <tr>
+                  <td>Working Days per Week</td>
+                  <td><input type="number" id="working-days" class="input-cell" value="5" min="1" max="7"></td>
+                </tr>
               </table>
             </div>
             
@@ -405,7 +413,7 @@
                   <td><input type="number" id="avg-weekly-hours" class="input-cell" value="32" min="1" max="40"></td>
                 </tr>
                 <tr>
-                  <td>Holiday Weekly Target/Maximum</td>
+                  <td>Holiday Weekly Target (%)</td>
                   <td><input type="number" id="holiday-percentage" class="input-cell" value="14" min="0" max="100"></td>
                 </tr>
               </table>
@@ -417,7 +425,11 @@
                 <tr><th>Metric</th><th>Result</th></tr>
                 <tr>
                   <td>Weekly Holiday Allocation Hours</td>
-                  <td id="weekly-holiday-hours" class="calculation-cell"></td>
+                  <td id="weekly-holiday-hours" class="calculation-cell">0.00</td>
+                </tr>
+                <tr>
+                  <td>Daily Holiday Allocation Hours</td>
+                  <td id="daily-holiday-hours" class="calculation-cell">0.00</td>
                 </tr>
               </table>
             </div>
@@ -425,46 +437,46 @@
             <div class="panel-section">
               <div class="section-title">Day-of-Week Distribution</div>
               <table class="calc-table" id="day-distribution">
-                <tr><th>Day</th><th>Value</th><th>Hours</th></tr>
+                <tr><th>Day</th><th>% Distribution</th><th>Hours</th></tr>
                 <tr>
                   <td>Mon</td>
                   <td><input type="number" id="mon-percent" class="input-cell" value="20" min="0" max="100"></td>
-                  <td id="mon-hours" class="calculation-cell"></td>
+                  <td id="mon-hours" class="calculation-cell">0.00</td>
                 </tr>
                 <tr>
                   <td>Tue</td>
                   <td><input type="number" id="tue-percent" class="input-cell" value="17" min="0" max="100"></td>
-                  <td id="tue-hours" class="calculation-cell"></td>
+                  <td id="tue-hours" class="calculation-cell">0.00</td>
                 </tr>
                 <tr>
                   <td>Wed</td>
                   <td><input type="number" id="wed-percent" class="input-cell" value="16" min="0" max="100"></td>
-                  <td id="wed-hours" class="calculation-cell"></td>
+                  <td id="wed-hours" class="calculation-cell">0.00</td>
                 </tr>
                 <tr>
                   <td>Thu</td>
                   <td><input type="number" id="thu-percent" class="input-cell" value="15" min="0" max="100"></td>
-                  <td id="thu-hours" class="calculation-cell"></td>
+                  <td id="thu-hours" class="calculation-cell">0.00</td>
                 </tr>
                 <tr>
                   <td>Fri</td>
                   <td><input type="number" id="fri-percent" class="input-cell" value="14" min="0" max="100"></td>
-                  <td id="fri-hours" class="calculation-cell"></td>
+                  <td id="fri-hours" class="calculation-cell">0.00</td>
                 </tr>
                 <tr>
                   <td>Sat</td>
                   <td><input type="number" id="sat-percent" class="input-cell" value="10" min="0" max="100"></td>
-                  <td id="sat-hours" class="calculation-cell"></td>
+                  <td id="sat-hours" class="calculation-cell">0.00</td>
                 </tr>
                 <tr>
                   <td>Sun</td>
                   <td><input type="number" id="sun-percent" class="input-cell" value="8" min="0" max="100"></td>
-                  <td id="sun-hours" class="calculation-cell"></td>
+                  <td id="sun-hours" class="calculation-cell">0.00</td>
                 </tr>
                 <tr>
                   <td><strong>Total</strong></td>
-                  <td id="total-percent" class="calculation-cell"></td>
-                  <td id="total-hours" class="calculation-cell"></td>
+                  <td id="total-percent" class="calculation-cell">100%</td>
+                  <td id="total-hours" class="calculation-cell">0.00</td>
                 </tr>
               </table>
             </div>
@@ -477,14 +489,14 @@
                 <div class="monthly-input-container">
                   <table class="calc-table">
                     <thead>
-                      <tr><th>Month</th><th>Value</th></tr>
+                      <tr><th>Month</th><th>% Distribution</th></tr>
                     </thead>
                     <tbody id="monthly-inputs"></tbody>
                   </table>
+                  <div id="total-validation" style="margin-top:10px;font-size:14px;color:green;">Total: 100.00% (Valid)</div>
                   <button class="calculate-button" onclick="calculateMonthlyAllocation()">
-                    Calculate Daily Allocation
+                    Calculate Monthly Allocation
                   </button>
-                  <div id="total-validation" style="margin-top:10px;font-size:14px;"></div>
                 </div>
                 
                 <div class="monthly-results-container">
@@ -512,22 +524,22 @@
           <div>
             <h3>Select Management Unit</h3>
             <select id="calendar-management-unit-select">
-              <option>Loading…</option>
+              <option value="">Loading management units...</option>
             </select>
           </div>
           <div>
             <h3>Select Time Off Plan</h3>
-            <select id="calendar-plan-select">
-              <option>Please select unit first</option>
+            <select id="calendar-plan-select" disabled>
+              <option value="">Please select unit first</option>
             </select>
           </div>
           <div>
             <h3>Select Month</h3>
-            <select id="calendar-month-select" onchange="updateCalendar()"></select>
+            <select id="calendar-month-select"></select>
           </div>
           <div>
             <h3>Select Year</h3>
-            <select id="calendar-year-select" onchange="updateCalendar()"></select>
+            <select id="calendar-year-select"></select>
           </div>
         </div>
       </div>
@@ -809,6 +821,12 @@
       const pct    = parseFloat(document.getElementById("holiday-percentage").value) || 0;
       const total  = agents * avg * (pct/100);
       document.getElementById("weekly-holiday-hours").textContent = total.toFixed(2);
+      
+      // Calculate daily average
+      const workingDays = parseFloat(document.getElementById("working-days").value) || 5;
+      const dailyHours = total / workingDays;
+      document.getElementById("daily-holiday-hours").textContent = dailyHours.toFixed(2);
+      
       return total;
     }
     
@@ -820,11 +838,19 @@
       days.forEach(d => {
         const pct = parseFloat(document.getElementById(`${d}-percent`).value) || 0;
         sumPct += pct;
-        document.getElementById(`${d}-hours`).textContent = (total * pct/100).toFixed(2);
+        const hours = total * (pct/100);
+        document.getElementById(`${d}-hours`).textContent = hours.toFixed(2);
       });
       
       document.getElementById("total-percent").textContent = sumPct.toFixed(0) + "%";
-      document.getElementById("total-hours").textContent   = total.toFixed(2);
+      document.getElementById("total-hours").textContent = total.toFixed(2);
+      
+      // Validate total percentage
+      if (Math.abs(sumPct - 100) > 0.1) {
+        document.getElementById("total-percent").style.color = "red";
+      } else {
+        document.getElementById("total-percent").style.color = "";
+      }
     }
     
     function initializeMonthlyInputs() {
@@ -838,7 +864,7 @@
       months.forEach(m => {
         const tr = document.createElement("tr");
         tr.innerHTML = `<td>${m}</td>
-          <td><input type="number" id="${m.toLowerCase()}-percent" class="input-cell" value="8.33" min="0" max="100"></td>`;
+          <td><input type="number" id="${m.toLowerCase()}-percent" class="input-cell" value="${(100/12).toFixed(2)}" min="0" max="100" step="0.01"></td>`;
         tbody.appendChild(tr);
         
         // Add event listener to recalculate when values change
@@ -863,9 +889,13 @@
         "july","august","september","october","november","december"
       ];
       
+      // Calculate total percentage
       let totalPct = 0;
-      months.forEach(m => totalPct += parseFloat(document.getElementById(`${m}-percent`).value) || 0);
+      months.forEach(m => {
+        totalPct += parseFloat(document.getElementById(`${m}-percent`).value) || 0;
+      });
       
+      // Validate total percentage
       const validation = document.getElementById("total-validation");
       if (Math.abs(totalPct - 100) > 0.1) {
         validation.innerHTML = `<span style="color:red;">Total ${totalPct.toFixed(2)}% (should be 100%)</span>`;
@@ -874,6 +904,10 @@
         validation.innerHTML = `<span style="color:green;">Total: ${totalPct.toFixed(2)}% (Valid)</span>`;
       }
       
+      // Get weekly holiday hours
+      const weeklyHolidayHours = calculateWeeklyHolidayHours();
+      
+      // Calculate monthly allocation
       const tbody = document.getElementById("monthly-results");
       tbody.innerHTML = "";
       
@@ -885,7 +919,8 @@
         
         ["mon","tue","wed","thu","fri","sat","sun"].forEach(d => {
           const pctDay = parseFloat(document.getElementById(`${d}-percent`).value) || 0;
-          const hrs    = calculateWeeklyHolidayHours() * (pctDay/100) * (pctMonth/100) * 12;
+          // Calculate hours for this day in this month
+          const hrs = weeklyHolidayHours * (pctDay/100) * (pctMonth/100) * (52/12); // 52 weeks / 12 months
           daySum += hrs;
           row += `<td>${hrs.toFixed(2)}</td>`;
         });
@@ -897,62 +932,92 @@
     }
     
     function initializeCalculator() {
-      ["agents-count","avg-weekly-hours","holiday-percentage",
+      // Add event listeners to all calculator inputs
+      ["agents-count","avg-weekly-hours","holiday-percentage","working-days",
        "mon-percent","tue-percent","wed-percent","thu-percent",
        "fri-percent","sat-percent","sun-percent"
       ].forEach(id => {
         document.getElementById(id).addEventListener("input", calculateDayDistribution);
       });
       
+      // Initialize monthly inputs
       initializeMonthlyInputs();
+      
+      // Perform initial calculations
       calculateDayDistribution();
     }
 
     // ==== Calendar API calls ====
     async function fetchManagementUnits() {
       try {
-        const data = await pcFetch(`${API_URL}/api/v2/workforcemanagement/managementunits`);
         const sel = document.getElementById('calendar-management-unit-select');
-        sel.innerHTML = '<option value="">Please select</option>';
+        sel.innerHTML = '<option value="">Loading management units...</option>';
         
-        data.entities.forEach(mu => {
-          const o = document.createElement('option');
-          o.value = mu.id;
-          o.textContent = mu.name;
-          sel.appendChild(o);
-        });
+        const data = await pcFetch(`${API_URL}/api/v2/workforcemanagement/managementunits`);
+        
+        sel.innerHTML = '<option value="">Select management unit</option>';
+        
+        if (data.entities && data.entities.length > 0) {
+          data.entities.forEach(mu => {
+            const o = document.createElement('option');
+            o.value = mu.id;
+            o.textContent = mu.name;
+            sel.appendChild(o);
+          });
+        } else {
+          sel.innerHTML = '<option value="">No management units found</option>';
+        }
       } catch (error) {
         console.error('Error fetching management units:', error);
+        document.getElementById('calendar-management-unit-select').innerHTML = 
+          '<option value="">Error loading units</option>';
         alert('Failed to load management units. Please try again.');
       }
     }
     
     async function fetchTimeOffPlans(unitId) {
       try {
-        const data = await pcFetch(`${API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplans`);
         const sel = document.getElementById('calendar-plan-select');
-        sel.innerHTML = '<option value="">Please select</option>';
+        sel.disabled = true;
+        sel.innerHTML = '<option value="">Loading time off plans...</option>';
         
-        data.entities.forEach(plan => {
-          const o = document.createElement('option');
-          o.value = plan.id;
-          o.textContent = plan.name;
-          sel.appendChild(o);
-        });
+        const data = await pcFetch(`${API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplans`);
+        
+        sel.innerHTML = '<option value="">Select time off plan</option>';
+        
+        if (data.entities && data.entities.length > 0) {
+          data.entities.forEach(plan => {
+            const o = document.createElement('option');
+            o.value = plan.id;
+            o.textContent = plan.name;
+            sel.appendChild(o);
+          });
+          sel.disabled = false;
+        } else {
+          sel.innerHTML = '<option value="">No time off plans found</option>';
+        }
       } catch (error) {
         console.error('Error fetching time off plans:', error);
+        document.getElementById('calendar-plan-select').innerHTML = 
+          '<option value="">Error loading plans</option>';
         alert('Failed to load time off plans. Please try again.');
       }
     }
     
     async function fetchPlanBalances(unitId, planId, startDate, endDate) {
       try {
+        const cal = document.getElementById('calendar');
+        cal.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;">Loading calendar data...</div>';
+        
         const data = await pcFetch(
           `${API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplanbalances?timeOffPlanIds=${planId}&startDate=${startDate}&endDate=${endDate}`
         );
+        
         renderCalendarData(data.entities || []);
       } catch (error) {
         console.error('Error fetching plan balances:', error);
+        const cal = document.getElementById('calendar');
+        cal.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:red;">Error loading calendar data</div>';
         alert('Failed to load calendar data. Please try again.');
       }
     }
@@ -991,6 +1056,9 @@
       document.getElementById('calendar-plan-select')
         .addEventListener('change', updateCalendar);
       
+      monthSel.addEventListener('change', updateCalendar);
+      yearSel.addEventListener('change', updateCalendar);
+      
       // Initial fetch of management units
       fetchManagementUnits();
     }
@@ -1016,20 +1084,24 @@
       
       const year  = +document.getElementById('calendar-year-select').value;
       const month = +document.getElementById('calendar-month-select').value;
-      const days  = new Date(year, month, 0).getDate();
+      const daysInMonth = new Date(year, month, 0).getDate();
       
-      // Get first day of month to determine weekday offset
+      // Get first day of month to determine weekday offset (0=Sunday, 1=Monday, etc.)
       const firstDay = new Date(year, month - 1, 1).getDay();
       
+      // Adjust for Monday as first day of week (if needed)
+      const weekStartDay = 1; // Monday
+      let offset = (firstDay - weekStartDay + 7) % 7;
+      
       // Add empty cells for days before the first of the month
-      for (let i = 0; i < firstDay; i++) {
+      for (let i = 0; i < offset; i++) {
         const emptyCell = document.createElement('div');
         emptyCell.className = 'day empty';
         cal.appendChild(emptyCell);
       }
       
       // Create day cells
-      for (let d = 1; d <= days; d++) {
+      for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         const dayData = balances.find(b => b.date === dateStr) || {};
         const sb = dayData.startingBalance || 0;
@@ -1053,14 +1125,15 @@
         const today = new Date();
         if (d === today.getDate() && month === today.getMonth() + 1 && year === today.getFullYear()) {
           tile.style.border = '2px solid var(--primary-color)';
+          tile.style.boxShadow = '0 0 5px rgba(0,0,0,0.2)';
         }
         
         tile.innerHTML = `
           <div class="date">${d}</div>
           <div class="balance-info">
-            <div>Start: ${sb}</div>
-            <div>Remain: ${br}</div>
-            ${wl ? `<div>Wait: ${wl}</div>` : ''}
+            <div>Start: ${sb.toFixed(1)}</div>
+            <div>Remain: ${br.toFixed(1)}</div>
+            ${wl ? `<div>Wait: ${wl.toFixed(1)}</div>` : ''}
           </div>`;
         cal.appendChild(tile);
       }
