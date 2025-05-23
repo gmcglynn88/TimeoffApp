@@ -253,7 +253,7 @@
 
   <div class="tab-container">
     <div class="tab">
-      <button class="tablinks" onclick="openTab(event,'TimeOffBalances')" id="defaultOpen">Time Off Balances</button>
+      <button class="tablinks active" onclick="openTab(event,'TimeOffBalances')">Time Off Balances</button>
       <button class="tablinks" onclick="openTab(event,'Calculator')">Calculator</button>
       <button class="tablinks" onclick="openTab(event,'TimeOffCalendar')">Time Off Calendar</button>
     </div>
@@ -267,7 +267,7 @@
 
   <div class="main-content">
     <!-- ==== Time Off Balances Tab ==== -->
-    <div id="TimeOffBalances" class="tabcontent">
+    <div id="TimeOffBalances" class="tabcontent" style="display: flex;">
       <div class="balances-container">
         <div class="filters">
           <div>
@@ -518,7 +518,7 @@
     </div>
 
     <!-- ==== Time Off Calendar Tab ==== -->
-    <div id="TimeOffCalendar" class="tabcontent" style="display:none; flex-direction:column;">
+    <div id="TimeOffCalendar" class="tabcontent">
       <div class="calendar-filters">
         <div class="filters">
           <div>
@@ -552,7 +552,7 @@
     const CLIENT_ID     = '4652c8b5-9117-43c6-8e54-77eeb38aebb8';
     const CLIENT_SECRET = 'txtfN6cb699Lu7tID5n2NSjGwKOU_6NzyghgSk-bVkY';
     const REGION        = 'mypurecloud.ie';
-    const REDIRECT_URI  = 'https://gmcglynn88.github.io/TimeoffApp/';
+    const REDIRECT_URI  = window.location.href.split('?')[0].split('#')[0]; // Current page URL without query/hash
     const AUTH_URL      = `https://login.${REGION}/oauth/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
     const API_URL       = `https://api.${REGION}`;
 
@@ -1151,7 +1151,7 @@
       }
       
       // Initialize UI components
-      document.getElementById("defaultOpen").click();
+      document.getElementById("TimeOffBalances").style.display = "flex";
       updateTables();
       initializeCalculator();
       initializeCalendar();
