@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Your Time by IPI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Aptos:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@400;700&display=swap">
   <style>
     :root {
       --primary-color: #63AB8F;
@@ -15,273 +15,241 @@
       --text-color: #2C3E50;
       --text-light: #6C757D;
 
-      /* Calendar colours */
       --available-color: #c8e6c9;
       --nearly-color:   #ffe0b2;
       --full-color:     #ffcdd2;
     }
-
     * { box-sizing: border-box; }
-
     body {
-      font-family: 'Aptos', Arial, sans-serif;
-      margin: 0; padding: 0;
-      background: var(--light-bg);
-      color: var(--text-color);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: 'Proxima Nova', Arial, sans-serif;
+      margin:0; padding:0;
+      background:var(--light-bg); color:var(--text-color);
+      display:flex; flex-direction:column; min-height:100vh;
     }
-
     header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 15px 20px; background: var(--primary-color); color: white;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display:flex; justify-content:space-between; align-items:center;
+      padding:15px 20px; background:var(--primary-color); color:white;
+      box-shadow:0 2px 5px rgba(0,0,0,0.1);
     }
-    header h1 { margin: 0; font-size: 1.5em; font-weight: 700; }
-    .logo { height: 40px; }
-
-    .divider { border: none; height: 1px; background: var(--border-color); margin: 0; }
+    header h1 { margin:0; font-size:1.5em; font-weight:700; }
+    .logo { height:40px; }
+    .divider { border:none; height:1px; background:var(--border-color); margin:0; }
 
     .tab-container {
-      display: flex; justify-content: space-between; align-items: center;
-      background: var(--light-bg); border-bottom: 1px solid var(--border-color);
-      padding: 0 20px;
+      display:flex; justify-content:space-between; align-items:center;
+      background:var(--light-bg); border-bottom:1px solid var(--border-color);
+      padding:0 20px;
     }
-    .tab { display: flex; }
     .tab button {
-      background: transparent; border: none; outline: none; cursor: pointer;
-      padding: 12px 20px; font-size: 15px; transition: all 0.3s;
-      color: var(--text-light); font-weight: 600;
-      border-bottom: 3px solid transparent;
+      background:transparent; border:none; outline:none; cursor:pointer;
+      padding:12px 20px; font-size:15px; transition:color .3s;
+      color:var(--text-light); font-weight:600;
+      border-bottom:3px solid transparent;
     }
-    .tab button:hover { color: var(--primary-color); }
+    .tab button:hover { color:var(--primary-color); }
     .tab button.active {
-      color: var(--primary-color);
-      border-bottom: 3px solid var(--primary-color);
+      color:var(--primary-color);
+      border-bottom:3px solid var(--primary-color);
     }
-
-    .button-container {
-      display: flex; gap: 10px;
-    }
+    .button-container { display:flex; gap:10px; }
     .save-button, .import-button-label {
-      padding: 8px 16px; background: var(--primary-color);
-      color: white; border: none; border-radius: 4px; cursor: pointer;
-      font-size: 14px; font-weight: 600; transition: background 0.3s;
+      padding:8px 16px; background:var(--primary-color); color:white;
+      border:none; border-radius:4px; cursor:pointer;
+      font-size:14px; font-weight:600; transition:background .3s;
     }
-    .save-button:hover, .import-button-label:hover { background: var(--secondary-color); }
-    .import-button-label input { display: none; }
+    .save-button:hover, .import-button-label:hover {
+      background:var(--secondary-color);
+    }
+    .import-button-label input { display:none; }
 
     .main-content {
-      flex: 1; padding: 20px; display: flex; flex-direction: column;
-      overflow: hidden;
+      flex:1; padding:20px; display:flex; flex-direction:column; overflow:hidden;
     }
     .tabcontent {
-      display: none; flex: 1; overflow: hidden;
-      background: var(--card-bg); border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display:none; flex:1; flex-direction:column; overflow:hidden;
+      background:var(--card-bg); border-radius:8px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
     }
 
-    /* ==== Time Off Balances styling ==== */
-    #TimeOffBalances {
-      display: flex; flex-direction: column; overflow: hidden;
-    }
+    /* --- Balances Tab --- */
+    #TimeOffBalances { display:flex; flex-direction:column; overflow:hidden; }
     .balances-container {
-      flex: 1; display: flex; flex-direction: column;
-      overflow: hidden; padding: 20px;
+      flex:1; display:flex; flex-direction:column;
+      padding:20px; overflow:hidden;
     }
-    .filters { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-    .filters > div { flex: 1; min-width: 200px; }
+    .filters {
+      display:flex; gap:15px; flex-wrap:wrap; margin-bottom:20px;
+    }
+    .filters>div { flex:1; min-width:200px; }
     .filters h3 {
-      font-size: 14px; margin-bottom: 8px; color: var(--text-light);
-      font-weight: 600;
+      font-size:14px; margin-bottom:8px; color:var(--text-light); font-weight:600;
     }
     .filters select {
-      width: 100%; padding: 8px 12px; border: 1px solid var(--border-color);
-      border-radius: 4px; font-size: 14px; background: var(--card-bg);
+      width:100%; padding:8px 12px; border:1px solid var(--border-color);
+      border-radius:4px; background:var(--card-bg); font-size:14px;
     }
-    .search-container { margin-bottom: 20px; }
+    .search-container {
+      margin-bottom:20px;
+    }
     .search-container input {
-      width: 100%; max-width: 400px; padding: 8px 12px;
-      border: 1px solid var(--border-color); border-radius: 4px;
-      font-size: 14px;
+      width:100%; max-width:400px; padding:8px 12px;
+      border:1px solid var(--border-color); border-radius:4px; font-size:14px;
     }
-    .table-container { flex: 1; overflow: auto; margin-bottom: 20px;
-      border: 1px solid var(--border-color); border-radius: 6px;
+    .table-container {
+      flex:1; overflow:auto; margin-bottom:20px;
+      border:1px solid var(--border-color); border-radius:6px;
     }
     table {
-      width: 100%; border-collapse: collapse; font-size: 14px;
+      width:100%; border-collapse:collapse; font-size:14px;
     }
     th, td {
-      padding: 12px 15px; text-align: left;
-      border: 1px solid var(--border-color);
+      padding:12px 15px; text-align:left; border:1px solid var(--border-color);
     }
     th {
-      background: var(--primary-color); color: white; font-weight: 600;
-      position: sticky; top: 0;
+      background:var(--primary-color); color:white; font-weight:600;
+      position:sticky; top:0;
     }
-    tr:nth-child(even) { background-color: var(--light-bg); }
-    tr:hover { background-color: rgba(99, 171, 143, 0.1); }
+    tr:nth-child(even) { background:var(--light-bg); }
+    tr:hover { background:rgba(99,171,143,0.1); }
 
-    /* Editable inputs & negative styling */
     .balance-input {
-      width: 100%; padding: 4px 6px;
-      border: 1px solid var(--border-color); border-radius: 4px;
-      font-size: 14px; background: var(--card-bg);
+      width:100%; padding:4px 6px;
+      border:1px solid var(--border-color); border-radius:4px;
+      font-size:14px; background:var(--card-bg);
     }
-    .balance-input.negative {
-      color: red;
-    }
+    .balance-input.negative { color:red; }
 
-    .export-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+    .export-buttons { display:flex; gap:10px; margin-bottom:20px; }
     .export-button {
-      padding: 8px 16px; background: var(--primary-color); color: white;
-      border: none; border-radius: 4px; cursor: pointer;
-      font-size: 14px; font-weight: 600; transition: background 0.3s;
+      padding:8px 16px; background:var(--primary-color); color:white;
+      border:none; border-radius:4px; cursor:pointer;
+      font-size:14px; font-weight:600; transition:background .3s;
     }
-    .export-button:hover { background: var(--secondary-color); }
+    .export-button:hover { background:var(--secondary-color); }
 
-    /* ==== Calculator styling ==== */
-    #Calculator {
-      padding: 20px; display: flex; flex-direction: column;
-      overflow: hidden;
-    }
+    /* --- Calculator Tab --- */
+    #Calculator { padding:20px; display:flex; flex-direction:column; overflow:hidden; }
     .calc-container {
-      flex: 1; display: flex; flex-direction: column;
-      overflow: hidden; background: var(--card-bg);
-      border-radius: 8px;
+      flex:1; display:flex; flex-direction:column; overflow:hidden;
+      background:var(--card-bg); border-radius:8px;
     }
     .calc-header h2 {
-      font-size: 1.3em; margin: 0; color: var(--primary-color);
-      font-weight: 700;
+      font-size:1.3em; margin:0; color:var(--primary-color); font-weight:700;
     }
-    .flex-container { flex: 1; display: flex; gap: 20px; overflow: hidden; }
-    .left-panel, .right-panel { display: flex; flex-direction: column; overflow: hidden; }
-    .left-panel { flex: 0 0 35%; }
-    .right-panel { flex: 1; }
-    .panel-section { margin-bottom: 20px; }
+    .flex-container { flex:1; display:flex; gap:20px; overflow:hidden; }
+    .left-panel, .right-panel {
+      display:flex; flex-direction:column; overflow:hidden;
+    }
+    .left-panel { flex:0 0 35%; }
+    .right-panel { flex:1; }
+    .panel-section { margin-bottom:20px; }
     .section-title {
-      font-weight: 600; color: var(--primary-color);
-      margin-bottom: 10px; font-size: 15px;
+      font-weight:600; color:var(--primary-color);
+      margin-bottom:10px; font-size:15px;
     }
-    .calc-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 14px; }
+    .calc-table {
+      width:100%; border-collapse:collapse; margin-bottom:15px; font-size:14px;
+    }
     .calc-table th, .calc-table td {
-      padding: 10px 12px; border: 1px solid var(--border-color);
-      text-align: left;
+      padding:10px 12px; border:1px solid var(--border-color); text-align:left;
     }
     .calc-table th {
-      background: var(--primary-color); color: white;
+      background:var(--primary-color); color:white;
     }
     .input-cell {
-      width: 100%; padding: 6px 8px; border: 1px solid var(--border-color);
-      border-radius: 4px; background: var(--light-bg); font-size: 14px;
+      width:100%; padding:6px 8px; border:1px solid var(--border-color);
+      border-radius:4px; background:var(--light-bg); font-size:14px;
     }
     .calculation-cell {
-      background: rgba(99, 171, 143, 0.1); border: 1px solid var(--primary-color);
-      border-radius: 4px; padding: 6px 8px; font-weight: 600;
+      background:rgba(99,171,143,0.1);
+      border:1px solid var(--primary-color);
+      border-radius:4px; padding:6px 8px; font-weight:600;
     }
-    .monthly-tables-container { display: flex; gap: 20px; margin-top: 10px; }
-    .monthly-input-container { flex: 0 0 40%; }
+    .monthly-tables-container { display:flex; gap:20px; margin-top:10px; }
+    .monthly-input-container { flex:0 0 40%; }
     .calculate-button {
-      padding: 8px 16px; background: var(--primary-color);
-      color: white; border: none; border-radius: 4px;
-      cursor: pointer; font-size: 14px; font-weight: 600;
-      transition: background 0.3s; margin-top: 10px;
+      padding:8px 16px; background:var(--primary-color); color:white;
+      border:none; border-radius:4px; cursor:pointer;
+      font-size:14px; font-weight:600; transition:background .3s;
+      margin-top:10px;
     }
-    .calculate-button:hover { background: var(--secondary-color); }
-    .monthly-results-container { flex: 1; }
+    .calculate-button:hover { background:var(--secondary-color); }
+    .monthly-results-container { flex:1; }
 
-    /* ==== Calendar styling ==== */
+    /* --- Calendar Tab --- */
     .calendar-filters .filters {
-      display: flex; gap: 15px; flex-wrap: wrap;
-      padding: 20px; background: var(--card-bg);
-      border-bottom: 1px solid var(--border-color);
+      display:flex; gap:15px; flex-wrap:wrap;
+      padding:20px; background:var(--card-bg);
+      border-bottom:1px solid var(--border-color);
     }
-    .calendar { 
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
-      padding: 20px;
-      background: var(--card-bg);
-      overflow: auto;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    .calendar {
+      display:grid; grid-template-columns:repeat(7,1fr); gap:10px;
+      padding:20px; background:var(--card-bg);
+      overflow:auto; border-radius:8px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
     }
     .calendar .day {
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 8px;
-      min-height: 80px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      border:1px solid var(--border-color); border-radius:4px;
+      padding:8px; min-height:80px;
+      display:flex; flex-direction:column; justify-content:space-between;
     }
-    .calendar .day .date {
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    .calendar .day .balance-info {
-      font-size: 12px;
-      color: var(--text-light);
-      line-height: 1.2;
+    .calendar .date { font-weight:600; margin-bottom:6px; }
+    .calendar .balance-info {
+      font-size:12px; color:var(--text-light); line-height:1.2;
     }
 
-    /* Responsive */
-    @media (max-width: 1200px) {
-      .flex-container { flex-direction: column; }
-      .left-panel, .right-panel { min-width: 100%; }
-      .monthly-tables-container { flex-direction: column; }
-      .monthly-input-container, .monthly-results-container { flex: 1; width: 100%; }
-    }
-    @media (max-width: 768px) {
-      .tab-container { flex-direction: column; align-items: flex-start; padding: 10px; }
-      .button-container { margin-top: 10px; width: 100%; justify-content: flex-end; }
-      .filters { flex-direction: column; gap: 10px; }
+    @media(max-width:768px){
+      .tab-container{flex-direction:column;align-items:flex-start;padding:10px;}
+      .button-container{margin-top:10px;width:100%;justify-content:flex-end;}
+      .filters{flex-direction:column;gap:10px;}
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Your Time by IPI</h1>
-    <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary%20Identity_Corporate_REVERSED_ECC.png" alt="Consulting Logo" class="logo">
+    <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary%20Identity_Corporate_REVERSED_ECC.png"
+         alt="Consulting Logo" class="logo">
   </header>
   <hr class="divider">
 
   <div class="tab-container">
     <div class="tab">
-      <button class="tablinks" onclick="openTab(event,'TimeOffBalances')" id="defaultOpen">Time Off Balances</button>
+      <button class="tablinks" onclick="openTab(event,'TimeOffBalances')" id="defaultOpen">
+        Time Off Balances
+      </button>
       <button class="tablinks" onclick="openTab(event,'Calculator')">Calculator</button>
-      <button class="tablinks" onclick="openTab(event,'TimeOffCalendar')">Time Off Calendar</button>
+      <button class="tablinks" onclick="openTab(event,'TimeOffCalendar')">
+        Time Off Calendar
+      </button>
     </div>
     <div class="button-container">
-      <label class="import-button-label">Import Balances
-        <input type="file" id="import-file" accept=".csv" onchange="importTableFromCSV(event)">
+      <label class="import-button-label">
+        Import Balances<input type="file" id="import-file" accept=".csv"
+        onchange="importTableFromCSV(event)">
       </label>
       <button class="save-button" onclick="saveChanges()">Save</button>
     </div>
   </div>
 
   <div class="main-content">
-    <!-- ==== Time Off Balances Tab ==== -->
+
+    <!-- Time Off Balances -->
     <div id="TimeOffBalances" class="tabcontent">
       <div class="balances-container">
+
         <div class="filters">
           <div>
             <h3>Select Agent</h3>
             <select id="agent-select" onchange="updateTables()">
               <option value="Select">Please Select</option>
               <option value="all">Select All</option>
-              <option value="Craig Farley">Craig Farley</option>
-              <option value="Sasha Smith">Sasha Smith</option>
-              <option value="Lisa Lowe">Lisa Lowe</option>
-              <option value="Sian Gibbs">Sian Gibbs</option>
-              <option value="John Thompson">John Thompson</option>
-              <option value="Olivia Jenson">Olivia Jenson</option>
-              <option value="Ethan Reynolds">Ethan Reynolds</option>
-              <option value="Ava Mitchell">Ava Mitchell</option>
-              <option value="Gerard McGlynn">Gerard McGlynn</option>
-              <option value="Rhys Turner">Rhys Turner</option>
-              <option value="Tom Collins">Tom Collins</option>
+              <option>Craig Farley</option><option>Sasha Smith</option>
+              <option>Lisa Lowe</option><option>Sian Gibbs</option>
+              <option>John Thompson</option><option>Olivia Jenson</option>
+              <option>Ethan Reynolds</option><option>Ava Mitchell</option>
+              <option>Gerard McGlynn</option><option>Rhys Turner</option>
+              <option>Tom Collins</option>
             </select>
           </div>
           <div>
@@ -289,8 +257,7 @@
             <select id="year-select" onchange="updateTables()">
               <option value="Select">Please Select</option>
               <option value="all">Select All</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
+              <option>2024</option><option>2025</option>
             </select>
           </div>
           <div>
@@ -298,8 +265,8 @@
             <select id="management-unit-select" onchange="updateTables()">
               <option value="Select">Please Select</option>
               <option value="all">Select All</option>
-              <option value="Customer Service">Customer Service</option>
-              <option value="Sales & Retentions">Sales & Retentions</option>
+              <option>Customer Service</option>
+              <option>Sales & Retentions</option>
             </select>
           </div>
           <div>
@@ -307,74 +274,69 @@
             <select id="team-select" onchange="updateTables()">
               <option value="Select">Please Select</option>
               <option value="all">Select All</option>
-              <option value="Sales & Retentions">Sales & Retentions</option>
-              <option value="Team Reading">Team Reading</option>
-              <option value="Team Sheffield">Team Sheffield</option>
-              <option value="Team Manchester">Team Manchester</option>
-              <option value="Customer Service 2">Customer Service 2</option>
+              <option>Sales & Retentions</option>
+              <option>Team Reading</option>
+              <option>Team Sheffield</option>
+              <option>Team Manchester</option>
+              <option>Customer Service 2</option>
             </select>
           </div>
         </div>
+
         <div class="search-container">
-          <input type="text" id="search-input" placeholder="Search by agent name" onkeyup="filterTables()">
+          <input type="text" id="search-input" placeholder="Search by agent name"
+                 onkeyup="filterTables()">
         </div>
-        
+
         <div class="table-container">
           <h3>Time off Balances</h3>
           <table id="balances-table">
             <thead>
               <tr>
-                <th>Agent Name</th>
-                <th>Team</th>
-                <th>Management Unit</th>
-                <th>Holiday (Current Year)</th>
-                <th>Holiday (Next Year)</th>
+                <th>Agent Name</th><th>Team</th><th>Management Unit</th>
+                <th>Holiday (Current Year)</th><th>Holiday (Next Year)</th>
                 <th>Time off In Lieu</th>
               </tr>
             </thead>
             <tbody id="balances-table-body"></tbody>
           </table>
         </div>
-        
+
         <div class="export-buttons">
-          <button class="export-button" onclick="exportTableToCSV('balances-table','time_off_balances.csv')">
+          <button class="export-button"
+                  onclick="exportTableToCSV('balances-table','time_off_balances.csv')">
             Export Time Off Balances
           </button>
         </div>
-        
+
         <div class="table-container">
           <h3>Time off Details</h3>
           <table id="details-table">
             <thead>
               <tr>
-                <th>Agent Name</th>
-                <th>Team</th>
-                <th>Management Unit</th>
-                <th>Time off Start</th>
-                <th>Time off End</th>
-                <th>Balance Deduction (Hrs)</th>
-                <th>Days</th>
+                <th>Agent Name</th><th>Team</th><th>Management Unit</th>
+                <th>Time off Start</th><th>Time off End</th>
+                <th>Balance Deduction (Hrs)</th><th>Days</th>
               </tr>
             </thead>
             <tbody id="details-table-body"></tbody>
           </table>
         </div>
-        
+
         <div class="export-buttons">
-          <button class="export-button" onclick="exportTableToCSV('details-table','time_off_details.csv')">
+          <button class="export-button"
+                  onclick="exportTableToCSV('details-table','time_off_details.csv')">
             Export Time Off Details
           </button>
         </div>
+
       </div>
     </div>
 
-    <!-- ==== Calculator Tab ==== -->
+    <!-- Calculator -->
     <div id="Calculator" class="tabcontent">
       <div class="calc-container">
-        <div class="calc-header">
-          <h2>Annual Leave By Day Calculator</h2>
-        </div>
-        
+        <div class="calc-header"><h2>Annual Leave By Day Calculator</h2></div>
         <div class="flex-container">
           <div class="left-panel">
             <div class="panel-section">
@@ -391,7 +353,6 @@
                 </tr>
               </table>
             </div>
-            
             <div class="panel-section">
               <div class="section-title">Staffing Inputs</div>
               <table class="calc-table">
@@ -410,7 +371,6 @@
                 </tr>
               </table>
             </div>
-            
             <div class="panel-section">
               <div class="section-title">Weekly Holiday Allocation</div>
               <table class="calc-table">
@@ -421,7 +381,6 @@
                 </tr>
               </table>
             </div>
-            
             <div class="panel-section">
               <div class="section-title">Day-of-Week Distribution</div>
               <table class="calc-table" id="day-distribution">
@@ -469,16 +428,14 @@
               </table>
             </div>
           </div>
-          
+
           <div class="right-panel">
             <div class="panel-section">
               <div class="section-title">Monthly Allocation</div>
               <div class="monthly-tables-container">
                 <div class="monthly-input-container">
                   <table class="calc-table">
-                    <thead>
-                      <tr><th>Month</th><th>Value</th></tr>
-                    </thead>
+                    <thead><tr><th>Month</th><th>Value</th></tr></thead>
                     <tbody id="monthly-inputs"></tbody>
                   </table>
                   <button class="calculate-button" onclick="calculateMonthlyAllocation()">
@@ -486,7 +443,6 @@
                   </button>
                   <div id="total-validation" style="margin-top:10px;font-size:14px;"></div>
                 </div>
-                
                 <div class="monthly-results-container">
                   <table class="calc-table">
                     <thead>
@@ -505,8 +461,8 @@
       </div>
     </div>
 
-    <!-- ==== Time Off Calendar Tab ==== -->
-    <div id="TimeOffCalendar" class="tabcontent" style="display:none; flex-direction:column;">
+    <!-- Time Off Calendar -->
+    <div id="TimeOffCalendar" class="tabcontent">
       <div class="calendar-filters">
         <div class="filters">
           <div>
@@ -536,362 +492,336 @@
   </div>
 
   <script>
-    // ==== OAuth Configuration ====
+    // ————————————————
+    // Global OAuth Config
     const CLIENT_ID     = '4652c8b5-9117-43c6-8e54-77eeb38aebb8';
     const CLIENT_SECRET = 'txtfN6cb699Lu7tID5n2NSjGwKOU_6NzyghgSk-bVkY';
     const REGION        = 'mypurecloud.ie';
-    const REDIRECT_URI  = 'https://gmcglynn88.github.io/TimeoffApp/';
-    const AUTH_URL      = `https://login.${REGION}/oauth/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+    let accessToken     = null;
 
-    let accessToken = null;
-
-    // Extract access_token from URL hash, then clean URL
-    function parseTokenFromHash() {
-      const hash = window.location.hash.substr(1).split('&')
-        .reduce((res, pair) => {
-          const [k,v] = pair.split('=');
-          res[k] = v; return res;
-        }, {});
-      if (hash.access_token) {
-        accessToken = hash.access_token;
-        history.replaceState({}, null, window.location.pathname);
-      }
+    async function authenticate() {
+      const resp = await fetch(`https://login.${REGION}/oauth/token`, {
+        method: 'POST',
+        headers:{
+          'Authorization':'Basic '+btoa(`${CLIENT_ID}:${CLIENT_SECRET}`),
+          'Content-Type':'application/x-www-form-urlencoded'
+        },
+        body:'grant_type=client_credentials'
+      });
+      const json = await resp.json();
+      accessToken = json.access_token;
     }
-
-    // Fetch wrapper that injects Bearer and auto-re-auths
     function pcFetch(url) {
-      return fetch(url, {
-        headers: { 'Authorization': `Bearer ${accessToken}` }
-      })
-      .then(r => {
-        if (r.status === 401) {
-          window.location = AUTH_URL;
-        }
-        return r.json();
-      });
+      return fetch(url,{
+        headers:{ 'Authorization':`Bearer ${accessToken}` }
+      }).then(r=>r.json());
     }
 
-    // ==== Tab switching ====
-    function openTab(evt, tabName) {
-      const tabs = document.getElementsByClassName("tabcontent");
-      for (let t of tabs) t.style.display = "none";
-      const links = document.getElementsByClassName("tablinks");
-      for (let l of links) l.className = l.className.replace(" active", "");
-      document.getElementById(tabName).style.display = "flex";
-      evt.currentTarget.className += " active";
+    // ————————————————
+    // Tab switching
+    function openTab(evt,name){
+      document.querySelectorAll('.tabcontent')
+        .forEach(tc=>tc.style.display='none');
+      document.querySelectorAll('.tablinks')
+        .forEach(b=>b.classList.remove('active'));
+      document.getElementById(name).style.display='flex';
+      evt.currentTarget.classList.add('active');
     }
 
-    // ==== Sample data for balances & details ====
+    // ————————————————
+    // Sample data for Balances & Details
     const sampleBalances = [
-      { name: "Craig Farley", team: "Team Reading", unit: "Customer Service", holidayCurrent: 120, holidayNext: 80, toil: 15 },
-      { name: "Sasha Smith", team: "Team Sheffield", unit: "Customer Service", holidayCurrent: 95, holidayNext: 60, toil: 8 },
-      { name: "Lisa Lowe", team: "Team Manchester", unit: "Sales & Retentions", holidayCurrent: 110, holidayNext: 70, toil: 12 },
-      { name: "Sian Gibbs", team: "Sales & Retentions", unit: "Sales & Retentions", holidayCurrent: 85, holidayNext: 55, toil: 5 },
-      { name: "John Thompson", team: "Customer Service 2", unit: "Customer Service", holidayCurrent: 100, holidayNext: 65, toil: 10 },
-      { name: "Olivia Jenson", team: "Team Reading", unit: "Customer Service", holidayCurrent: 115, holidayNext: 75, toil: 7 },
-      { name: "Ethan Reynolds", team: "Team Sheffield", unit: "Customer Service", holidayCurrent: 90, holidayNext: 50, toil: 3 },
-      { name: "Ava Mitchell", team: "Team Manchester", unit: "Sales & Retentions", holidayCurrent: 105, holidayNext: 85, toil: 9 },
-      { name: "Gerard McGlynn", team: "Sales & Retentions", unit: "Sales & Retentions", holidayCurrent: 80, holidayNext: 45, toil: 6 },
-      { name: "Rhys Turner", team: "Customer Service 2", unit: "Customer Service", holidayCurrent: 125, holidayNext: 90, toil: 14 },
-      { name: "Tom Collins", team: "Team Reading", unit: "Customer Service", holidayCurrent: 75, holidayNext: 40, toil: 2 }
+      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service",
+        holidayCurrent:120, holidayNext:80, toil:15 },
+      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service",
+        holidayCurrent:95, holidayNext:60, toil:8 },
+      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions",
+        holidayCurrent:110, holidayNext:70, toil:12 },
+      { name:"Sian Gibbs", team:"Sales & Retentions", unit:"Sales & Retentions",
+        holidayCurrent:85, holidayNext:55, toil:5 },
+      { name:"John Thompson", team:"Customer Service 2", unit:"Customer Service",
+        holidayCurrent:100, holidayNext:65, toil:10 },
+      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service",
+        holidayCurrent:115, holidayNext:75, toil:7 },
+      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service",
+        holidayCurrent:90, holidayNext:50, toil:3 },
+      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions",
+        holidayCurrent:105, holidayNext:85, toil:9 },
+      { name:"Gerard McGlynn", team:"Sales & Retentions", unit:"Sales & Retentions",
+        holidayCurrent:80, holidayNext:45, toil:6 },
+      { name:"Rhys Turner", team:"Customer Service 2", unit:"Customer Service",
+        holidayCurrent:125, holidayNext:90, toil:14 },
+      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service",
+        holidayCurrent:75, holidayNext:40, toil:2 }
     ];
-
     const sampleDetails = [
-      { name: "Craig Farley", team: "Team Reading", unit: "Customer Service", start: "2024-01-15", end: "2024-01-22", deduction: 56, days: 7 },
-      { name: "Sasha Smith", team: "Team Sheffield", unit: "Customer Service", start: "2024-02-10", end: "2024-02-12", deduction: 24, days: 2 },
-      { name: "Lisa Lowe", team: "Team Manchester", unit: "Sales & Retentions", start: "2024-03-05", end: "2024-03-08", deduction: 32, days: 3 },
-      { name: "Sian Gibbs", team: "Sales & Retentions", unit: "Sales & Retentions", start: "2024-04-20", end: "2024-04-27", deduction: 56, days: 7 },
-      { name: "John Thompson", team: "Customer Service 2", unit: "Customer Service", start: "2024-05-15", end: "2024-05-17", deduction: 24, days: 2 },
-      { name: "Olivia Jenson", team: "Team Reading", unit: "Customer Service", start: "2024-06-10", end: "2024-06-14", deduction: 40, days: 4 },
-      { name: "Ethan Reynolds", team: "Team Sheffield", unit: "Customer Service", start: "2024-07-22", end: "2024-07-26", deduction: 40, days: 4 },
-      { name: "Ava Mitchell", team: "Team Manchester", unit: "Sales & Retentions", start: "2024-08-05", end: "2024-08-09", deduction: 40, days: 4 },
-      { name: "Gerard McGlynn", team: "Sales & Retentions", unit: "Sales & Retentions", start: "2024-09-15", end: "2024-09-22", deduction: 56, days: 7 },
-      { name: "Rhys Turner", team: "Customer Service 2", unit: "Customer Service", start: "2024-10-10", end: "2024-10-12", deduction: 24, days: 2 },
-      { name: "Tom Collins", team: "Team Reading", unit: "Customer Service", start: "2024-11-05", end: "2024-11-08", deduction: 32, days: 3 }
+      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service",
+        start:"2024-01-15", end:"2024-01-22", deduction:56, days:7 },
+      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service",
+        start:"2024-02-10", end:"2024-02-12", deduction:24, days:2 },
+      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions",
+        start:"2024-03-05", end:"2024-03-08", deduction:32, days:3 },
+      { name:"Sian Gibbs", team:"Sales & Retentions", unit:"Sales & Retentions",
+        start:"2024-04-20", end:"2024-04-27", deduction:56, days:7 },
+      { name:"John Thompson", team:"Customer Service 2", unit:"Customer Service",
+        start:"2024-05-15", end:"2024-05-17", deduction:24, days:2 },
+      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service",
+        start:"2024-06-10", end:"2024-06-14", deduction:40, days:4 },
+      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service",
+        start:"2024-07-22", end:"2024-07-26", deduction:40, days:4 },
+      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions",
+        start:"2024-08-05", end:"2024-08-09", deduction:40, days:4 },
+      { name:"Gerard McGlynn", team:"Sales & Retentions", unit:"Sales & Retentions",
+        start:"2024-09-15", end:"2024-09-22", deduction:56, days:7 },
+      { name:"Rhys Turner", team:"Customer Service 2", unit:"Customer Service",
+        start:"2024-10-10", end:"2024-10-12", deduction:24, days:2 },
+      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service",
+        start:"2024-11-05", end:"2024-11-08", deduction:32, days:3 }
     ];
 
-    // ==== Initialize tables with editable fields ==== 
-    function updateTables() {
-      const agentSelect = document.getElementById("agent-select").value;
-      const unitSelect  = document.getElementById("management-unit-select").value;
-      const teamSelect  = document.getElementById("team-select").value;
-
-      let filteredBalances = sampleBalances.filter(item =>
-        (agentSelect==="all"||agentSelect==="Select"||item.name===agentSelect) &&
-        (unitSelect==="all"||unitSelect==="Select"||item.unit===unitSelect) &&
-        (teamSelect==="all"||teamSelect==="Select"||item.team===teamSelect)
+    // ————————————————
+    // Time Off Balances logic
+    function updateTables(){
+      const a = document.getElementById('agent-select').value;
+      const u = document.getElementById('management-unit-select').value;
+      const t = document.getElementById('team-select').value;
+      const fb = sampleBalances.filter(item =>
+        (a==='all'||a==='Select'||item.name===a) &&
+        (u==='all'||u==='Select'||item.unit===u) &&
+        (t==='all'||t==='Select'||item.team===t)
       );
-      let filteredDetails = sampleDetails.filter(item =>
-        (agentSelect==="all"||agentSelect==="Select"||item.name===agentSelect) &&
-        (unitSelect==="all"||unitSelect==="Select"||item.unit===unitSelect) &&
-        (teamSelect==="all"||teamSelect==="Select"||item.team===teamSelect)
+      const fd = sampleDetails.filter(item =>
+        (a==='all'||a==='Select'||item.name===a) &&
+        (u==='all'||u==='Select'||item.unit===u) &&
+        (t==='all'||t==='Select'||item.team===t)
       );
-
-      const balancesBody = document.getElementById("balances-table-body");
-      balancesBody.innerHTML = "";
-      filteredBalances.forEach(item => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${item.name}</td>
-          <td>${item.team}</td>
-          <td>${item.unit}</td>
-          <td><input type="number" class="balance-input" data-field="holidayCurrent" value="${item.holidayCurrent}"></td>
-          <td><input type="number" class="balance-input" data-field="holidayNext"    value="${item.holidayNext}"></td>
-          <td><input type="number" class="balance-input toil-input" data-field="toil" value="${item.toil}"></td>
+      const bb = document.getElementById('balances-table-body');
+      bb.innerHTML = '';
+      fb.forEach(i=>{
+        const r=document.createElement('tr');
+        r.innerHTML=`
+          <td>${i.name}</td>
+          <td>${i.team}</td>
+          <td>${i.unit}</td>
+          <td><input type="number" class="balance-input" value="${i.holidayCurrent}"></td>
+          <td><input type="number" class="balance-input" value="${i.holidayNext}"></td>
+          <td><input type="number" class="balance-input toil-input" value="${i.toil}"></td>
         `;
-        balancesBody.appendChild(row);
+        bb.appendChild(r);
       });
-
-      // Attach input listeners for negative styling on toil fields
-      document.querySelectorAll('.balance-input').forEach(input => {
-        input.addEventListener('input', e => {
-          if (e.target.classList.contains('toil-input') && parseFloat(e.target.value) < 0) {
-            e.target.classList.add('negative');
-          } else {
-            e.target.classList.remove('negative');
-          }
+      document.querySelectorAll('.toil-input').forEach(inp=>{
+        inp.addEventListener('input',e=>{
+          e.target.classList.toggle('negative', parseFloat(e.target.value)<0);
         });
       });
-
-      // Populate details table as before
-      const detailsBody = document.getElementById("details-table-body");
-      detailsBody.innerHTML = "";
-      filteredDetails.forEach(item => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${item.name}</td>
-          <td>${item.team}</td>
-          <td>${item.unit}</td>
-          <td>${item.start}</td>
-          <td>${item.end}</td>
-          <td>${item.deduction}</td>
-          <td>${item.days}</td>
+      const db=document.getElementById('details-table-body');
+      db.innerHTML='';
+      fd.forEach(i=>{
+        const r=document.createElement('tr');
+        r.innerHTML=`
+          <td>${i.name}</td>
+          <td>${i.team}</td>
+          <td>${i.unit}</td>
+          <td>${i.start}</td>
+          <td>${i.end}</td>
+          <td>${i.deduction}</td>
+          <td>${i.days}</td>
         `;
-        detailsBody.appendChild(row);
+        db.appendChild(r);
+      });
+    }
+    function filterTables(){
+      const term=document.getElementById('search-input').value.toLowerCase();
+      document.querySelectorAll('#balances-table-body tr').forEach(r=>{
+        r.style.display=r.cells[0].textContent.toLowerCase().includes(term)?'':'none';
+      });
+      document.querySelectorAll('#details-table-body tr').forEach(r=>{
+        r.style.display=r.cells[0].textContent.toLowerCase().includes(term)?'':'none';
       });
     }
 
-    // ==== Search filter ====
-    function filterTables() {
-      const term = document.getElementById("search-input").value.toLowerCase();
-      document.querySelectorAll("#balances-table-body tr").forEach(r => {
-        r.style.display = r.cells[0].textContent.toLowerCase().includes(term) ? "" : "none";
-      });
-      document.querySelectorAll("#details-table-body tr").forEach(r => {
-        r.style.display = r.cells[0].textContent.toLowerCase().includes(term) ? "" : "none";
-      });
+    // ————————————————
+    // CSV & Save
+    function exportTableToCSV(id,fn){
+      const rows=document.getElementById(id).querySelectorAll('tr');
+      const csv=Array.from(rows).map(r=>
+        Array.from(r.querySelectorAll('th,td')).map(c=>c.innerText).join(',')
+      ).join('\n');
+      const blob=new Blob([csv],{type:'text/csv'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=fn; a.click();
     }
-
-    // ==== CSV & save functions (unchanged) ====
-    function exportTableToCSV(tableId, filename) {
-      const rows = document.getElementById(tableId).querySelectorAll("tr");
-      const csv = Array.from(rows).map(r =>
-        Array.from(r.querySelectorAll("th,td")).map(c => c.innerText).join(",")
-      ).join("\n");
-      downloadCSV(csv, filename);
-    }
-    function downloadCSV(csv, filename) {
-      const blob = new Blob([csv], { type: "text/csv" });
-      const link = document.createElement("a");
-      link.download = filename;
-      link.href = URL.createObjectURL(blob);
-      link.click();
-    }
-    function importTableFromCSV(evt) {
-      const file = evt.target.files[0];
-      const reader = new FileReader();
-      reader.onload = e => {
-        alert("CSV imported:\n" + e.target.result);
-      };
+    function importTableFromCSV(evt){
+      const file=evt.target.files[0];
+      const reader=new FileReader();
+      reader.onload=e=>alert("CSV imported:\n"+e.target.result);
       reader.readAsText(file);
     }
-    function saveChanges() {
-      alert("Changes saved successfully!");
-    }
+    function saveChanges(){ alert("Changes saved successfully!"); }
 
-    // ==== Calculator functions (unchanged) ====
-    function calculateWeeklyHolidayHours() {
-      const agents = parseFloat(document.getElementById("agents-count").value) || 0;
-      const avg    = parseFloat(document.getElementById("avg-weekly-hours").value) || 0;
-      const pct    = parseFloat(document.getElementById("holiday-percentage").value) || 0;
-      const total  = agents * avg * (pct/100);
-      document.getElementById("weekly-holiday-hours").textContent = total.toFixed(2);
+    // ————————————————
+    // Calculator logic
+    function calculateWeeklyHolidayHours(){
+      const agents=+document.getElementById('agents-count').value||0;
+      const avg=+document.getElementById('avg-weekly-hours').value||0;
+      const pct=+document.getElementById('holiday-percentage').value||0;
+      const total=agents*avg*(pct/100);
+      document.getElementById('weekly-holiday-hours').textContent=total.toFixed(2);
       return total;
     }
-    function calculateDayDistribution() {
-      const total = calculateWeeklyHolidayHours();
-      const days  = ["mon","tue","wed","thu","fri","sat","sun"];
-      let sumPct = 0;
-      days.forEach(d => {
-        const pct = parseFloat(document.getElementById(`${d}-percent`).value) || 0;
-        sumPct += pct;
-        document.getElementById(`${d}-hours`).textContent = (total * pct/100).toFixed(2);
+    function calculateDayDistribution(){
+      const total=calculateWeeklyHolidayHours();
+      const days=['mon','tue','wed','thu','fri','sat','sun'];
+      let sumPct=0;
+      days.forEach(d=>{
+        const p=+document.getElementById(`${d}-percent`).value||0;
+        sumPct+=p;
+        document.getElementById(`${d}-hours`).textContent=(total*p/100).toFixed(2);
       });
-      document.getElementById("total-percent").textContent = sumPct.toFixed(0) + "%";
-      document.getElementById("total-hours").textContent   = total.toFixed(2);
+      document.getElementById('total-percent').textContent=sumPct.toFixed(0)+'%';
+      document.getElementById('total-hours').textContent=total.toFixed(2);
     }
-    function initializeMonthlyInputs() {
-      const months = [
-        "January","February","March","April","May","June",
-        "July","August","September","October","November","December"
-      ];
-      const tbody = document.getElementById("monthly-inputs");
-      tbody.innerHTML = "";
-      months.forEach(m => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${m}</td>
-          <td><input type="number" id="${m.toLowerCase()}-percent" class="input-cell" value="8.33" min="0" max="100"></td>`;
+    function initializeMonthlyInputs(){
+      const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const tbody=document.getElementById('monthly-inputs');
+      tbody.innerHTML='';
+      months.forEach(m=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${m}</td><td><input type="number" id="${m.toLowerCase()}-percent" class="input-cell" value="8.33" min="0" max="100"></td>`;
         tbody.appendChild(tr);
       });
     }
-    function calculateMonthlyAllocation() {
-      const months = [
-        "january","february","march","april","may","june",
-        "july","august","september","october","november","december"
-      ];
-      let totalPct = 0;
-      months.forEach(m => totalPct += parseFloat(document.getElementById(`${m}-percent`).value) || 0);
-      const validation = document.getElementById("total-validation");
-      if (Math.abs(totalPct - 100) > 0.1) {
-        validation.innerHTML = `<span style="color:red;">Total ${totalPct.toFixed(2)}% (should be 100%)</span>`;
+    function calculateMonthlyAllocation(){
+      const months=['january','february','march','april','may','june','july','august','september','october','november','december'];
+      let totalPct=0;
+      months.forEach(m=> totalPct+= +document.getElementById(`${m}-percent`).value||0 );
+      const val=document.getElementById('total-validation');
+      if(Math.abs(totalPct-100)>0.1){
+        val.innerHTML=`<span style="color:red;">Total ${totalPct.toFixed(2)}% (should be 100%)</span>`;
         return;
-      } else {
-        validation.innerHTML = `<span style="color:green;">Total: ${totalPct.toFixed(2)}% (Valid)</span>`;
       }
-      const tbody = document.getElementById("monthly-results");
-      tbody.innerHTML = "";
-      months.forEach(m => {
-        const pctMonth = parseFloat(document.getElementById(`${m}-percent`).value) || 0;
-        const tr = document.createElement("tr");
-        let row = `<td>${m.charAt(0).toUpperCase()+m.slice(1)}</td>`;
-        let daySum = 0;
-        ["mon","tue","wed","thu","fri","sat","sun"].forEach(d => {
-          const pctDay = parseFloat(document.getElementById(`${d}-percent`).value) || 0;
-          const hrs    = calculateWeeklyHolidayHours() * (pctDay/100) * (pctMonth/100) * 12;
-          daySum += hrs;
-          row += `<td>${hrs.toFixed(2)}</td>`;
+      val.innerHTML=`<span style="color:green;">Total: ${totalPct.toFixed(2)}% (Valid)</span>`;
+      const tbody=document.getElementById('monthly-results');
+      tbody.innerHTML='';
+      months.forEach(m=>{
+        const pctMonth=+document.getElementById(`${m}-percent`).value||0;
+        const tr=document.createElement('tr');
+        let row=`<td>${m.charAt(0).toUpperCase()+m.slice(1)}</td>`;
+        let daySum=0;
+        ['mon','tue','wed','thu','fri','sat','sun'].forEach(d=>{
+          const pDay=+document.getElementById(`${d}-percent`).value||0;
+          const hrs=calculateWeeklyHolidayHours()*(pDay/100)*(pctMonth/100)*12;
+          daySum+=hrs;
+          row+=`<td>${hrs.toFixed(2)}</td>`;
         });
-        row += `<td>${daySum.toFixed(2)}</td>`;
-        tr.innerHTML = row;
+        row+=`<td>${daySum.toFixed(2)}</td>`;
+        tr.innerHTML=row;
         tbody.appendChild(tr);
       });
     }
-    function initializeCalculator() {
-      ["agents-count","avg-weekly-hours","holiday-percentage",
-       "mon-percent","tue-percent","wed-percent","thu-percent",
-       "fri-percent","sat-percent","sun-percent"
-      ].forEach(id => {
-        document.getElementById(id).addEventListener("input", calculateDayDistribution);
+    function initializeCalculator(){
+      ['agents-count','avg-weekly-hours','holiday-percentage',
+       'mon-percent','tue-percent','wed-percent','thu-percent',
+       'fri-percent','sat-percent','sun-percent'
+      ].forEach(id=>{
+        document.getElementById(id).addEventListener('input',calculateDayDistribution);
       });
       initializeMonthlyInputs();
       calculateDayDistribution();
     }
 
-    // ==== Calendar API calls ====
-    function fetchManagementUnits() {
+    // ————————————————
+    // Calendar logic
+    function fetchManagementUnits(){
       pcFetch(`https://api.${REGION}/api/v2/workforcemanagement/managementunits`)
-        .then(data => {
-          const sel = document.getElementById('calendar-management-unit-select');
-          sel.innerHTML = '<option value="">Please select</option>';
-          data.entities.forEach(mu => {
-            const o = document.createElement('option');
-            o.value = mu.id;
-            o.textContent = mu.name;
+        .then(data=>{
+          const sel=document.getElementById('calendar-management-unit-select');
+          sel.innerHTML='<option value="">Please select</option>';
+          data.entities.forEach(mu=>{
+            const o=document.createElement('option');
+            o.value=mu.id; o.textContent=mu.name;
             sel.appendChild(o);
           });
-        })
-        .catch(console.error);
+        });
     }
-    function fetchTimeOffPlans(unitId) {
-      pcFetch(`https://api.${REGION}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplans`)
-        .then(data => {
-          const sel = document.getElementById('calendar-plan-select');
-          sel.innerHTML = '<option value="">Please select</option>';
-          data.entities.forEach(plan => {
-            const o = document.createElement('option');
-            o.value = plan.id;
-            o.textContent = plan.name;
+    function fetchTimeOffPlans(uid){
+      pcFetch(`https://api.${REGION}/api/v2/workforcemanagement/managementunits/${uid}/timeoffplans`)
+        .then(data=>{
+          const sel=document.getElementById('calendar-plan-select');
+          sel.innerHTML='<option value="">Please select</option>';
+          data.entities.forEach(p=>{
+            const o=document.createElement('option');
+            o.value=p.id; o.textContent=p.name;
             sel.appendChild(o);
           });
-        })
-        .catch(console.error);
+        });
     }
-    function fetchPlanBalances(unitId, planId, startDate, endDate) {
-      pcFetch(`https://api.${REGION}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplanbalances?timeOffPlanIds=${planId}&startDate=${startDate}&endDate=${endDate}`)
-        .then(data => renderCalendarData(data.entities||[]))
-        .catch(console.error);
+    function fetchPlanBalances(uid,pid,sd,ed){
+      pcFetch(`https://api.${REGION}/api/v2/workforcemanagement/managementunits/${uid}/timeoffplanbalances?timeOffPlanIds=${pid}&startDate=${sd}&endDate=${ed}`)
+        .then(data=>renderCalendarData(data.entities||[]));
     }
-
-    // ==== Calendar rendering ====
-    function initializeCalendar() {
-      const monthSel = document.getElementById('calendar-month-select');
-      const yearSel  = document.getElementById('calendar-year-select');
-      const months   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      months.forEach((m,i)=> monthSel.appendChild(new Option(m,i+1)));
-      [new Date().getFullYear()-1, new Date().getFullYear(), new Date().getFullYear()+1]
-        .forEach(y=> yearSel.appendChild(new Option(y,y)));
-      monthSel.value = new Date().getMonth()+1;
-      yearSel.value  = new Date().getFullYear();
+    function initializeCalendar(){
+      const mo=document.getElementById('calendar-month-select');
+      const yr=document.getElementById('calendar-year-select');
+      ['January','February','March','April','May','June','July','August','September','October','November','December']
+        .forEach((m,i)=>mo.appendChild(new Option(m,i+1)));
+      [new Date().getFullYear()-1,new Date().getFullYear(),new Date().getFullYear()+1]
+        .forEach(y=>yr.appendChild(new Option(y,y)));
+      mo.value=new Date().getMonth()+1;
+      yr.value=new Date().getFullYear();
 
       document.getElementById('calendar-management-unit-select')
-        .addEventListener('change', e => {
-          if(e.target.value) fetchTimeOffPlans(e.target.value);
-        });
+        .addEventListener('change', e=>{ if(e.target.value) fetchTimeOffPlans(e.target.value); });
       document.getElementById('calendar-plan-select')
         .addEventListener('change', updateCalendar);
 
       fetchManagementUnits();
     }
-    function updateCalendar() {
-      const unitId = document.getElementById('calendar-management-unit-select').value;
-      const planId = document.getElementById('calendar-plan-select').value;
-      const month  = document.getElementById('calendar-month-select').value;
-      const year   = document.getElementById('calendar-year-select').value;
-      if (!unitId||!planId) return;
-      const sd = `${year}-${String(month).padStart(2,'0')}-01`;
-      const daysInMonth = new Date(year, month, 0).getDate();
-      const ed = `${year}-${String(month).padStart(2,'0')}-${daysInMonth}`;
-      fetchPlanBalances(unitId, planId, sd, ed);
+    function updateCalendar(){
+      const uid=document.getElementById('calendar-management-unit-select').value;
+      const pid=document.getElementById('calendar-plan-select').value;
+      const m=document.getElementById('calendar-month-select').value;
+      const y=document.getElementById('calendar-year-select').value;
+      if(!uid||!pid) return;
+      const sd=`${y}-${String(m).padStart(2,'0')}-01`;
+      const dim=new Date(y,m,0).getDate();
+      const ed=`${y}-${String(m).padStart(2,'0')}-${dim}`;
+      fetchPlanBalances(uid,pid,sd,ed);
     }
-    function renderCalendarData(balances) {
-      const cal = document.getElementById('calendar');
-      cal.innerHTML = '';
-      const year  = +document.getElementById('calendar-year-select').value;
-      const month = +document.getElementById('calendar-month-select').value;
-      const days  = new Date(year, month, 0).getDate();
-
-      for (let d=1; d<=days; d++) {
-        const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const dayData = balances.find(b=>b.date===dateStr)||{};
-        const sb = dayData.startingBalance||0;
-        const br = dayData.balance||0;
-        const wl = dayData.waitlist||0;
-        const tile = document.createElement('div');
-        tile.className = 'day';
-
-        const ratio = sb ? br/sb : 0;
-        if (br===0)          tile.style.background = 'var(--full-color)';
-        else if (ratio<0.1)  tile.style.background = 'var(--nearly-color)';
-        else                 tile.style.background = 'var(--available-color)';
-
-        tile.innerHTML = `
+    function renderCalendarData(balances){
+      const cal=document.getElementById('calendar');
+      cal.innerHTML='';
+      const y=+document.getElementById('calendar-year-select').value;
+      const m=+document.getElementById('calendar-month-select').value;
+      const days=new Date(y,m,0).getDate();
+      for(let d=1; d<=days; d++){
+        const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const bd=balances.find(b=>b.date===ds)||{};
+        const sb=bd.startingBalance||0, br=bd.balance||0, wl=bd.waitlist||0;
+        const tile=document.createElement('div'); tile.className='day';
+        const ratio=sb?br/sb:0;
+        tile.style.background = br===0
+          ? 'var(--full-color)'
+          : ratio<0.1
+            ? 'var(--nearly-color)'
+            : 'var(--available-color)';
+        tile.innerHTML=`
           <div class="date">${d}</div>
           <div class="balance-info">
             <div>Start: ${sb}</div>
             <div>Remain: ${br}</div>
-            ${wl ? `<div>Wait: ${wl}</div>` : ''}
+            ${wl?`<div>Wait: ${wl}</div>`:''}
           </div>`;
         cal.appendChild(tile);
       }
     }
 
-    // ==== On page load ====
-    window.onload = function() {
-      parseTokenFromHash();
-      if (!accessToken) {
-        window.location = AUTH_URL;
-      }
-      document.getElementById("defaultOpen").click();
+    // ————————————————
+    // On load
+    window.onload = async function(){
+      await authenticate();
+      document.getElementById('defaultOpen').click();
       updateTables();
       initializeCalculator();
       initializeCalendar();
