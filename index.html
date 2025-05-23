@@ -548,51 +548,62 @@
   </div>
 
   <script>
-    // ==== OAuth Configuration ====
+    // ==== OAuth Configuration with expiry handling ====
     const CLIENT_ID     = '4652c8b5-9117-43c6-8e54-77eeb38aebb8';
     const CLIENT_SECRET = 'txtfN6cb699Lu7tID5n2NSjGwKOU_6NzyghgSk-bVkY';
     const REGION        = 'mypurecloud.ie';
-    const REDIRECT_URI  = window.location.href.split('?')[0].split('#')[0]; // Current page URL without query/hash
+    const REDIRECT_URI  = window.location.origin + window.location.pathname;
     const AUTH_URL      = `https://login.${REGION}/oauth/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
     const API_URL       = `https://api.${REGION}`;
 
     let accessToken = null;
 
-    // Extract access_token from URL hash, then clean URL
+    function isTokenExpired() {
+      const expiry = sessionStorage.getItem('purecloud_token_expiry');
+      return !expiry || Date.now() > Number(expiry);
+    }
+
+    // Grab token & expires_in from hash fragment
     function parseTokenFromHash() {
       const hash = window.location.hash.substr(1).split('&')
         .reduce((res, pair) => {
           const [k,v] = pair.split('=');
-          res[k] = decodeURIComponent(v); 
+          res[k] = decodeURIComponent(v);
           return res;
         }, {});
       
       if (hash.access_token) {
         accessToken = hash.access_token;
-        // Store token in sessionStorage for persistence across page reloads
         sessionStorage.setItem('purecloud_access_token', accessToken);
-        // Clean up URL
-        history.replaceState({}, null, window.location.pathname);
+        if (hash.expires_in) {
+          const expiresMs = parseInt(hash.expires_in, 10) * 1000;
+          sessionStorage.setItem('purecloud_token_expiry', Date.now() + expiresMs);
+        }
+        history.replaceState({}, null, REDIRECT_URI);
         return true;
       }
       return false;
     }
 
-    // Check sessionStorage for existing token
+    // Check stored token & validity
     function checkForStoredToken() {
-      const storedToken = sessionStorage.getItem('purecloud_access_token');
-      if (storedToken) {
-        accessToken = storedToken;
+      const token = sessionStorage.getItem('purecloud_access_token');
+      if (token && !isTokenExpired()) {
+        accessToken = token;
         return true;
       }
+      sessionStorage.removeItem('purecloud_access_token');
+      sessionStorage.removeItem('purecloud_token_expiry');
       return false;
     }
 
-    // Fetch wrapper that injects Bearer and handles auth
+    // Fetch wrapper with expiry check
     async function pcFetch(url, options = {}) {
-      if (!accessToken) {
+      if (!accessToken || isTokenExpired()) {
+        sessionStorage.removeItem('purecloud_access_token');
+        sessionStorage.removeItem('purecloud_token_expiry');
         window.location = AUTH_URL;
-        return Promise.reject("No access token");
+        return Promise.reject("No valid access token");
       }
 
       const headers = {
@@ -603,20 +614,18 @@
 
       try {
         const response = await fetch(url, { ...options, headers });
-        
         if (response.status === 401) {
-          // Token expired or invalid, clear storage and redirect to auth
+          // expired/invalid
           sessionStorage.removeItem('purecloud_access_token');
+          sessionStorage.removeItem('purecloud_token_expiry');
           window.location = AUTH_URL;
           return Promise.reject("Unauthorized");
         }
-
         if (!response.ok) {
           const error = await response.json();
           console.error('API Error:', error);
           return Promise.reject(error);
         }
-
         return response.json();
       } catch (error) {
         console.error('Fetch Error:', error);
@@ -630,13 +639,9 @@
       for (let t of tabs) t.style.display = "none";
       const links = document.getElementsByClassName("tablinks");
       for (let l of links) l.className = l.className.replace(" active", "");
-      document.getElementById(tabName).style.display = "flex";
+      document.getElementById(tabName).style.display = tabName === 'TimeOffBalances' ? 'flex' : 'block';
       evt.currentTarget.className += " active";
-      
-      // Special handling for calendar tab
-      if (tabName === 'TimeOffCalendar') {
-        updateCalendar();
-      }
+      if (tabName === 'TimeOffCalendar') updateCalendar();
     }
 
     // ==== Sample data for balances & details ====
@@ -653,7 +658,6 @@
       { name: "Rhys Turner", team: "Customer Service 2", unit: "Customer Service", holidayCurrent: 125, holidayNext: 90, toil: 14 },
       { name: "Tom Collins", team: "Team Reading", unit: "Customer Service", holidayCurrent: 75, holidayNext: 40, toil: 2 }
     ];
-
     const sampleDetails = [
       { name: "Craig Farley", team: "Team Reading", unit: "Customer Service", start: "2024-01-15", end: "2024-01-22", deduction: 56, days: 7 },
       { name: "Sasha Smith", team: "Team Sheffield", unit: "Customer Service", start: "2024-02-10", end: "2024-02-12", deduction: 24, days: 2 },
@@ -668,7 +672,7 @@
       { name: "Tom Collins", team: "Team Reading", unit: "Customer Service", start: "2024-11-05", end: "2024-11-08", deduction: 32, days: 3 }
     ];
 
-    // ==== Initialize tables with editable fields ==== 
+    // ==== Initialize tables with editable fields ====
     function updateTables() {
       const agentSelect = document.getElementById("agent-select").value;
       const unitSelect  = document.getElementById("management-unit-select").value;
@@ -700,7 +704,6 @@
         balancesBody.appendChild(row);
       });
 
-      // Attach input listeners for negative styling on toil fields
       document.querySelectorAll('.balance-input').forEach(input => {
         input.addEventListener('input', e => {
           if (e.target.classList.contains('toil-input') && parseFloat(e.target.value) < 0) {
@@ -711,7 +714,6 @@
         });
       });
 
-      // Populate details table as before
       const detailsBody = document.getElementById("details-table-body");
       detailsBody.innerHTML = "";
       filteredDetails.forEach(item => {
@@ -745,14 +747,12 @@
       const rows = document.getElementById(tableId).querySelectorAll("tr");
       const csv = Array.from(rows).map(r =>
         Array.from(r.querySelectorAll("th,td")).map(c => {
-          // Handle input elements in cells
           const input = c.querySelector('input');
           return input ? input.value : c.innerText;
         }).join(",")
       ).join("\n");
       downloadCSV(csv, filename);
     }
-    
     function downloadCSV(csv, filename) {
       const blob = new Blob([csv], { type: "text/csv" });
       const link = document.createElement("a");
@@ -760,56 +760,37 @@
       link.href = URL.createObjectURL(blob);
       link.click();
     }
-    
     function importTableFromCSV(evt) {
       const file = evt.target.files[0];
       if (!file) return;
-      
       const reader = new FileReader();
       reader.onload = e => {
         try {
           const csv = e.target.result;
           const lines = csv.split('\n');
           const headers = lines[0].split(',');
-          
-          // Simple validation
-          if (headers.length < 3) {
-            throw new Error("Invalid CSV format");
-          }
-          
-          // Process the CSV data - this is a simple example
-          // You would need to implement your specific import logic here
+          if (headers.length < 3) throw new Error("Invalid CSV format");
           console.log("CSV data:", lines);
           alert(`CSV imported with ${lines.length} rows`);
-          
-          // Reset file input
           evt.target.value = '';
         } catch (error) {
           console.error("Error importing CSV:", error);
           alert("Error importing CSV: " + error.message);
         }
       };
-      reader.onerror = () => {
-        alert("Error reading file");
-      };
+      reader.onerror = () => alert("Error reading file");
       reader.readAsText(file);
     }
-    
     function saveChanges() {
-      // Collect all editable data
       const editableRows = document.querySelectorAll('#balances-table-body tr');
-      const updatedData = Array.from(editableRows).map(row => {
-        return {
-          name: row.cells[0].textContent,
-          team: row.cells[1].textContent,
-          unit: row.cells[2].textContent,
-          holidayCurrent: row.cells[3].querySelector('input').value,
-          holidayNext: row.cells[4].querySelector('input').value,
-          toil: row.cells[5].querySelector('input').value
-        };
-      });
-      
-      // Here you would typically send this data to your backend
+      const updatedData = Array.from(editableRows).map(row => ({
+        name: row.cells[0].textContent,
+        team: row.cells[1].textContent,
+        unit: row.cells[2].textContent,
+        holidayCurrent: row.cells[3].querySelector('input').value,
+        holidayNext: row.cells[4].querySelector('input').value,
+        toil: row.cells[5].querySelector('input').value
+      }));
       console.log("Data to save:", updatedData);
       alert("Changes saved successfully (check console for data)");
     }
@@ -821,81 +802,48 @@
       const pct    = parseFloat(document.getElementById("holiday-percentage").value) || 0;
       const total  = agents * avg * (pct/100);
       document.getElementById("weekly-holiday-hours").textContent = total.toFixed(2);
-      
-      // Calculate daily average
       const workingDays = parseFloat(document.getElementById("working-days").value) || 5;
       const dailyHours = total / workingDays;
       document.getElementById("daily-holiday-hours").textContent = dailyHours.toFixed(2);
-      
       return total;
     }
-    
     function calculateDayDistribution() {
       const total = calculateWeeklyHolidayHours();
       const days  = ["mon","tue","wed","thu","fri","sat","sun"];
       let sumPct = 0;
-      
       days.forEach(d => {
         const pct = parseFloat(document.getElementById(`${d}-percent`).value) || 0;
         sumPct += pct;
         const hours = total * (pct/100);
         document.getElementById(`${d}-hours`).textContent = hours.toFixed(2);
       });
-      
       document.getElementById("total-percent").textContent = sumPct.toFixed(0) + "%";
       document.getElementById("total-hours").textContent = total.toFixed(2);
-      
-      // Validate total percentage
-      if (Math.abs(sumPct - 100) > 0.1) {
-        document.getElementById("total-percent").style.color = "red";
-      } else {
-        document.getElementById("total-percent").style.color = "";
-      }
+      document.getElementById("total-percent").style.color = Math.abs(sumPct - 100) > 0.1 ? "red" : "";
     }
-    
     function initializeMonthlyInputs() {
-      const months = [
-        "January","February","March","April","May","June",
-        "July","August","September","October","November","December"
-      ];
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
       const tbody = document.getElementById("monthly-inputs");
       tbody.innerHTML = "";
-      
       months.forEach(m => {
         const tr = document.createElement("tr");
         tr.innerHTML = `<td>${m}</td>
           <td><input type="number" id="${m.toLowerCase()}-percent" class="input-cell" value="${(100/12).toFixed(2)}" min="0" max="100" step="0.01"></td>`;
         tbody.appendChild(tr);
-        
-        // Add event listener to recalculate when values change
         document.getElementById(`${m.toLowerCase()}-percent`).addEventListener('input', () => {
-          const totalPct = Array.from(document.querySelectorAll('#monthly-inputs input')).reduce((sum, input) => {
-            return sum + (parseFloat(input.value) || 0);
-          }, 0);
-          
+          const totalPct = Array.from(document.querySelectorAll('#monthly-inputs input')).reduce((sum, input) =>
+            sum + (parseFloat(input.value) || 0), 0);
           const validation = document.getElementById("total-validation");
-          if (Math.abs(totalPct - 100) > 0.1) {
-            validation.innerHTML = `<span style="color:red;">Total ${totalPct.toFixed(2)}% (should be 100%)</span>`;
-          } else {
-            validation.innerHTML = `<span style="color:green;">Total: ${totalPct.toFixed(2)}% (Valid)</span>`;
-          }
+          validation.innerHTML = Math.abs(totalPct - 100) > 0.1
+            ? `<span style="color:red;">Total ${totalPct.toFixed(2)}% (should be 100%)</span>`
+            : `<span style="color:green;">Total: ${totalPct.toFixed(2)}% (Valid)</span>`;
         });
       });
     }
-    
     function calculateMonthlyAllocation() {
-      const months = [
-        "january","february","march","april","may","june",
-        "july","august","september","october","november","december"
-      ];
-      
-      // Calculate total percentage
+      const months = ["january","february","march","april","may","june","july","august","september","october","november","december"];
       let totalPct = 0;
-      months.forEach(m => {
-        totalPct += parseFloat(document.getElementById(`${m}-percent`).value) || 0;
-      });
-      
-      // Validate total percentage
+      months.forEach(m => totalPct += parseFloat(document.getElementById(`${m}-percent`).value) || 0);
       const validation = document.getElementById("total-validation");
       if (Math.abs(totalPct - 100) > 0.1) {
         validation.innerHTML = `<span style="color:red;">Total ${totalPct.toFixed(2)}% (should be 100%)</span>`;
@@ -903,47 +851,30 @@
       } else {
         validation.innerHTML = `<span style="color:green;">Total: ${totalPct.toFixed(2)}% (Valid)</span>`;
       }
-      
-      // Get weekly holiday hours
       const weeklyHolidayHours = calculateWeeklyHolidayHours();
-      
-      // Calculate monthly allocation
       const tbody = document.getElementById("monthly-results");
       tbody.innerHTML = "";
-      
       months.forEach(m => {
         const pctMonth = parseFloat(document.getElementById(`${m}-percent`).value) || 0;
         const tr = document.createElement("tr");
         let row = `<td>${m.charAt(0).toUpperCase()+m.slice(1)}</td>`;
         let daySum = 0;
-        
         ["mon","tue","wed","thu","fri","sat","sun"].forEach(d => {
           const pctDay = parseFloat(document.getElementById(`${d}-percent`).value) || 0;
-          // Calculate hours for this day in this month
-          const hrs = weeklyHolidayHours * (pctDay/100) * (pctMonth/100) * (52/12); // 52 weeks / 12 months
+          const hrs = weeklyHolidayHours * (pctDay/100) * (pctMonth/100) * (52/12);
           daySum += hrs;
           row += `<td>${hrs.toFixed(2)}</td>`;
         });
-        
         row += `<td>${daySum.toFixed(2)}</td>`;
         tr.innerHTML = row;
         tbody.appendChild(tr);
       });
     }
-    
     function initializeCalculator() {
-      // Add event listeners to all calculator inputs
       ["agents-count","avg-weekly-hours","holiday-percentage","working-days",
-       "mon-percent","tue-percent","wed-percent","thu-percent",
-       "fri-percent","sat-percent","sun-percent"
-      ].forEach(id => {
-        document.getElementById(id).addEventListener("input", calculateDayDistribution);
-      });
-      
-      // Initialize monthly inputs
+       "mon-percent","tue-percent","wed-percent","thu-percent","fri-percent","sat-percent","sun-percent"
+      ].forEach(id => document.getElementById(id).addEventListener("input", calculateDayDistribution));
       initializeMonthlyInputs();
-      
-      // Perform initial calculations
       calculateDayDistribution();
     }
 
@@ -954,9 +885,7 @@
         sel.innerHTML = '<option value="">Loading management units...</option>';
         
         const data = await pcFetch(`${API_URL}/api/v2/workforcemanagement/managementunits`);
-        
         sel.innerHTML = '<option value="">Select management unit</option>';
-        
         if (data.entities && data.entities.length > 0) {
           data.entities.forEach(mu => {
             const o = document.createElement('option');
@@ -969,12 +898,11 @@
         }
       } catch (error) {
         console.error('Error fetching management units:', error);
-        document.getElementById('calendar-management-unit-select').innerHTML = 
+        document.getElementById('calendar-management-unit-select').innerHTML =
           '<option value="">Error loading units</option>';
         alert('Failed to load management units. Please try again.');
       }
     }
-    
     async function fetchTimeOffPlans(unitId) {
       try {
         const sel = document.getElementById('calendar-plan-select');
@@ -982,9 +910,7 @@
         sel.innerHTML = '<option value="">Loading time off plans...</option>';
         
         const data = await pcFetch(`${API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplans`);
-        
         sel.innerHTML = '<option value="">Select time off plan</option>';
-        
         if (data.entities && data.entities.length > 0) {
           data.entities.forEach(plan => {
             const o = document.createElement('option');
@@ -998,12 +924,11 @@
         }
       } catch (error) {
         console.error('Error fetching time off plans:', error);
-        document.getElementById('calendar-plan-select').innerHTML = 
+        document.getElementById('calendar-plan-select').innerHTML =
           '<option value="">Error loading plans</option>';
         alert('Failed to load time off plans. Please try again.');
       }
     }
-    
     async function fetchPlanBalances(unitId, planId, startDate, endDate) {
       try {
         const cal = document.getElementById('calendar');
@@ -1012,7 +937,6 @@
         const data = await pcFetch(
           `${API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplanbalances?timeOffPlanIds=${planId}&startDate=${startDate}&endDate=${endDate}`
         );
-        
         renderCalendarData(data.entities || []);
       } catch (error) {
         console.error('Error fetching plan balances:', error);
@@ -1027,107 +951,66 @@
       const monthSel = document.getElementById('calendar-month-select');
       const yearSel  = document.getElementById('calendar-year-select');
       const months   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      
-      // Clear existing options
+
       monthSel.innerHTML = '';
       yearSel.innerHTML = '';
-      
-      // Populate months
-      months.forEach((m, i) => {
-        monthSel.appendChild(new Option(m, i + 1));
-      });
-      
-      // Populate years (current year -1, current, current +1)
+      months.forEach((m, i) => monthSel.appendChild(new Option(m, i + 1)));
       const currentYear = new Date().getFullYear();
-      [currentYear - 1, currentYear, currentYear + 1].forEach(y => {
-        yearSel.appendChild(new Option(y, y));
-      });
-      
-      // Set current month/year
+      [currentYear - 1, currentYear, currentYear + 1].forEach(y => yearSel.appendChild(new Option(y, y)));
       monthSel.value = new Date().getMonth() + 1;
       yearSel.value = currentYear;
-      
-      // Add event listeners
-      document.getElementById('calendar-management-unit-select')
-        .addEventListener('change', e => {
-          if (e.target.value) fetchTimeOffPlans(e.target.value);
-        });
-      
-      document.getElementById('calendar-plan-select')
-        .addEventListener('change', updateCalendar);
-      
+
+      document.getElementById('calendar-management-unit-select').addEventListener('change', e => {
+        if (e.target.value) fetchTimeOffPlans(e.target.value);
+      });
+      document.getElementById('calendar-plan-select').addEventListener('change', updateCalendar);
       monthSel.addEventListener('change', updateCalendar);
       yearSel.addEventListener('change', updateCalendar);
-      
-      // Initial fetch of management units
+
       fetchManagementUnits();
     }
-    
     function updateCalendar() {
       const unitId = document.getElementById('calendar-management-unit-select').value;
       const planId = document.getElementById('calendar-plan-select').value;
       const month  = document.getElementById('calendar-month-select').value;
       const year   = document.getElementById('calendar-year-select').value;
-      
       if (!unitId || !planId) return;
-      
       const sd = `${year}-${String(month).padStart(2, '0')}-01`;
       const daysInMonth = new Date(year, month, 0).getDate();
       const ed = `${year}-${String(month).padStart(2, '0')}-${daysInMonth}`;
-      
       fetchPlanBalances(unitId, planId, sd, ed);
     }
-    
     function renderCalendarData(balances) {
       const cal = document.getElementById('calendar');
       cal.innerHTML = '';
-      
       const year  = +document.getElementById('calendar-year-select').value;
       const month = +document.getElementById('calendar-month-select').value;
       const daysInMonth = new Date(year, month, 0).getDate();
-      
-      // Get first day of month to determine weekday offset (0=Sunday, 1=Monday, etc.)
       const firstDay = new Date(year, month - 1, 1).getDay();
-      
-      // Adjust for Monday as first day of week (if needed)
-      const weekStartDay = 1; // Monday
+      const weekStartDay = 1;
       let offset = (firstDay - weekStartDay + 7) % 7;
-      
-      // Add empty cells for days before the first of the month
       for (let i = 0; i < offset; i++) {
         const emptyCell = document.createElement('div');
         emptyCell.className = 'day empty';
         cal.appendChild(emptyCell);
       }
-      
-      // Create day cells
       for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         const dayData = balances.find(b => b.date === dateStr) || {};
         const sb = dayData.startingBalance || 0;
         const br = dayData.balance || 0;
         const wl = dayData.waitlist || 0;
-        
         const tile = document.createElement('div');
         tile.className = 'day';
-        
-        // Determine background color based on availability
         const ratio = sb ? br / sb : 0;
-        if (br === 0) {
-          tile.style.background = 'var(--full-color)';
-        } else if (ratio < 0.1) {
-          tile.style.background = 'var(--nearly-color)';
-        } else {
-          tile.style.background = 'var(--available-color)';
-        }
-        
-        // Highlight current day
+        if (br === 0) tile.style.background = 'var(--full-color)';
+        else if (ratio < 0.1) tile.style.background = 'var(--nearly-color)';
+        else tile.style.background = 'var(--available-color)';
         const today = new Date();
         if (d === today.getDate() && month === today.getMonth() + 1 && year === today.getFullYear()) {
           tile.style.border = '2px solid var(--primary-color)';
           tile.style.boxShadow = '0 0 5px rgba(0,0,0,0.2)';
         }
-        
         tile.innerHTML = `
           <div class="date">${d}</div>
           <div class="balance-info">
@@ -1141,22 +1024,15 @@
 
     // ==== On page load ====
     window.onload = function() {
-      // First check for token in URL hash
-      const hasTokenInUrl = parseTokenFromHash();
-      
-      // If no token in URL, check sessionStorage
-      if (!hasTokenInUrl && !checkForStoredToken()) {
+      const gotHash = parseTokenFromHash();
+      if (!gotHash && !checkForStoredToken()) {
         window.location = AUTH_URL;
         return;
       }
-      
-      // Initialize UI components
       document.getElementById("TimeOffBalances").style.display = "flex";
       updateTables();
       initializeCalculator();
       initializeCalendar();
-      
-      // Add event listeners for tab switching
       document.querySelectorAll('.tablinks').forEach(button => {
         button.addEventListener('click', function(e) {
           openTab(e, this.getAttribute('onclick').match(/'([^']+)'/)[1]);
