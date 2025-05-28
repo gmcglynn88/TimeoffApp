@@ -301,7 +301,7 @@
   </div>
 
   <!-- Main App Content -->
-  <div id="app-content" style="display: none; width: 100%; height: 100%; display: flex; flex-direction: column;">
+  <div id="app-content" style="display: none;">
     <header>
       <h1>Your Time by IPI</h1>
       <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary%20Identity_Corporate_REVERSED_ECC.png" alt="Consulting Logo" class="logo">
@@ -609,11 +609,12 @@
 
   <script>
     // ==== Enhanced OAuth Configuration ====
-const OAUTH_CONFIG = {
-  CLIENT_ID: 'cad3d0b4-0258-48a9-8a82-4ebdf9f9a0ff',
-  REGION: 'mypurecloud.ie',
-  SCOPES: 'workforce-management:readonly workforce-management:admin',
-  REDIRECT_URI: 'https://gmcglynn88.github.io/TimeoffApp/',
+    const OAUTH_CONFIG = {
+      CLIENT_ID: '4652c8b5-9117-43c6-8e54-77eeb38aebb8',
+      REGION: 'mypurecloud.ie',
+      SCOPES: 'workforce-management:readonly workforce-management:admin',
+      get REDIRECT_URI() {
+        return window.location.origin + window.location.pathname;
       },
       get AUTH_URL() {
         const params = new URLSearchParams({
@@ -621,7 +622,7 @@ const OAUTH_CONFIG = {
           response_type: 'token',
           redirect_uri: this.REDIRECT_URI,
           scope: this.SCOPES,
-          state: this.generateState() // Add state for security
+          state: this.generateState()
         });
         return `https://login.${this.REGION}/oauth/authorize?${params.toString()}`;
       },
@@ -629,7 +630,6 @@ const OAUTH_CONFIG = {
         return `https://api.${this.REGION}`;
       },
       generateState() {
-        // Generate random state for CSRF protection
         const state = Math.random().toString(36).substring(2, 15);
         sessionStorage.setItem('oauth_state', state);
         return state;
@@ -637,17 +637,45 @@ const OAUTH_CONFIG = {
     };
 
     let accessToken = null;
+    let authTimeout = null;
 
-    // Enhanced token parsing with better error handling
+    // Check for token in URL hash when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      const tokenResult = parseTokenFromHash();
+      
+      if (tokenResult.success) {
+        // Successfully got token from URL
+        initializeApp();
+      } else if (sessionStorage.getItem('purecloud_access_token')) {
+        // Check if we have a stored token that's still valid
+        const expires = parseInt(sessionStorage.getItem('purecloud_token_expires')) || 0;
+        if (Date.now() < expires) {
+          accessToken = sessionStorage.getItem('purecloud_access_token');
+          initializeApp();
+        } else {
+          // Token expired, need to re-authenticate
+          startAuthentication();
+        }
+      } else {
+        // No token found, start authentication
+        startAuthentication();
+      }
+
+      // Set timeout to prevent infinite loading
+      authTimeout = setTimeout(() => {
+        if (document.getElementById('loading-screen').style.display !== 'none') {
+          showError('Authentication timed out. Please refresh the page to try again.');
+          hideLoadingScreen();
+        }
+      }, 30000); // 30 seconds timeout
+    });
+
     function parseTokenFromHash() {
       try {
         const hash = window.location.hash.substring(1);
         if (!hash) return { success: false, error: 'No hash fragment found' };
         
-        // Parse hash parameters
         const params = new URLSearchParams(hash);
-        
-        // Check for OAuth errors first
         const error = params.get('error');
         if (error) {
           const errorDesc = params.get('error_description') || 'Unknown error';
@@ -655,7 +683,6 @@ const OAUTH_CONFIG = {
           return { success: false, error: `OAuth Error: ${error} - ${errorDesc}` };
         }
         
-        // Verify state (CSRF protection)
         const returnedState = params.get('state');
         const savedState = sessionStorage.getItem('oauth_state');
         if (returnedState !== savedState) {
@@ -663,19 +690,16 @@ const OAUTH_CONFIG = {
           return { success: false, error: 'Security error: State mismatch' };
         }
         
-        // Extract token
         accessToken = params.get('access_token');
         if (!accessToken) {
           return { success: false, error: 'No access token found in response' };
         }
         
-        // Store token and metadata
         const expiresIn = parseInt(params.get('expires_in')) || 28800; // 8 hours default
         sessionStorage.setItem('purecloud_access_token', accessToken);
         sessionStorage.setItem('purecloud_token_expires', Date.now() + (expiresIn * 1000));
         sessionStorage.setItem('purecloud_token_scope', params.get('scope') || '');
         
-        // Clean up
         sessionStorage.removeItem('oauth_state');
         history.replaceState(null, null, window.location.pathname);
         
@@ -687,3 +711,508 @@ const OAUTH_CONFIG = {
         return { success: false, error: e.message };
       }
     }
+
+    function startAuthentication() {
+      // Clear any existing timeout
+      if (authTimeout) {
+        clearTimeout(authTimeout);
+      }
+      
+      // Check if we're already in the middle of authentication
+      if (window.location.hash.includes('access_token')) {
+        return;
+      }
+      
+      // Redirect to PureCloud login
+      window.location.href = OAUTH_CONFIG.AUTH_URL;
+    }
+
+    function initializeApp() {
+      // Clear the authentication timeout
+      if (authTimeout) {
+        clearTimeout(authTimeout);
+      }
+      
+      // Hide loading screen and show app content
+      hideLoadingScreen();
+      document.getElementById('app-content').style.display = 'flex';
+      
+      // Initialize calculator
+      initializeMonthlyInputs();
+      calculateHolidayAllocation();
+      
+      // Add event listeners for calculator inputs
+      document.querySelectorAll('#Calculator .input-cell').forEach(input => {
+        input.addEventListener('change', calculateHolidayAllocation);
+      });
+      
+      // Initialize calendar date selectors
+      initializeCalendarSelectors();
+      
+      // Load initial data
+      updateTables();
+    }
+
+    function hideLoadingScreen() {
+      document.getElementById('loading-screen').style.display = 'none';
+    }
+
+    function showError(message) {
+      const errorElement = document.getElementById('error-message');
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+
+    // ==== Tab Management ====
+    function openTab(evt, tabName) {
+      const tabcontent = document.getElementsByClassName('tabcontent');
+      for (let i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = 'none';
+      }
+      
+      const tablinks = document.getElementsByClassName('tablinks');
+      for (let i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(' active', '');
+      }
+      
+      document.getElementById(tabName).style.display = 'flex';
+      evt.currentTarget.className += ' active';
+    }
+
+    // ==== Time Off Balances Functions ====
+    function updateTables() {
+      // In a real implementation, this would fetch data from PureCloud API
+      // For now, we'll use mock data
+      const mockBalances = [
+        { name: 'Craig Farley', team: 'Team Reading', unit: 'Customer Service', holidayCurrent: 120, holidayNext: 0, lieu: 15.5 },
+        { name: 'Sasha Smith', team: 'Team Sheffield', unit: 'Customer Service', holidayCurrent: 95.25, holidayNext: 0, lieu: 8 },
+        { name: 'Lisa Lowe', team: 'Team Manchester', unit: 'Sales & Retentions', holidayCurrent: 150, holidayNext: 0, lieu: 0 },
+        { name: 'Sian Gibbs', team: 'Sales & Retentions', unit: 'Sales & Retentions', holidayCurrent: 80, holidayNext: 0, lieu: 12.5 },
+        { name: 'John Thompson', team: 'Customer Service 2', unit: 'Customer Service', holidayCurrent: 110, holidayNext: 0, lieu: 5.75 },
+        { name: 'Olivia Jenson', team: 'Team Reading', unit: 'Customer Service', holidayCurrent: 65, holidayNext: 0, lieu: 20 },
+        { name: 'Ethan Reynolds', team: 'Team Sheffield', unit: 'Customer Service', holidayCurrent: 140, holidayNext: 0, lieu: 0 },
+        { name: 'Ava Mitchell', team: 'Team Manchester', unit: 'Sales & Retentions', holidayCurrent: 75.5, holidayNext: 0, lieu: 10.25 },
+        { name: 'Gerard McGlynn', team: 'Sales & Retentions', unit: 'Sales & Retentions', holidayCurrent: 100, holidayNext: 0, lieu: 0 },
+        { name: 'Rhys Turner', team: 'Customer Service 2', unit: 'Customer Service', holidayCurrent: 90, holidayNext: 0, lieu: 15 },
+        { name: 'Tom Collins', team: 'Team Reading', unit: 'Customer Service', holidayCurrent: 125.75, holidayNext: 0, lieu: 7.5 }
+      ];
+      
+      const mockDetails = [
+        { name: 'Craig Farley', team: 'Team Reading', unit: 'Customer Service', start: '2024-05-01', end: '2024-05-07', deduction: 40, days: 5 },
+        { name: 'Craig Farley', team: 'Team Reading', unit: 'Customer Service', start: '2024-07-15', end: '2024-07-22', deduction: 40, days: 5 },
+        { name: 'Sasha Smith', team: 'Team Sheffield', unit: 'Customer Service', start: '2024-06-10', end: '2024-06-14', deduction: 32, days: 4 },
+        { name: 'Lisa Lowe', team: 'Team Manchester', unit: 'Sales & Retentions', start: '2024-08-01', end: '2024-08-14', deduction: 80, days: 10 },
+        { name: 'Sian Gibbs', team: 'Sales & Retentions', unit: 'Sales & Retentions', start: '2024-09-05', end: '2024-09-09', deduction: 24, days: 3 },
+        { name: 'John Thompson', team: 'Customer Service 2', unit: 'Customer Service', start: '2024-05-20', end: '2024-05-24', deduction: 40, days: 5 },
+        { name: 'Olivia Jenson', team: 'Team Reading', unit: 'Customer Service', start: '2024-10-15', end: '2024-10-25', deduction: 60, days: 7 },
+        { name: 'Ethan Reynolds', team: 'Team Sheffield', unit: 'Customer Service', start: '2024-11-01', end: '2024-11-08', deduction: 40, days: 5 },
+        { name: 'Ava Mitchell', team: 'Team Manchester', unit: 'Sales & Retentions', start: '2024-12-20', end: '2025-01-03', deduction: 80, days: 10 },
+        { name: 'Gerard McGlynn', team: 'Sales & Retentions', unit: 'Sales & Retentions', start: '2024-07-01', end: '2024-07-05', deduction: 32, days: 4 },
+        { name: 'Rhys Turner', team: 'Customer Service 2', unit: 'Customer Service', start: '2024-08-15', end: '2024-08-19', deduction: 32, days: 4 },
+        { name: 'Tom Collins', team: 'Team Reading', unit: 'Customer Service', start: '2024-09-25', end: '2024-09-29', deduction: 24, days: 3 }
+      ];
+      
+      // Apply filters
+      const agentFilter = document.getElementById('agent-select').value;
+      const yearFilter = document.getElementById('year-select').value;
+      const unitFilter = document.getElementById('management-unit-select').value;
+      const teamFilter = document.getElementById('team-select').value;
+      
+      let filteredBalances = mockBalances;
+      let filteredDetails = mockDetails;
+      
+      if (agentFilter !== 'Select' && agentFilter !== 'all') {
+        filteredBalances = filteredBalances.filter(b => b.name === agentFilter);
+        filteredDetails = filteredDetails.filter(d => d.name === agentFilter);
+      }
+      
+      if (unitFilter !== 'Select' && unitFilter !== 'all') {
+        filteredBalances = filteredBalances.filter(b => b.unit === unitFilter);
+        filteredDetails = filteredDetails.filter(d => d.unit === unitFilter);
+      }
+      
+      if (teamFilter !== 'Select' && teamFilter !== 'all') {
+        filteredBalances = filteredBalances.filter(b => b.team === teamFilter);
+        filteredDetails = filteredDetails.filter(d => d.team === teamFilter);
+      }
+      
+      // Populate balances table
+      const balancesBody = document.getElementById('balances-table-body');
+      balancesBody.innerHTML = '';
+      
+      filteredBalances.forEach(balance => {
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+          <td>${balance.name}</td>
+          <td>${balance.team}</td>
+          <td>${balance.unit}</td>
+          <td><input type="number" class="balance-input" value="${balance.holidayCurrent}" onchange="markRowChanged(this)"></td>
+          <td><input type="number" class="balance-input" value="${balance.holidayNext}" onchange="markRowChanged(this)"></td>
+          <td><input type="number" class="balance-input" value="${balance.lieu}" onchange="markRowChanged(this)"></td>
+        `;
+        
+        balancesBody.appendChild(row);
+      });
+      
+      // Populate details table
+      const detailsBody = document.getElementById('details-table-body');
+      detailsBody.innerHTML = '';
+      
+      filteredDetails.forEach(detail => {
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+          <td>${detail.name}</td>
+          <td>${detail.team}</td>
+          <td>${detail.unit}</td>
+          <td>${detail.start}</td>
+          <td>${detail.end}</td>
+          <td>${detail.deduction}</td>
+          <td>${detail.days}</td>
+        `;
+        
+        detailsBody.appendChild(row);
+      });
+    }
+
+    function filterTables() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const rows = document.querySelectorAll('#balances-table-body tr, #details-table-body tr');
+      
+      rows.forEach(row => {
+        const name = row.cells[0].textContent.toLowerCase();
+        if (name.includes(searchTerm)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    function markRowChanged(input) {
+      const row = input.closest('tr');
+      row.style.backgroundColor = 'rgba(99, 171, 143, 0.2)';
+    }
+
+    function saveChanges() {
+      // In a real implementation, this would save changes back to PureCloud
+      alert('Changes saved successfully!');
+      
+      // Reset row highlighting
+      document.querySelectorAll('#balances-table-body tr').forEach(row => {
+        row.style.backgroundColor = '';
+      });
+    }
+
+    // ==== Export/Import Functions ====
+    function exportTableToCSV(tableId, filename) {
+      const table = document.getElementById(tableId);
+      const rows = table.querySelectorAll('tr');
+      let csv = [];
+      
+      for (let i = 0; i < rows.length; i++) {
+        const row = [], cols = rows[i].querySelectorAll('td, th');
+        
+        for (let j = 0; j < cols.length; j++) {
+          // Handle input elements in cells
+          if (cols[j].querySelector('input')) {
+            row.push(cols[j].querySelector('input').value);
+          } else {
+            row.push(cols[j].textContent.trim());
+          }
+        }
+        
+        csv.push(row.join(','));
+      }
+      
+      // Download CSV file
+      const csvContent = csv.join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function importTableFromCSV(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const contents = e.target.result;
+        const rows = contents.split('\n');
+        
+        // Skip header row
+        for (let i = 1; i < rows.length; i++) {
+          if (!rows[i]) continue;
+          
+          const cols = rows[i].split(',');
+          // In a real implementation, you would update the table with imported data
+          console.log('Imported row:', cols);
+        }
+        
+        alert('CSV imported successfully!');
+      };
+      
+      reader.readAsText(file);
+      event.target.value = ''; // Reset file input
+    }
+
+    // ==== Calculator Functions ====
+    function initializeMonthlyInputs() {
+      const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      
+      const monthlyInputs = document.getElementById('monthly-inputs');
+      monthlyInputs.innerHTML = '';
+      
+      months.forEach((month, index) => {
+        const row = document.createElement('tr');
+        
+        // Default percentages - higher in summer months
+        let defaultPercent = 7;
+        if (index >= 4 && index <= 7) defaultPercent = 10; // May-August
+        if (index === 5 || index === 6) defaultPercent = 12; // June-July
+        
+        row.innerHTML = `
+          <td>${month}</td>
+          <td><input type="number" class="input-cell monthly-percent" value="${defaultPercent}" min="0" max="100" step="0.01"></td>
+        `;
+        
+        monthlyInputs.appendChild(row);
+      });
+      
+      // Add event listeners to monthly inputs
+      document.querySelectorAll('.monthly-percent').forEach(input => {
+        input.addEventListener('change', validateMonthlyPercentages);
+      });
+    }
+
+    function validateMonthlyPercentages() {
+      let total = 0;
+      const inputs = document.querySelectorAll('.monthly-percent');
+      
+      inputs.forEach(input => {
+        total += parseFloat(input.value) || 0;
+      });
+      
+      const validationElement = document.getElementById('total-validation');
+      
+      if (Math.abs(total - 100) < 0.01) {
+        validationElement.textContent = `Total: ${total.toFixed(2)}% (Valid)`;
+        validationElement.style.color = 'green';
+      } else {
+        validationElement.textContent = `Total: ${total.toFixed(2)}% (Needs to equal 100%)`;
+        validationElement.style.color = 'red';
+      }
+    }
+
+    function calculateHolidayAllocation() {
+      // Get input values
+      const fteHours = parseFloat(document.getElementById('fte-hours').value) || 40;
+      const annualLeaveDays = parseFloat(document.getElementById('annual-leave-days').value) || 33;
+      const workingDays = parseFloat(document.getElementById('working-days').value) || 5;
+      const agentsCount = parseFloat(document.getElementById('agents-count').value) || 100;
+      const avgWeeklyHours = parseFloat(document.getElementById('avg-weekly-hours').value) || 32;
+      const holidayPercentage = parseFloat(document.getElementById('holiday-percentage').value) || 14;
+      
+      // Calculate daily hours
+      const dailyHours = (fteHours / workingDays) * (annualLeaveDays / 52);
+      
+      // Calculate weekly and daily holiday allocation
+      const weeklyHolidayHours = (avgWeeklyHours * agentsCount * holidayPercentage) / 100;
+      const dailyHolidayHours = weeklyHolidayHours / workingDays;
+      
+      // Update results
+      document.getElementById('weekly-holiday-hours').textContent = weeklyHolidayHours.toFixed(2);
+      document.getElementById('daily-holiday-hours').textContent = dailyHolidayHours.toFixed(2);
+      
+      // Calculate day distribution
+      calculateDayDistribution(weeklyHolidayHours);
+      
+      // Validate monthly percentages
+      validateMonthlyPercentages();
+    }
+
+    function calculateDayDistribution(weeklyHours) {
+      const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+      let totalPercent = 0;
+      let totalHours = 0;
+      
+      days.forEach(day => {
+        const percent = parseFloat(document.getElementById(`${day}-percent`).value) || 0;
+        totalPercent += percent;
+        
+        const hours = (weeklyHours * percent) / 100;
+        totalHours += hours;
+        
+        document.getElementById(`${day}-hours`).textContent = hours.toFixed(2);
+      });
+      
+      // Update totals
+      document.getElementById('total-percent').textContent = `${totalPercent.toFixed(0)}%`;
+      document.getElementById('total-hours').textContent = totalHours.toFixed(2);
+    }
+
+    function calculateMonthlyAllocation() {
+      // Validate percentages first
+      let totalPercent = 0;
+      const monthlyPercents = [];
+      const inputs = document.querySelectorAll('.monthly-percent');
+      
+      inputs.forEach(input => {
+        const percent = parseFloat(input.value) || 0;
+        monthlyPercents.push(percent);
+        totalPercent += percent;
+      });
+      
+      if (Math.abs(totalPercent - 100) > 0.01) {
+        alert('Monthly percentages must total exactly 100%');
+        return;
+      }
+      
+      // Get weekly holiday hours
+      const weeklyHolidayHours = parseFloat(document.getElementById('weekly-holiday-hours').textContent) || 0;
+      
+      // Calculate monthly allocation
+      const monthlyResults = document.getElementById('monthly-results');
+      monthlyResults.innerHTML = '';
+      
+      const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      
+      const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+      
+      months.forEach((month, monthIndex) => {
+        const row = document.createElement('tr');
+        const monthPercent = monthlyPercents[monthIndex];
+        const monthHours = (weeklyHolidayHours * 4.345) * (monthPercent / 100); // 4.345 weeks per month
+        
+        let rowHTML = `<td>${month}</td>`;
+        let dayTotal = 0;
+        
+        days.forEach(day => {
+          const dayPercent = parseFloat(document.getElementById(`${day}-percent`).value) || 0;
+          const dayHours = (monthHours * dayPercent) / 100;
+          dayTotal += dayHours;
+          
+          rowHTML += `<td>${dayHours.toFixed(1)}</td>`;
+        });
+        
+        rowHTML += `<td>${dayTotal.toFixed(1)}</td>`;
+        row.innerHTML = rowHTML;
+        monthlyResults.appendChild(row);
+      });
+    }
+
+    // ==== Calendar Functions ====
+    function initializeCalendarSelectors() {
+      // Populate month selector
+      const monthSelect = document.getElementById('calendar-month-select');
+      const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      
+      monthSelect.innerHTML = '';
+      months.forEach((month, index) => {
+        const option = document.createElement('option');
+        option.value = index + 1;
+        option.textContent = month;
+        monthSelect.appendChild(option);
+      });
+      
+      // Set current month as default
+      const currentMonth = new Date().getMonth() + 1;
+      monthSelect.value = currentMonth;
+      
+      // Populate year selector
+      const yearSelect = document.getElementById('calendar-year-select');
+      const currentYear = new Date().getFullYear();
+      
+      yearSelect.innerHTML = '';
+      for (let year = currentYear - 1; year <= currentYear + 1; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+      }
+      
+      // Set current year as default
+      yearSelect.value = currentYear;
+      
+      // Add event listeners
+      monthSelect.addEventListener('change', generateCalendar);
+      yearSelect.addEventListener('change', generateCalendar);
+      
+      // Generate initial calendar
+      generateCalendar();
+    }
+
+    function generateCalendar() {
+      const month = parseInt(document.getElementById('calendar-month-select').value);
+      const year = parseInt(document.getElementById('calendar-year-select').value);
+      
+      // Get first day of month and how many days in month
+      const firstDay = new Date(year, month - 1, 1);
+      const daysInMonth = new Date(year, month, 0).getDate();
+      
+      // Get day of week for first day (0 = Sunday, 1 = Monday, etc.)
+      const startingDay = firstDay.getDay();
+      
+      // Generate calendar grid
+      const calendar = document.getElementById('calendar');
+      calendar.innerHTML = '';
+      
+      // Add empty cells for days before the first day of the month
+      for (let i = 0; i < startingDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'day empty';
+        calendar.appendChild(emptyDay);
+      }
+      
+      // Add cells for each day of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        
+        // Add date
+        const dateElement = document.createElement('div');
+        dateElement.className = 'date';
+        dateElement.textContent = day;
+        dayElement.appendChild(dateElement);
+        
+        // Add balance info (mock data)
+        const balanceElement = document.createElement('div');
+        balanceElement.className = 'balance-info';
+        
+        // Randomly assign availability status for demo purposes
+        const random = Math.random();
+        if (random < 0.7) {
+          dayElement.style.backgroundColor = 'var(--available-color)';
+          balanceElement.textContent = 'Available';
+        } else if (random < 0.9) {
+          dayElement.style.backgroundColor = 'var(--nearly-color)';
+          balanceElement.textContent = 'Nearly full';
+        } else {
+          dayElement.style.backgroundColor = 'var(--full-color)';
+          balanceElement.textContent = 'Fully booked';
+        }
+        
+        dayElement.appendChild(balanceElement);
+        calendar.appendChild(dayElement);
+      }
+    }
+  </script>
+</body>
+</html>
