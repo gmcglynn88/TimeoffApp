@@ -609,32 +609,30 @@
 
   <script>
     // ==== Enhanced OAuth Configuration ====
-    const OAUTH_CONFIG = {
-      CLIENT_ID: 'cad3d0b4-0258-48a9-8a82-4ebdf9f9a0ff',
-      REGION: 'mypurecloud.ie',
-      SCOPES: 'workforce-management:readonly workforce-management:admin',
-      get REDIRECT_URI() {
-        return window.location.origin + window.location.pathname;
-      },
-      get AUTH_URL() {
-        const params = new URLSearchParams({
-          client_id: this.CLIENT_ID,
-          response_type: 'token',
-          redirect_uri: this.REDIRECT_URI,
-          scope: this.SCOPES,
-          state: this.generateState()
-        });
-        return `https://login.${this.REGION}/oauth/authorize?${params.toString()}`;
-      },
-      get API_URL() {
-        return `https://api.${this.REGION}`;
-      },
-      generateState() {
-        const state = Math.random().toString(36).substring(2, 15);
-        sessionStorage.setItem('oauth_state', state);
-        return state;
-      }
-    };
+const OAUTH_CONFIG = {
+  CLIENT_ID: 'cad3d0b4-0258-48a9-8a82-4ebdf9f9a0ff',
+  REGION: 'mypurecloud.ie',
+  SCOPES: 'workforce-management:readonly workforce-management:admin',
+  REDIRECT_URI: 'https://gmcglynn88.github.io/TimeoffApp/',
+  get AUTH_URL() {
+    const params = new URLSearchParams({
+      client_id: this.CLIENT_ID,
+      response_type: 'token',
+      redirect_uri: this.REDIRECT_URI,
+      scope: this.SCOPES,
+      state: this.generateState()
+    });
+    return `https://login.${this.REGION}/oauth/authorize?${params.toString()}`;
+  },
+  get API_URL() {
+    return `https://api.${this.REGION}`;
+  },
+  generateState() {
+    const state = Math.random().toString(36).substring(2, 15);
+    sessionStorage.setItem('oauth_state', state);
+    return state;
+  }
+};
 
     let accessToken = null;
     let authTimeout = null;
