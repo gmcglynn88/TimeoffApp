@@ -281,7 +281,7 @@
       border: 1px solid var(--border-color);
       border-radius: 4px;
       padding: 8px;
-      min-height: 80px;
+      min-height: 100px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -298,6 +298,11 @@
       font-size: 12px;
       color: var(--text-light);
       line-height: 1.2;
+    }
+    .calendar .day .remaining-hours {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 4px;
     }
 
     /* Responsive */
@@ -579,7 +584,7 @@
           <div class="filters">
             <div>
               <h3>Select Management Unit</h3>
-              <select id="calendar-management-unit-select">
+              <select id="calendar-management-unit-select" onchange="loadTimeOffPlans()">
                 <option value="">Loading management units...</option>
               </select>
             </div>
@@ -606,33 +611,36 @@
 
   <script>
     // ==== Enhanced OAuth Configuration ====
-const OAUTH_CONFIG = {
-  CLIENT_ID: 'cad3d0b4-0258-48a9-8a82-4ebdf9f9a0ff',
-  REGION: 'mypurecloud.ie',
-  SCOPES: 'workforce-management:readonly workforce-management:admin',
-  REDIRECT_URI: 'https://gmcglynn88.github.io/TimeoffApp/',
-  get AUTH_URL() {
-    const params = new URLSearchParams({
-      client_id: this.CLIENT_ID,
-      response_type: 'token',
-      redirect_uri: this.REDIRECT_URI,
-      scope: this.SCOPES,
-      state: this.generateState()
-    });
-    return `https://login.${this.REGION}/oauth/authorize?${params.toString()}`;
-  },
-  get API_URL() {
-    return `https://api.${this.REGION}`;
-  },
-  generateState() {
-    const state = Math.random().toString(36).substring(2, 15);
-    sessionStorage.setItem('oauth_state', state);
-    return state;
-  }
-};
+    const OAUTH_CONFIG = {
+      CLIENT_ID: 'cad3d0b4-0258-48a9-8a82-4ebdf9f9a0ff',
+      REGION: 'mypurecloud.ie',
+      SCOPES: 'workforce-management:readonly workforce-management:admin',
+      REDIRECT_URI: 'https://gmcglynn88.github.io/TimeoffApp/',
+      get AUTH_URL() {
+        const params = new URLSearchParams({
+          client_id: this.CLIENT_ID,
+          response_type: 'token',
+          redirect_uri: this.REDIRECT_URI,
+          scope: this.SCOPES,
+          state: this.generateState()
+        });
+        return `https://login.${this.REGION}/oauth/authorize?${params.toString()}`;
+      },
+      get API_URL() {
+        return `https://api.${this.REGION}`;
+      },
+      generateState() {
+        const state = Math.random().toString(36).substring(2, 15);
+        sessionStorage.setItem('oauth_state', state);
+        return state;
+      }
+    };
 
     let accessToken = null;
     let authTimeout = null;
+    let managementUnits = [];
+    let timeOffPlans = [];
+    let timeOffLimits = {};
 
     // Check for token in URL hash when page loads
     document.addEventListener('DOMContentLoaded', function() {
@@ -746,6 +754,9 @@ const OAUTH_CONFIG = {
       
       // Load initial data
       updateTables();
+      
+      // Load management units for calendar
+      loadManagementUnits();
     }
 
     function hideLoadingScreen() {
@@ -756,6 +767,283 @@ const OAUTH_CONFIG = {
       const errorElement = document.getElementById('error-message');
       errorElement.textContent = message;
       errorElement.style.display = 'block';
+    }
+
+    // ==== API Helper Functions ====
+    async function makeApiRequest(url, method = 'GET', body = null) {
+      try {
+        const headers = {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        };
+        
+        const options = {
+          method: method,
+          headers: headers
+        };
+        
+        if (body) {
+          options.body = JSON.stringify(body);
+        }
+        
+        const response = await fetch(`${OAUTH_CONFIG.API_URL}${url}`, options);
+        
+        if (!response.ok) {
+          throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('API request error:', error);
+        showError(`API Error: ${error.message}`);
+        throw error;
+      }
+    }
+
+    // ==== Calendar API Functions ====
+    async function loadManagementUnits() {
+      try {
+        const data = await makeApiRequest('/api/v2/workforcemanagement/managementunits');
+        managementUnits = data.entities || [];
+        
+        const select = document.getElementById('calendar-management-unit-select');
+        select.innerHTML = '<option value="">Select Management Unit</option>';
+        
+        managementUnits.forEach(unit => {
+          const option = document.createElement('option');
+          option.value = unit.id;
+          option.textContent = unit.name;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading management units:', error);
+      }
+    }
+
+    async function loadTimeOffPlans() {
+      const unitSelect = document.getElementById('calendar-management-unit-select');
+      const unitId = unitSelect.value;
+      
+      if (!unitId) return;
+      
+      try {
+        const data = await makeApiRequest(`/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplans`);
+        timeOffPlans = data.entities || [];
+        
+        const select = document.getElementById('calendar-plan-select');
+        select.innerHTML = '<option value="">Select Time Off Plan</option>';
+        select.disabled = false;
+        
+        timeOffPlans.forEach(plan => {
+          const option = document.createElement('option');
+          option.value = plan.id;
+          option.textContent = plan.name;
+          select.appendChild(option);
+        });
+        
+        // Load time off limits for this management unit
+        await loadTimeOffLimits(unitId);
+      } catch (error) {
+        console.error('Error loading time off plans:', error);
+      }
+    }
+
+    async function loadTimeOffLimits(managementUnitId) {
+      try {
+        const data = await makeApiRequest(`/api/v2/workforcemanagement/managementunits/${managementUnitId}/timeofflimits`);
+        timeOffLimits = {};
+        
+        if (data.entities && data.entities.length > 0) {
+          data.entities.forEach(limit => {
+            timeOffLimits[limit.id] = limit;
+          });
+        }
+      } catch (error) {
+        console.error('Error loading time off limits:', error);
+      }
+    }
+
+    async function getTimeOffLimitValues(managementUnitId, timeOffLimitId, startDate, endDate) {
+      try {
+        const requestBody = {
+          timeOffLimitId: timeOffLimitId,
+          activityCodeId: null,
+          dateRanges: [{
+            startDate: startDate,
+            endDate: endDate
+          }]
+        };
+        
+        const data = await makeApiRequest(
+          `/api/v2/workforcemanagement/managementunits/${managementUnitId}/timeofflimits/values/query`,
+          'POST',
+          requestBody
+        );
+        
+        return data.values || [];
+      } catch (error) {
+        console.error('Error getting time off limit values:', error);
+        return [];
+      }
+    }
+
+    // ==== Calendar Functions ====
+    function initializeCalendarSelectors() {
+      // Populate month selector
+      const monthSelect = document.getElementById('calendar-month-select');
+      const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      
+      monthSelect.innerHTML = '';
+      months.forEach((month, index) => {
+        const option = document.createElement('option');
+        option.value = index + 1;
+        option.textContent = month;
+        monthSelect.appendChild(option);
+      });
+      
+      // Set current month as default
+      const currentMonth = new Date().getMonth() + 1;
+      monthSelect.value = currentMonth;
+      
+      // Populate year selector
+      const yearSelect = document.getElementById('calendar-year-select');
+      const currentYear = new Date().getFullYear();
+      
+      yearSelect.innerHTML = '';
+      for (let year = currentYear - 1; year <= currentYear + 1; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+      }
+      
+      // Set current year as default
+      yearSelect.value = currentYear;
+      
+      // Add event listeners
+      monthSelect.addEventListener('change', generateCalendar);
+      yearSelect.addEventListener('change', generateCalendar);
+      document.getElementById('calendar-plan-select').addEventListener('change', generateCalendar);
+      
+      // Generate initial calendar
+      generateCalendar();
+    }
+
+    async function generateCalendar() {
+      const month = parseInt(document.getElementById('calendar-month-select').value);
+      const year = parseInt(document.getElementById('calendar-year-select').value);
+      const managementUnitId = document.getElementById('calendar-management-unit-select').value;
+      const timeOffPlanId = document.getElementById('calendar-plan-select').value;
+      
+      if (!managementUnitId || !timeOffPlanId) {
+        return;
+      }
+      
+      // Get first day of month and how many days in month
+      const firstDay = new Date(year, month - 1, 1);
+      const daysInMonth = new Date(year, month, 0).getDate();
+      
+      // Get day of week for first day (0 = Sunday, 1 = Monday, etc.)
+      const startingDay = firstDay.getDay();
+      
+      // Generate calendar grid
+      const calendar = document.getElementById('calendar');
+      calendar.innerHTML = '';
+      
+      // Add empty cells for days before the first day of the month
+      for (let i = 0; i < startingDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'day empty';
+        calendar.appendChild(emptyDay);
+      }
+      
+      // Get time off limit values for the month
+      const startDate = formatDate(firstDay);
+      const endDate = formatDate(new Date(year, month - 1, daysInMonth));
+      
+      // Find the time off limit ID for the selected plan
+      const selectedPlan = timeOffPlans.find(plan => plan.id === timeOffPlanId);
+      if (!selectedPlan || !selectedPlan.timeOffLimits || selectedPlan.timeOffLimits.length === 0) {
+        showError('No time off limits found for the selected plan');
+        return;
+      }
+      
+      const timeOffLimitId = selectedPlan.timeOffLimits[0].id;
+      
+      try {
+        const limitValues = await getTimeOffLimitValues(managementUnitId, timeOffLimitId, startDate, endDate);
+        
+        // Create a map of date to limit values for easy lookup
+        const limitValuesMap = {};
+        limitValues.forEach(value => {
+          const date = value.date.split('T')[0];
+          limitValuesMap[date] = value;
+        });
+        
+        // Add cells for each day of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dayElement = document.createElement('div');
+          dayElement.className = 'day';
+          
+          // Format the current date
+          const currentDate = new Date(year, month - 1, day);
+          const formattedDate = formatDate(currentDate);
+          
+          // Add date
+          const dateElement = document.createElement('div');
+          dateElement.className = 'date';
+          dateElement.textContent = day;
+          dayElement.appendChild(dateElement);
+          
+          // Add balance info
+          const balanceElement = document.createElement('div');
+          balanceElement.className = 'balance-info';
+          
+          // Add remaining hours
+          const hoursElement = document.createElement('div');
+          hoursElement.className = 'remaining-hours';
+          
+          const limitValue = limitValuesMap[formattedDate];
+          if (limitValue) {
+            const remainingHours = limitValue.availableMinutes / 60;
+            hoursElement.textContent = `${remainingHours.toFixed(1)}h remaining`;
+            
+            // Color code based on availability
+            if (remainingHours <= 0) {
+              dayElement.style.backgroundColor = 'var(--full-color)';
+              balanceElement.textContent = 'Fully booked';
+            } else if (remainingHours <= 4) { // Assuming 4 hours is the threshold for "nearly full"
+              dayElement.style.backgroundColor = 'var(--nearly-color)';
+              balanceElement.textContent = 'Nearly full';
+            } else {
+              dayElement.style.backgroundColor = 'var(--available-color)';
+              balanceElement.textContent = 'Available';
+            }
+          } else {
+            // No data for this date
+            dayElement.style.backgroundColor = 'var(--light-bg)';
+            balanceElement.textContent = 'No data';
+            hoursElement.textContent = 'N/A';
+          }
+          
+          dayElement.appendChild(balanceElement);
+          dayElement.appendChild(hoursElement);
+          calendar.appendChild(dayElement);
+        }
+      } catch (error) {
+        console.error('Error generating calendar:', error);
+        showError('Failed to load calendar data');
+      }
+    }
+
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     }
 
     // ==== Tab Management ====
@@ -772,6 +1060,11 @@ const OAUTH_CONFIG = {
       
       document.getElementById(tabName).style.display = 'block';
       evt.currentTarget.className += ' active';
+      
+      // Refresh calendar when tab is shown
+      if (tabName === 'TimeOffCalendar') {
+        generateCalendar();
+      }
     }
 
     // ==== Time Off Balances Functions ====
@@ -792,21 +1085,6 @@ const OAUTH_CONFIG = {
         { name: 'Tom Collins', team: 'Team Reading', unit: 'Customer Service', holidayCurrent: 125.75, holidayNext: 0, lieu: 7.5 }
       ];
       
-      const mockDetails = [
-        { name: 'Craig Farley', team: 'Team Reading', unit: 'Customer Service', start: '2024-05-01', end: '2024-05-07', deduction: 40, days: 5 },
-        { name: 'Craig Farley', team: 'Team Reading', unit: 'Customer Service', start: '2024-07-15', end: '2024-07-22', deduction: 40, days: 5 },
-        { name: 'Sasha Smith', team: 'Team Sheffield', unit: 'Customer Service', start: '2024-06-10', end: '2024-06-14', deduction: 32, days: 4 },
-        { name: 'Lisa Lowe', team: 'Team Manchester', unit: 'Sales & Retentions', start: '2024-08-01', end: '2024-08-14', deduction: 80, days: 10 },
-        { name: 'Sian Gibbs', team: 'Sales & Retentions', unit: 'Sales & Retentions', start: '2024-09-05', end: '2024-09-09', deduction: 24, days: 3 },
-        { name: 'John Thompson', team: 'Customer Service 2', unit: 'Customer Service', start: '2024-05-20', end: '2024-05-24', deduction: 40, days: 5 },
-        { name: 'Olivia Jenson', team: 'Team Reading', unit: 'Customer Service', start: '2024-10-15', end: '2024-10-25', deduction: 60, days: 7 },
-        { name: 'Ethan Reynolds', team: 'Team Sheffield', unit: 'Customer Service', start: '2024-11-01', end: '2024-11-08', deduction: 40, days: 5 },
-        { name: 'Ava Mitchell', team: 'Team Manchester', unit: 'Sales & Retentions', start: '2024-12-20', end: '2025-01-03', deduction: 80, days: 10 },
-        { name: 'Gerard McGlynn', team: 'Sales & Retentions', unit: 'Sales & Retentions', start: '2024-07-01', end: '2024-07-05', deduction: 32, days: 4 },
-        { name: 'Rhys Turner', team: 'Customer Service 2', unit: 'Customer Service', start: '2024-08-15', end: '2024-08-19', deduction: 32, days: 4 },
-        { name: 'Tom Collins', team: 'Team Reading', unit: 'Customer Service', start: '2024-09-25', end: '2024-09-29', deduction: 24, days: 3 }
-      ];
-      
       // Apply filters
       const agentFilter = document.getElementById('agent-select').value;
       const yearFilter = document.getElementById('year-select').value;
@@ -814,21 +1092,17 @@ const OAUTH_CONFIG = {
       const teamFilter = document.getElementById('team-select').value;
       
       let filteredBalances = mockBalances;
-      let filteredDetails = mockDetails;
       
       if (agentFilter !== 'Select' && agentFilter !== 'all') {
         filteredBalances = filteredBalances.filter(b => b.name === agentFilter);
-        filteredDetails = filteredDetails.filter(d => d.name === agentFilter);
       }
       
       if (unitFilter !== 'Select' && unitFilter !== 'all') {
         filteredBalances = filteredBalances.filter(b => b.unit === unitFilter);
-        filteredDetails = filteredDetails.filter(d => d.unit === unitFilter);
       }
       
       if (teamFilter !== 'Select' && teamFilter !== 'all') {
         filteredBalances = filteredBalances.filter(b => b.team === teamFilter);
-        filteredDetails = filteredDetails.filter(d => d.team === teamFilter);
       }
       
       // Populate balances table
@@ -1088,105 +1362,6 @@ const OAUTH_CONFIG = {
         row.innerHTML = rowHTML;
         monthlyResults.appendChild(row);
       });
-    }
-
-    // ==== Calendar Functions ====
-    function initializeCalendarSelectors() {
-      // Populate month selector
-      const monthSelect = document.getElementById('calendar-month-select');
-      const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-      ];
-      
-      monthSelect.innerHTML = '';
-      months.forEach((month, index) => {
-        const option = document.createElement('option');
-        option.value = index + 1;
-        option.textContent = month;
-        monthSelect.appendChild(option);
-      });
-      
-      // Set current month as default
-      const currentMonth = new Date().getMonth() + 1;
-      monthSelect.value = currentMonth;
-      
-      // Populate year selector
-      const yearSelect = document.getElementById('calendar-year-select');
-      const currentYear = new Date().getFullYear();
-      
-      yearSelect.innerHTML = '';
-      for (let year = currentYear - 1; year <= currentYear + 1; year++) {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearSelect.appendChild(option);
-      }
-      
-      // Set current year as default
-      yearSelect.value = currentYear;
-      
-      // Add event listeners
-      monthSelect.addEventListener('change', generateCalendar);
-      yearSelect.addEventListener('change', generateCalendar);
-      
-      // Generate initial calendar
-      generateCalendar();
-    }
-
-    function generateCalendar() {
-      const month = parseInt(document.getElementById('calendar-month-select').value);
-      const year = parseInt(document.getElementById('calendar-year-select').value);
-      
-      // Get first day of month and how many days in month
-      const firstDay = new Date(year, month - 1, 1);
-      const daysInMonth = new Date(year, month, 0).getDate();
-      
-      // Get day of week for first day (0 = Sunday, 1 = Monday, etc.)
-      const startingDay = firstDay.getDay();
-      
-      // Generate calendar grid
-      const calendar = document.getElementById('calendar');
-      calendar.innerHTML = '';
-      
-      // Add empty cells for days before the first day of the month
-      for (let i = 0; i < startingDay; i++) {
-        const emptyDay = document.createElement('div');
-        emptyDay.className = 'day empty';
-        calendar.appendChild(emptyDay);
-      }
-      
-      // Add cells for each day of the month
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'day';
-        
-        // Add date
-        const dateElement = document.createElement('div');
-        dateElement.className = 'date';
-        dateElement.textContent = day;
-        dayElement.appendChild(dateElement);
-        
-        // Add balance info (mock data)
-        const balanceElement = document.createElement('div');
-        balanceElement.className = 'balance-info';
-        
-        // Randomly assign availability status for demo purposes
-        const random = Math.random();
-        if (random < 0.7) {
-          dayElement.style.backgroundColor = 'var(--available-color)';
-          balanceElement.textContent = 'Available';
-        } else if (random < 0.9) {
-          dayElement.style.backgroundColor = 'var(--nearly-color)';
-          balanceElement.textContent = 'Nearly full';
-        } else {
-          dayElement.style.backgroundColor = 'var(--full-color)';
-          balanceElement.textContent = 'Fully booked';
-        }
-        
-        dayElement.appendChild(balanceElement);
-        calendar.appendChild(dayElement);
-      }
     }
   </script>
 </body>
