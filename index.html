@@ -77,9 +77,10 @@
       overflow: hidden;
     }
     .tabcontent {
-      display: none; flex: 1; overflow: hidden;
+      display: none; flex: 1; overflow: auto;
       background: var(--card-bg); border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 20px;
     }
 
     /* Loading screen */
@@ -131,14 +132,16 @@
     }
 
     /* ==== Time Off Balances styling ==== */
-    #TimeOffBalances {
-      display: flex; flex-direction: column; overflow: hidden;
-    }
     .balances-container {
-      flex: 1; display: flex; flex-direction: column;
-      overflow: hidden; padding: 20px;
+      display: flex; flex-direction: column;
+      overflow: hidden; 
     }
-    .filters { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+    .filters { 
+      display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;
+      padding: 15px;
+      background: var(--light-bg);
+      border-radius: 6px;
+    }
     .filters > div { flex: 1; min-width: 200px; }
     .filters h3 {
       font-size: 14px; margin-bottom: 8px; color: var(--text-light);
@@ -148,14 +151,19 @@
       width: 100%; padding: 8px 12px; border: 1px solid var(--border-color);
       border-radius: 4px; font-size: 14px; background: var(--card-bg);
     }
-    .search-container { margin-bottom: 20px; }
+    .search-container { 
+      margin-bottom: 20px;
+      padding: 0 15px;
+    }
     .search-container input {
       width: 100%; max-width: 400px; padding: 8px 12px;
       border: 1px solid var(--border-color); border-radius: 4px;
       font-size: 14px;
     }
-    .table-container { flex: 1; overflow: auto; margin-bottom: 20px;
+    .table-container { 
+      margin-bottom: 20px;
       border: 1px solid var(--border-color); border-radius: 6px;
+      overflow: auto;
     }
     table {
       width: 100%; border-collapse: collapse; font-size: 14px;
@@ -181,7 +189,10 @@
       color: red;
     }
 
-    .export-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+    .export-buttons { 
+      display: flex; gap: 10px; margin-bottom: 20px;
+      padding: 0 15px;
+    }
     .export-button {
       padding: 8px 16px; background: var(--primary-color); color: white;
       border: none; border-radius: 4px; cursor: pointer;
@@ -190,29 +201,37 @@
     .export-button:hover { background: var(--secondary-color); }
 
     /* ==== Calculator styling ==== */
-    #Calculator {
-      padding: 20px; display: flex; flex-direction: column;
-      overflow: hidden;
-    }
     .calc-container {
-      flex: 1; display: flex; flex-direction: column;
-      overflow: hidden; background: var(--card-bg);
-      border-radius: 8px;
+      display: flex; flex-direction: column;
+      overflow: hidden; 
     }
     .calc-header h2 {
-      font-size: 1.3em; margin: 0; color: var(--primary-color);
+      font-size: 1.3em; margin: 0 0 20px 0; color: var(--primary-color);
       font-weight: 700;
     }
-    .flex-container { flex: 1; display: flex; gap: 20px; overflow: hidden; }
-    .left-panel, .right-panel { display: flex; flex-direction: column; overflow: hidden; }
+    .flex-container { 
+      display: flex; gap: 20px; overflow: hidden;
+      margin-top: 15px;
+    }
+    .left-panel, .right-panel { 
+      display: flex; flex-direction: column; overflow: hidden;
+      background: var(--light-bg);
+      padding: 15px;
+      border-radius: 6px;
+    }
     .left-panel { flex: 0 0 35%; }
     .right-panel { flex: 1; }
-    .panel-section { margin-bottom: 20px; }
+    .panel-section { 
+      margin-bottom: 20px;
+    }
     .section-title {
       font-weight: 600; color: var(--primary-color);
       margin-bottom: 10px; font-size: 15px;
     }
-    .calc-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 14px; }
+    .calc-table { 
+      width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 14px;
+      background: var(--card-bg);
+    }
     .calc-table th, .calc-table td {
       padding: 10px 12px; border: 1px solid var(--border-color);
       text-align: left;
@@ -222,13 +241,15 @@
     }
     .input-cell {
       width: 100%; padding: 6px 8px; border: 1px solid var(--border-color);
-      border-radius: 4px; background: var(--light-bg); font-size: 14px;
+      border-radius: 4px; background: var(--card-bg); font-size: 14px;
     }
     .calculation-cell {
       background: rgba(99, 171, 143, 0.1); border: 1px solid var(--primary-color);
       border-radius: 4px; padding: 6px 8px; font-weight: 600;
     }
-    .monthly-tables-container { display: flex; gap: 20px; margin-top: 10px; }
+    .monthly-tables-container { 
+      display: flex; gap: 20px; margin-top: 10px;
+    }
     .monthly-input-container { flex: 0 0 40%; }
     .calculate-button {
       padding: 8px 16px; background: var(--primary-color);
@@ -242,14 +263,15 @@
     /* ==== Calendar styling ==== */
     .calendar-filters .filters {
       display: flex; gap: 15px; flex-wrap: wrap;
-      padding: 20px; background: var(--card-bg);
-      border-bottom: 1px solid var(--border-color);
+      padding: 15px; background: var(--light-bg);
+      border-radius: 6px;
+      margin-bottom: 15px;
     }
     .calendar { 
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 10px;
-      padding: 20px;
+      padding: 15px;
       background: var(--card-bg);
       overflow: auto;
       border-radius: 8px;
@@ -326,7 +348,7 @@
 
     <div class="main-content">
       <!-- ==== Time Off Balances Tab ==== -->
-      <div id="TimeOffBalances" class="tabcontent" style="display: flex;">
+      <div id="TimeOffBalances" class="tabcontent" style="display: block;">
         <div class="balances-container">
           <div class="filters">
             <div>
@@ -383,7 +405,6 @@
           </div>
           
           <div class="table-container">
-            <h3>Time off Balances</h3>
             <table id="balances-table">
               <thead>
                 <tr>
@@ -402,30 +423,6 @@
           <div class="export-buttons">
             <button class="export-button" onclick="exportTableToCSV('balances-table','time_off_balances.csv')">
               Export Time Off Balances
-            </button>
-          </div>
-          
-          <div class="table-container">
-            <h3>Time off Details</h3>
-            <table id="details-table">
-              <thead>
-                <tr>
-                  <th>Agent Name</th>
-                  <th>Team</th>
-                  <th>Management Unit</th>
-                  <th>Time off Start</th>
-                  <th>Time off End</th>
-                  <th>Balance Deduction (Hrs)</th>
-                  <th>Days</th>
-                </tr>
-              </thead>
-              <tbody id="details-table-body"></tbody>
-            </table>
-          </div>
-          
-          <div class="export-buttons">
-            <button class="export-button" onclick="exportTableToCSV('details-table','time_off_details.csv')">
-              Export Time Off Details
             </button>
           </div>
         </div>
@@ -773,7 +770,7 @@ const OAUTH_CONFIG = {
         tablinks[i].className = tablinks[i].className.replace(' active', '');
       }
       
-      document.getElementById(tabName).style.display = 'flex';
+      document.getElementById(tabName).style.display = 'block';
       evt.currentTarget.className += ' active';
     }
 
@@ -852,31 +849,11 @@ const OAUTH_CONFIG = {
         
         balancesBody.appendChild(row);
       });
-      
-      // Populate details table
-      const detailsBody = document.getElementById('details-table-body');
-      detailsBody.innerHTML = '';
-      
-      filteredDetails.forEach(detail => {
-        const row = document.createElement('tr');
-        
-        row.innerHTML = `
-          <td>${detail.name}</td>
-          <td>${detail.team}</td>
-          <td>${detail.unit}</td>
-          <td>${detail.start}</td>
-          <td>${detail.end}</td>
-          <td>${detail.deduction}</td>
-          <td>${detail.days}</td>
-        `;
-        
-        detailsBody.appendChild(row);
-      });
     }
 
     function filterTables() {
       const searchTerm = document.getElementById('search-input').value.toLowerCase();
-      const rows = document.querySelectorAll('#balances-table-body tr, #details-table-body tr');
+      const rows = document.querySelectorAll('#balances-table-body tr');
       
       rows.forEach(row => {
         const name = row.cells[0].textContent.toLowerCase();
