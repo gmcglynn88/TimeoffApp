@@ -609,13 +609,11 @@
 
   <script>
     // ==== Enhanced OAuth Configuration ====
-    const OAUTH_CONFIG = {
-      CLIENT_ID: '4652c8b5-9117-43c6-8e54-77eeb38aebb8',
-      REGION: 'mypurecloud.ie',
-      SCOPES: 'workforce-management:readonly workforce-management:admin', // Add required scopes
-      get REDIRECT_URI() {
-        // Ensure we're using the exact URL that's registered
-        return window.location.origin + window.location.pathname;
+const OAUTH_CONFIG = {
+  CLIENT_ID: '4652c8b5-9117-43c6-8e54-77eeb38aebb8',
+  REGION: 'mypurecloud.ie',
+  SCOPES: 'workforce-management:readonly workforce-management:admin',
+  REDIRECT_URI: 'https://gmcglynn88.github.io/TimeoffApp/',
       },
       get AUTH_URL() {
         const params = new URLSearchParams({
