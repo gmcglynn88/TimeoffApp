@@ -77,71 +77,20 @@
       overflow: hidden;
     }
     .tabcontent {
-      display: none; flex: 1; overflow: auto;
+      display: none; flex: 1; overflow: hidden;
       background: var(--card-bg); border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      padding: 20px;
-    }
-
-    /* Loading screen */
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    .loading-spinner {
-      border: 4px solid var(--border-color);
-      border-top: 4px solid var(--primary-color);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .loading-text {
-      color: var(--text-color);
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-    .loading-subtext {
-      color: var(--text-light);
-      font-size: 14px;
-    }
-
-    /* Error message */
-    .error-message {
-      background: #ffebee;
-      border: 1px solid #ffcdd2;
-      color: #c62828;
-      padding: 15px;
-      border-radius: 4px;
-      margin: 20px;
-      display: none;
     }
 
     /* ==== Time Off Balances styling ==== */
+    #TimeOffBalances {
+      display: flex; flex-direction: column; overflow: hidden;
+    }
     .balances-container {
-      display: flex; flex-direction: column;
-      overflow: hidden; 
+      flex: 1; display: flex; flex-direction: column;
+      overflow: hidden; padding: 20px;
     }
-    .filters { 
-      display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;
-      padding: 15px;
-      background: var(--light-bg);
-      border-radius: 6px;
-    }
+    .filters { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
     .filters > div { flex: 1; min-width: 200px; }
     .filters h3 {
       font-size: 14px; margin-bottom: 8px; color: var(--text-light);
@@ -151,19 +100,14 @@
       width: 100%; padding: 8px 12px; border: 1px solid var(--border-color);
       border-radius: 4px; font-size: 14px; background: var(--card-bg);
     }
-    .search-container { 
-      margin-bottom: 20px;
-      padding: 0 15px;
-    }
+    .search-container { margin-bottom: 20px; }
     .search-container input {
       width: 100%; max-width: 400px; padding: 8px 12px;
       border: 1px solid var(--border-color); border-radius: 4px;
       font-size: 14px;
     }
-    .table-container { 
-      margin-bottom: 20px;
+    .table-container { flex: 1; overflow: auto; margin-bottom: 20px;
       border: 1px solid var(--border-color); border-radius: 6px;
-      overflow: auto;
     }
     table {
       width: 100%; border-collapse: collapse; font-size: 14px;
@@ -189,10 +133,7 @@
       color: red;
     }
 
-    .export-buttons { 
-      display: flex; gap: 10px; margin-bottom: 20px;
-      padding: 0 15px;
-    }
+    .export-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
     .export-button {
       padding: 8px 16px; background: var(--primary-color); color: white;
       border: none; border-radius: 4px; cursor: pointer;
@@ -201,37 +142,29 @@
     .export-button:hover { background: var(--secondary-color); }
 
     /* ==== Calculator styling ==== */
+    #Calculator {
+      padding: 20px; display: flex; flex-direction: column;
+      overflow: hidden;
+    }
     .calc-container {
-      display: flex; flex-direction: column;
-      overflow: hidden; 
+      flex: 1; display: flex; flex-direction: column;
+      overflow: hidden; background: var(--card-bg);
+      border-radius: 8px;
     }
     .calc-header h2 {
-      font-size: 1.3em; margin: 0 0 20px 0; color: var(--primary-color);
+      font-size: 1.3em; margin: 0; color: var(--primary-color);
       font-weight: 700;
     }
-    .flex-container { 
-      display: flex; gap: 20px; overflow: hidden;
-      margin-top: 15px;
-    }
-    .left-panel, .right-panel { 
-      display: flex; flex-direction: column; overflow: hidden;
-      background: var(--light-bg);
-      padding: 15px;
-      border-radius: 6px;
-    }
+    .flex-container { flex: 1; display: flex; gap: 20px; overflow: hidden; }
+    .left-panel, .right-panel { display: flex; flex-direction: column; overflow: hidden; }
     .left-panel { flex: 0 0 35%; }
     .right-panel { flex: 1; }
-    .panel-section { 
-      margin-bottom: 20px;
-    }
+    .panel-section { margin-bottom: 20px; }
     .section-title {
       font-weight: 600; color: var(--primary-color);
       margin-bottom: 10px; font-size: 15px;
     }
-    .calc-table { 
-      width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 14px;
-      background: var(--card-bg);
-    }
+    .calc-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 14px; }
     .calc-table th, .calc-table td {
       padding: 10px 12px; border: 1px solid var(--border-color);
       text-align: left;
@@ -241,15 +174,13 @@
     }
     .input-cell {
       width: 100%; padding: 6px 8px; border: 1px solid var(--border-color);
-      border-radius: 4px; background: var(--card-bg); font-size: 14px;
+      border-radius: 4px; background: var(--light-bg); font-size: 14px;
     }
     .calculation-cell {
       background: rgba(99, 171, 143, 0.1); border: 1px solid var(--primary-color);
       border-radius: 4px; padding: 6px 8px; font-weight: 600;
     }
-    .monthly-tables-container { 
-      display: flex; gap: 20px; margin-top: 10px;
-    }
+    .monthly-tables-container { display: flex; gap: 20px; margin-top: 10px; }
     .monthly-input-container { flex: 0 0 40%; }
     .calculate-button {
       padding: 8px 16px; background: var(--primary-color);
@@ -263,15 +194,14 @@
     /* ==== Calendar styling ==== */
     .calendar-filters .filters {
       display: flex; gap: 15px; flex-wrap: wrap;
-      padding: 15px; background: var(--light-bg);
-      border-radius: 6px;
-      margin-bottom: 15px;
+      padding: 20px; background: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
     }
     .calendar { 
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 10px;
-      padding: 15px;
+      padding: 20px;
       background: var(--card-bg);
       overflow: auto;
       border-radius: 8px;
@@ -281,14 +211,10 @@
       border: 1px solid var(--border-color);
       border-radius: 4px;
       padding: 8px;
-      min-height: 100px;
+      min-height: 80px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-    }
-    .calendar .day.empty {
-      background-color: var(--light-bg);
-      border: 1px dashed var(--border-color);
     }
     .calendar .day .date {
       font-weight: 600;
@@ -299,10 +225,9 @@
       color: var(--text-light);
       line-height: 1.2;
     }
-    .calendar .day .remaining-hours {
-      font-size: 11px;
-      font-weight: 600;
-      margin-top: 4px;
+    .calendar .day.empty {
+      background: var(--light-bg);
+      border: 1px dashed var(--border-color);
     }
 
     /* Responsive */
@@ -320,1049 +245,855 @@
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
-  <div id="loading-screen" class="loading-screen">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Authenticating with PureCloud...</div>
-    <div class="loading-subtext">Please wait while we connect to your account</div>
+  <header>
+    <h1>Your Time by IPI</h1>
+    <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary%20Identity_Corporate_REVERSED_ECC.png" alt="Consulting Logo" class="logo">
+  </header>
+  <hr class="divider">
+
+  <div class="tab-container">
+    <div class="tab">
+      <button class="tablinks" onclick="openTab(event,'TimeOffBalances')" id="defaultOpen">Time Off Balances</button>
+      <button class="tablinks" onclick="openTab(event,'Calculator')">Calculator</button>
+      <button class="tablinks" onclick="openTab(event,'TimeOffCalendar')">Time Off Calendar</button>
+    </div>
+    <div class="button-container">
+      <label class="import-button-label">Import Balances
+        <input type="file" id="import-file" accept=".csv" onchange="importTableFromCSV(event)">
+      </label>
+      <button class="save-button" onclick="saveChanges()">Save</button>
+    </div>
   </div>
 
-  <!-- Main App Content -->
-  <div id="app-content" style="display: none;">
-    <header>
-      <h1>Your Time by IPI</h1>
-      <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary%20Identity_Corporate_REVERSED_ECC.png" alt="Consulting Logo" class="logo">
-    </header>
-    <hr class="divider">
-
-    <div class="error-message" id="error-message"></div>
-
-    <div class="tab-container">
-      <div class="tab">
-        <button class="tablinks active" onclick="openTab(event,'TimeOffBalances')">Time Off Balances</button>
-        <button class="tablinks" onclick="openTab(event,'Calculator')">Calculator</button>
-        <button class="tablinks" onclick="openTab(event,'TimeOffCalendar')">Time Off Calendar</button>
-      </div>
-      <div class="button-container">
-        <label class="import-button-label">Import Balances
-          <input type="file" id="import-file" accept=".csv" onchange="importTableFromCSV(event)">
-        </label>
-        <button class="save-button" onclick="saveChanges()">Save</button>
+  <div class="main-content">
+    <!-- ==== Time Off Balances Tab ==== -->
+    <div id="TimeOffBalances" class="tabcontent">
+      <div class="balances-container">
+        <div class="filters">
+          <div>
+            <h3>Select Agent</h3>
+            <select id="agent-select" onchange="updateTables()">
+              <option value="Select">Please Select</option>
+              <option value="all">Select All</option>
+              <option value="Craig Farley">Craig Farley</option>
+              <option value="Sasha Smith">Sasha Smith</option>
+              <option value="Lisa Lowe">Lisa Lowe</option>
+              <option value="Sian Gibbs">Sian Gibbs</option>
+              <option value="John Thompson">John Thompson</option>
+              <option value="Olivia Jenson">Olivia Jenson</option>
+              <option value="Ethan Reynolds">Ethan Reynolds</option>
+              <option value="Ava Mitchell">Ava Mitchell</option>
+              <option value="Gerard McGlynn">Gerard McGlynn</option>
+              <option value="Rhys Turner">Rhys Turner</option>
+              <option value="Tom Collins">Tom Collins</option>
+            </select>
+          </div>
+          <div>
+            <h3>Select Year</h3>
+            <select id="year-select" onchange="updateTables()">
+              <option value="Select">Please Select</option>
+              <option value="all">Select All</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+            </select>
+          </div>
+          <div>
+            <h3>Select Management Unit</h3>
+            <select id="management-unit-select" onchange="updateTables()">
+              <option value="Select">Please Select</option>
+              <option value="all">Select All</option>
+              <option value="Customer Service">Customer Service</option>
+              <option value="Sales & Retentions">Sales & Retentions</option>
+            </select>
+          </div>
+          <div>
+            <h3>Select Work Team</h3>
+            <select id="team-select" onchange="updateTables()">
+              <option value="Select">Please Select</option>
+              <option value="all">Select All</option>
+              <option value="Sales & Retentions">Sales & Retentions</option>
+              <option value="Team Reading">Team Reading</option>
+              <option value="Team Sheffield">Team Sheffield</option>
+              <option value="Team Manchester">Team Manchester</option>
+              <option value="Customer Service 2">Customer Service 2</option>
+            </select>
+          </div>
+        </div>
+        <div class="search-container">
+          <input type="text" id="search-input" placeholder="Search by agent name" onkeyup="filterTables()">
+        </div>
+        
+        <div class="table-container">
+          <h3>Time off Balances</h3>
+          <table id="balances-table">
+            <thead>
+              <tr>
+                <th>Agent Name</th>
+                <th>Team</th>
+                <th>Management Unit</th>
+                <th>Holiday (Current Year)</th>
+                <th>Holiday (Next Year)</th>
+                <th>Time off In Lieu</th>
+              </tr>
+            </thead>
+            <tbody id="balances-table-body"></tbody>
+          </table>
+        </div>
+        
+        <div class="export-buttons">
+          <button class="export-button" onclick="exportTableToCSV('balances-table','time_off_balances.csv')">
+            Export Time Off Balances
+          </button>
+        </div>
+        
+        <div class="table-container">
+          <h3>Time off Details</h3>
+          <table id="details-table">
+            <thead>
+              <tr>
+                <th>Agent Name</th>
+                <th>Team</th>
+                <th>Management Unit</th>
+                <th>Time off Start</th>
+                <th>Time off End</th>
+                <th>Balance Deduction (Hrs)</th>
+                <th>Days</th>
+              </tr>
+            </thead>
+            <tbody id="details-table-body"></tbody>
+          </table>
+        </div>
+        
+        <div class="export-buttons">
+          <button class="export-button" onclick="exportTableToCSV('details-table','time_off_details.csv')">
+            Export Time Off Details
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="main-content">
-      <!-- ==== Time Off Balances Tab ==== -->
-      <div id="TimeOffBalances" class="tabcontent" style="display: block;">
-        <div class="balances-container">
-          <div class="filters">
-            <div>
-              <h3>Select Agent</h3>
-              <select id="agent-select" onchange="updateTables()">
-                <option value="Select">Please Select</option>
-                <option value="all">Select All</option>
-                <option value="Craig Farley">Craig Farley</option>
-                <option value="Sasha Smith">Sasha Smith</option>
-                <option value="Lisa Lowe">Lisa Lowe</option>
-                <option value="Sian Gibbs">Sian Gibbs</option>
-                <option value="John Thompson">John Thompson</option>
-                <option value="Olivia Jenson">Olivia Jenson</option>
-                <option value="Ethan Reynolds">Ethan Reynolds</option>
-                <option value="Ava Mitchell">Ava Mitchell</option>
-                <option value="Gerard McGlynn">Gerard McGlynn</option>
-                <option value="Rhys Turner">Rhys Turner</option>
-                <option value="Tom Collins">Tom Collins</option>
-              </select>
-            </div>
-            <div>
-              <h3>Select Year</h3>
-              <select id="year-select" onchange="updateTables()">
-                <option value="Select">Please Select</option>
-                <option value="all">Select All</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-              </select>
-            </div>
-            <div>
-              <h3>Select Management Unit</h3>
-              <select id="management-unit-select" onchange="updateTables()">
-                <option value="Select">Please Select</option>
-                <option value="all">Select All</option>
-                <option value="Customer Service">Customer Service</option>
-                <option value="Sales & Retentions">Sales & Retentions</option>
-              </select>
-            </div>
-            <div>
-              <h3>Select Work Team</h3>
-              <select id="team-select" onchange="updateTables()">
-                <option value="Select">Please Select</option>
-                <option value="all">Select All</option>
-                <option value="Sales & Retentions">Sales & Retentions</option>
-                <option value="Team Reading">Team Reading</option>
-                <option value="Team Sheffield">Team Sheffield</option>
-                <option value="Team Manchester">Team Manchester</option>
-                <option value="Customer Service 2">Customer Service 2</option>
-              </select>
-            </div>
-          </div>
-          <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search by agent name" onkeyup="filterTables()">
-          </div>
-          
-          <div class="table-container">
-            <table id="balances-table">
-              <thead>
-                <tr>
-                  <th>Agent Name</th>
-                  <th>Team</th>
-                  <th>Management Unit</th>
-                  <th>Holiday (Current Year)</th>
-                  <th>Holiday (Next Year)</th>
-                  <th>Time off In Lieu</th>
-                </tr>
-              </thead>
-              <tbody id="balances-table-body"></tbody>
-            </table>
-          </div>
-          
-          <div class="export-buttons">
-            <button class="export-button" onclick="exportTableToCSV('balances-table','time_off_balances.csv')">
-              Export Time Off Balances
-            </button>
-          </div>
+    <!-- ==== Calculator Tab ==== -->
+    <div id="Calculator" class="tabcontent">
+      <div class="calc-container">
+        <div class="calc-header">
+          <h2>Annual Leave By Day Calculator</h2>
         </div>
-      </div>
-
-      <!-- ==== Calculator Tab ==== -->
-      <div id="Calculator" class="tabcontent">
-        <div class="calc-container">
-          <div class="calc-header">
-            <h2>Annual Leave By Day Calculator</h2>
-          </div>
-          
-          <div class="flex-container">
-            <div class="left-panel">
-              <div class="panel-section">
-                <div class="section-title">FTE & Leave Settings</div>
-                <table class="calc-table">
-                  <tr><th>Variable</th><th>Value</th></tr>
-                  <tr>
-                    <td>FTE definition (Hours)</td>
-                    <td><input type="number" id="fte-hours" class="input-cell" value="40" min="1"></td>
-                  </tr>
-                  <tr>
-                    <td>Annual Leave Allocation (Days)</td>
-                    <td><input type="number" id="annual-leave-days" class="input-cell" value="33" min="0"></td>
-                  </tr>
-                  <tr>
-                    <td>Working Days per Week</td>
-                    <td><input type="number" id="working-days" class="input-cell" value="5" min="1" max="7"></td>
-                  </tr>
-                </table>
-              </div>
-              
-              <div class="panel-section">
-                <div class="section-title">Staffing Inputs</div>
-                <table class="calc-table">
-                  <tr><th>Variable</th><th>Value</th></tr>
-                  <tr>
-                    <td>Agents In Staffing Group</td>
-                    <td><input type="number" id="agents-count" class="input-cell" value="100" min="1"></td>
-                  </tr>
-                  <tr>
-                    <td>Average Weekly Hours Per Agent</td>
-                    <td><input type="number" id="avg-weekly-hours" class="input-cell" value="32" min="1" max="40"></td>
-                  </tr>
-                  <tr>
-                    <td>Holiday Weekly Target (%)</td>
-                    <td><input type="number" id="holiday-percentage" class="input-cell" value="14" min="0" max="100"></td>
-                  </tr>
-                </table>
-              </div>
-              
-              <div class="panel-section">
-                <div class="section-title">Weekly Holiday Allocation</div>
-                <table class="calc-table">
-                  <tr><th>Metric</th><th>Result</th></tr>
-                  <tr>
-                    <td>Weekly Holiday Allocation Hours</td>
-                    <td id="weekly-holiday-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Daily Holiday Allocation Hours</td>
-                    <td id="daily-holiday-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                </table>
-              </div>
-              
-              <div class="panel-section">
-                <div class="section-title">Day-of-Week Distribution</div>
-                <table class="calc-table" id="day-distribution">
-                  <tr><th>Day</th><th>% Distribution</th><th>Hours</th></tr>
-                  <tr>
-                    <td>Mon</td>
-                    <td><input type="number" id="mon-percent" class="input-cell" value="20" min="0" max="100"></td>
-                    <td id="mon-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Tue</td>
-                    <td><input type="number" id="tue-percent" class="input-cell" value="17" min="0" max="100"></td>
-                    <td id="tue-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Wed</td>
-                    <td><input type="number" id="wed-percent" class="input-cell" value="16" min="0" max="100"></td>
-                    <td id="wed-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Thu</td>
-                    <td><input type="number" id="thu-percent" class="input-cell" value="15" min="0" max="100"></td>
-                    <td id="thu-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Fri</td>
-                    <td><input type="number" id="fri-percent" class="input-cell" value="14" min="0" max="100"></td>
-                    <td id="fri-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Sat</td>
-                    <td><input type="number" id="sat-percent" class="input-cell" value="10" min="0" max="100"></td>
-                    <td id="sat-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Sun</td>
-                    <td><input type="number" id="sun-percent" class="input-cell" value="8" min="0" max="100"></td>
-                    <td id="sun-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Total</strong></td>
-                    <td id="total-percent" class="calculation-cell">100%</td>
-                    <td id="total-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                </table>
-              </div>
+        
+        <div class="flex-container">
+          <div class="left-panel">
+            <div class="panel-section">
+              <div class="section-title">FTE & Leave Settings</div>
+              <table class="calc-table">
+                <tr><th>Variable</th><th>Value</th></tr>
+                <tr>
+                  <td>FTE definition (Hours)</td>
+                  <td><input type="number" id="fte-hours" class="input-cell" value="40" min="1"></td>
+                </tr>
+                <tr>
+                  <td>Annual Leave Allocation (Days)</td>
+                  <td><input type="number" id="annual-leave-days" class="input-cell" value="33" min="0"></td>
+                </tr>
+              </table>
             </div>
             
-            <div class="right-panel">
-              <div class="panel-section">
-                <div class="section-title">Monthly Allocation</div>
-                <div class="monthly-tables-container">
-                  <div class="monthly-input-container">
-                    <table class="calc-table">
-                      <thead>
-                        <tr><th>Month</th><th>% Distribution</th></tr>
-                      </thead>
-                      <tbody id="monthly-inputs"></tbody>
-                    </table>
-                    <div id="total-validation" style="margin-top:10px;font-size:14px;color:green;">Total: 100.00% (Valid)</div>
-                    <button class="calculate-button" onclick="calculateMonthlyAllocation()">
-                      Calculate Monthly Allocation
-                    </button>
-                  </div>
-                  
-                  <div class="monthly-results-container">
-                    <table class="calc-table">
-                      <thead>
-                        <tr>
-                          <th>Month</th><th>Mon</th><th>Tue</th><th>Wed</th>
-                          <th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th><th>Total</th>
-                        </tr>
-                      </thead>
-                      <tbody id="monthly-results"></tbody>
-                    </table>
-                  </div>
+            <div class="panel-section">
+              <div class="section-title">Staffing Inputs</div>
+              <table class="calc-table">
+                <tr><th>Variable</th><th>Value</th></tr>
+                <tr>
+                  <td>Agents In Staffing Group</td>
+                  <td><input type="number" id="agents-count" class="input-cell" value="100" min="1"></td>
+                </tr>
+                <tr>
+                  <td>Average Weekly Hours Per Agent</td>
+                  <td><input type="number" id="avg-weekly-hours" class="input-cell" value="32" min="1" max="40"></td>
+                </tr>
+                <tr>
+                  <td>Holiday Weekly Target/Maximum</td>
+                  <td><input type="number" id="holiday-percentage" class="input-cell" value="14" min="0" max="100"></td>
+                </tr>
+              </table>
+            </div>
+            
+            <div class="panel-section">
+              <div class="section-title">Weekly Holiday Allocation</div>
+              <table class="calc-table">
+                <tr><th>Metric</th><th>Result</th></tr>
+                <tr>
+                  <td>Weekly Holiday Allocation Hours</td>
+                  <td id="weekly-holiday-hours" class="calculation-cell"></td>
+                </tr>
+              </table>
+            </div>
+            
+            <div class="panel-section">
+              <div class="section-title">Day-of-Week Distribution</div>
+              <table class="calc-table" id="day-distribution">
+                <tr><th>Day</th><th>Value</th><th>Hours</th></tr>
+                <tr>
+                  <td>Mon</td>
+                  <td><input type="number" id="mon-percent" class="input-cell" value="20" min="0" max="100"></td>
+                  <td id="mon-hours" class="calculation-cell"></td>
+                </tr>
+                <tr>
+                  <td>Tue</td>
+                  <td><input type="number" id="tue-percent" class="input-cell" value="17" min="0" max="100"></td>
+                  <td id="tue-hours" class="calculation-cell"></td>
+                </tr>
+                <tr>
+                  <td>Wed</td>
+                  <td><input type="number" id="wed-percent" class="input-cell" value="16" min="0" max="100"></td>
+                  <td id="wed-hours" class="calculation-cell"></td>
+                </tr>
+                <tr>
+                  <td>Thu</td>
+                  <td><input type="number" id="thu-percent" class="input-cell" value="15" min="0" max="100"></td>
+                  <td id="thu-hours" class="calculation-cell"></td>
+                </tr>
+                <tr>
+                  <td>Fri</td>
+                  <td><input type="number" id="fri-percent" class="input-cell" value="14" min="0" max="100"></td>
+                  <td id="fri-hours" class="calculation-cell"></td>
+                </tr>
+                <tr>
+                  <td>Sat</td>
+                  <td><input type="number" id="sat-percent" class="input-cell" value="10" min="0" max="100"></td>
+                  <td id="sat-hours" class="calculation-cell"></td>
+                </tr>
+                <tr>
+                  <td>Sun</td>
+                  <td><input type="number" id="sun-percent" class="input-cell" value="8" min="0" max="100"></td>
+                  <td id="sun-hours" class="calculation-cell"></td>
+                </tr>
+                <tr>
+                  <td><strong>Total</strong></td>
+                  <td id="total-percent" class="calculation-cell"></td>
+                  <td id="total-hours" class="calculation-cell"></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <div class="right-panel">
+            <div class="panel-section">
+              <div class="section-title">Monthly Allocation</div>
+              <div class="monthly-tables-container">
+                <div class="monthly-input-container">
+                  <table class="calc-table">
+                    <thead>
+                      <tr><th>Month</th><th>Value</th></tr>
+                    </thead>
+                    <tbody id="monthly-inputs"></tbody>
+                  </table>
+                  <button class="calculate-button" onclick="calculateMonthlyAllocation()">
+                    Calculate Daily Allocation
+                  </button>
+                  <div id="total-validation" style="margin-top:10px;font-size:14px;"></div>
+                </div>
+                
+                <div class="monthly-results-container">
+                  <table class="calc-table">
+                    <thead>
+                      <tr>
+                        <th>Month</th><th>Mon</th><th>Tue</th><th>Wed</th>
+                        <th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th><th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody id="monthly-results"></tbody>
+                  </table>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- ==== Time Off Calendar Tab ==== -->
-      <div id="TimeOffCalendar" class="tabcontent">
-        <div class="calendar-filters">
-          <div class="filters">
-            <div>
-              <h3>Select Management Unit</h3>
-              <select id="calendar-management-unit-select" onchange="loadTimeOffPlans()">
-                <option value="">Loading management units...</option>
-              </select>
-            </div>
-            <div>
-              <h3>Select Time Off Plan</h3>
-              <select id="calendar-plan-select" disabled>
-                <option value="">Please select unit first</option>
-              </select>
-            </div>
-            <div>
-              <h3>Select Month</h3>
-              <select id="calendar-month-select"></select>
-            </div>
-            <div>
-              <h3>Select Year</h3>
-              <select id="calendar-year-select"></select>
-            </div>
+    <!-- ==== Time Off Calendar Tab ==== -->
+    <div id="TimeOffCalendar" class="tabcontent" style="display:none; flex-direction:column;">
+      <div class="calendar-filters">
+        <div class="filters">
+          <div>
+            <h3>Select Management Unit</h3>
+            <select id="calendar-management-unit-select">
+              <option>Loading…</option>
+            </select>
+          </div>
+          <div>
+            <h3>Select Time Off Plan</h3>
+            <select id="calendar-plan-select">
+              <option>Please select unit first</option>
+            </select>
+          </div>
+          <div>
+            <h3>Select Month</h3>
+            <select id="calendar-month-select" onchange="updateCalendar()"></select>
+          </div>
+          <div>
+            <h3>Select Year</h3>
+            <select id="calendar-year-select" onchange="updateCalendar()"></select>
           </div>
         </div>
-        <div id="calendar" class="calendar"></div>
       </div>
+      <div id="calendar" class="calendar"></div>
     </div>
   </div>
 
   <script>
-    // ==== Enhanced OAuth Configuration ====
-    const OAUTH_CONFIG = {
-      CLIENT_ID: 'cad3d0b4-0258-48a9-8a82-4ebdf9f9a0ff',
-      REGION: 'mypurecloud.ie',
-      SCOPES: 'workforce-management:readonly workforce-management:admin',
-      REDIRECT_URI: 'https://gmcglynn88.github.io/TimeoffApp/',
-      get AUTH_URL() {
-        const params = new URLSearchParams({
-          client_id: this.CLIENT_ID,
-          response_type: 'token',
-          redirect_uri: this.REDIRECT_URI,
-          scope: this.SCOPES,
-          state: this.generateState()
-        });
-        return `https://login.${this.REGION}/oauth/authorize?${params.toString()}`;
-      },
-      get API_URL() {
-        return `https://api.${this.REGION}`;
-      },
-      generateState() {
-        const state = Math.random().toString(36).substring(2, 15);
-        sessionStorage.setItem('oauth_state', state);
-        return state;
-      }
-    };
+    // ==== OAuth Configuration ====
+    const CLIENT_ID     = '4652c8b5-9117-43c6-8e54-77eeb38aebb8';
+    const CLIENT_SECRET = 'txtfN6cb699Lu7tID5n2NSjGwKOU_6NzyghgSk-bVkY';
+    const REGION        = 'mypurecloud.ie';
+    const REDIRECT_URI  = 'https://gmcglynn88.github.io/TimeoffApp/';
+    const AUTH_URL      = `https://login.${REGION}/oauth/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+    const API_URL       = `https://api.${REGION}`;
 
     let accessToken = null;
-    let authTimeout = null;
-    let managementUnits = [];
-    let timeOffPlans = [];
-    let timeOffLimits = {};
 
-    // Check for token in URL hash when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-      const tokenResult = parseTokenFromHash();
-      
-      if (tokenResult.success) {
-        // Successfully got token from URL
-        initializeApp();
-      } else if (sessionStorage.getItem('purecloud_access_token')) {
-        // Check if we have a stored token that's still valid
-        const expires = parseInt(sessionStorage.getItem('purecloud_token_expires')) || 0;
-        if (Date.now() < expires) {
-          accessToken = sessionStorage.getItem('purecloud_access_token');
-          initializeApp();
-        } else {
-          // Token expired, need to re-authenticate
-          startAuthentication();
-        }
-      } else {
-        // No token found, start authentication
-        startAuthentication();
-      }
-
-      // Set timeout to prevent infinite loading
-      authTimeout = setTimeout(() => {
-        if (document.getElementById('loading-screen').style.display !== 'none') {
-          showError('Authentication timed out. Please refresh the page to try again.');
-          hideLoadingScreen();
-        }
-      }, 30000); // 30 seconds timeout
-    });
-
+    // Extract access_token from URL hash, then clean URL
     function parseTokenFromHash() {
-      try {
-        const hash = window.location.hash.substring(1);
-        if (!hash) return { success: false, error: 'No hash fragment found' };
-        
-        const params = new URLSearchParams(hash);
-        const error = params.get('error');
-        if (error) {
-          const errorDesc = params.get('error_description') || 'Unknown error';
-          console.error('OAuth Error:', error, errorDesc);
-          return { success: false, error: `OAuth Error: ${error} - ${errorDesc}` };
-        }
-        
-        const returnedState = params.get('state');
-        const savedState = sessionStorage.getItem('oauth_state');
-        if (returnedState !== savedState) {
-          console.error('State mismatch - possible CSRF attack');
-          return { success: false, error: 'Security error: State mismatch' };
-        }
-        
-        accessToken = params.get('access_token');
-        if (!accessToken) {
-          return { success: false, error: 'No access token found in response' };
-        }
-        
-        const expiresIn = parseInt(params.get('expires_in')) || 28800; // 8 hours default
+      const hash = window.location.hash.substr(1).split('&')
+        .reduce((res, pair) => {
+          const [k,v] = pair.split('=');
+          res[k] = decodeURIComponent(v); 
+          return res;
+        }, {});
+      
+      if (hash.access_token) {
+        accessToken = hash.access_token;
+        // Store token in sessionStorage for persistence across page reloads
         sessionStorage.setItem('purecloud_access_token', accessToken);
-        sessionStorage.setItem('purecloud_token_expires', Date.now() + (expiresIn * 1000));
-        sessionStorage.setItem('purecloud_token_scope', params.get('scope') || '');
-        
-        sessionStorage.removeItem('oauth_state');
-        history.replaceState(null, null, window.location.pathname);
-        
-        console.log('OAuth successful. Token expires in', expiresIn, 'seconds');
-        return { success: true };
-        
-      } catch (e) {
-        console.error('Error parsing token:', e);
-        return { success: false, error: e.message };
+        // Clean up URL
+        history.replaceState({}, null, window.location.pathname);
+        return true;
       }
+      return false;
     }
 
-    function startAuthentication() {
-      // Clear any existing timeout
-      if (authTimeout) {
-        clearTimeout(authTimeout);
+    // Check sessionStorage for existing token
+    function checkForStoredToken() {
+      const storedToken = sessionStorage.getItem('purecloud_access_token');
+      if (storedToken) {
+        accessToken = storedToken;
+        return true;
       }
-      
-      // Check if we're already in the middle of authentication
-      if (window.location.hash.includes('access_token')) {
-        return;
+      return false;
+    }
+
+    // Fetch wrapper that injects Bearer and handles auth
+    async function pcFetch(url, options = {}) {
+      if (!accessToken) {
+        window.location = AUTH_URL;
+        return Promise.reject("No access token");
       }
-      
-      // Redirect to PureCloud login
-      window.location.href = OAUTH_CONFIG.AUTH_URL;
-    }
 
-    function initializeApp() {
-      // Clear the authentication timeout
-      if (authTimeout) {
-        clearTimeout(authTimeout);
-      }
-      
-      // Hide loading screen and show app content
-      hideLoadingScreen();
-      document.getElementById('app-content').style.display = 'flex';
-      
-      // Initialize calculator
-      initializeMonthlyInputs();
-      calculateHolidayAllocation();
-      
-      // Add event listeners for calculator inputs
-      document.querySelectorAll('#Calculator .input-cell').forEach(input => {
-        input.addEventListener('change', calculateHolidayAllocation);
-      });
-      
-      // Initialize calendar date selectors
-      initializeCalendarSelectors();
-      
-      // Load initial data
-      updateTables();
-      
-      // Load management units for calendar
-      loadManagementUnits();
-    }
+      const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      };
 
-    function hideLoadingScreen() {
-      document.getElementById('loading-screen').style.display = 'none';
-    }
-
-    function showError(message) {
-      const errorElement = document.getElementById('error-message');
-      errorElement.textContent = message;
-      errorElement.style.display = 'block';
-    }
-
-    // ==== API Helper Functions ====
-    async function makeApiRequest(url, method = 'GET', body = null) {
       try {
-        const headers = {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        };
+        const response = await fetch(url, { ...options, headers });
         
-        const options = {
-          method: method,
-          headers: headers
-        };
-        
-        if (body) {
-          options.body = JSON.stringify(body);
+        if (response.status === 401) {
+          // Token expired or invalid, clear storage and redirect to auth
+          sessionStorage.removeItem('purecloud_access_token');
+          window.location = AUTH_URL;
+          return Promise.reject("Unauthorized");
         }
-        
-        const response = await fetch(`${OAUTH_CONFIG.API_URL}${url}`, options);
-        
+
         if (!response.ok) {
-          throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+          const error = await response.json();
+          console.error('API Error:', error);
+          return Promise.reject(error);
         }
-        
-        return await response.json();
+
+        return response.json();
       } catch (error) {
-        console.error('API request error:', error);
-        showError(`API Error: ${error.message}`);
-        throw error;
+        console.error('Fetch Error:', error);
+        return Promise.reject(error);
       }
     }
 
-    // ==== Calendar API Functions ====
-    async function loadManagementUnits() {
-      try {
-        const data = await makeApiRequest('/api/v2/workforcemanagement/managementunits');
-        managementUnits = data.entities || [];
-        
-        const select = document.getElementById('calendar-management-unit-select');
-        select.innerHTML = '<option value="">Select Management Unit</option>';
-        
-        managementUnits.forEach(unit => {
-          const option = document.createElement('option');
-          option.value = unit.id;
-          option.textContent = unit.name;
-          select.appendChild(option);
-        });
-      } catch (error) {
-        console.error('Error loading management units:', error);
-      }
-    }
-
-    async function loadTimeOffPlans() {
-      const unitSelect = document.getElementById('calendar-management-unit-select');
-      const unitId = unitSelect.value;
-      
-      if (!unitId) return;
-      
-      try {
-        const data = await makeApiRequest(`/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplans`);
-        timeOffPlans = data.entities || [];
-        
-        const select = document.getElementById('calendar-plan-select');
-        select.innerHTML = '<option value="">Select Time Off Plan</option>';
-        select.disabled = false;
-        
-        timeOffPlans.forEach(plan => {
-          const option = document.createElement('option');
-          option.value = plan.id;
-          option.textContent = plan.name;
-          select.appendChild(option);
-        });
-        
-        // Load time off limits for this management unit
-        await loadTimeOffLimits(unitId);
-      } catch (error) {
-        console.error('Error loading time off plans:', error);
-      }
-    }
-
-    async function loadTimeOffLimits(managementUnitId) {
-      try {
-        const data = await makeApiRequest(`/api/v2/workforcemanagement/managementunits/${managementUnitId}/timeofflimits`);
-        timeOffLimits = {};
-        
-        if (data.entities && data.entities.length > 0) {
-          data.entities.forEach(limit => {
-            timeOffLimits[limit.id] = limit;
-          });
-        }
-      } catch (error) {
-        console.error('Error loading time off limits:', error);
-      }
-    }
-
-    async function getTimeOffLimitValues(managementUnitId, timeOffLimitId, startDate, endDate) {
-      try {
-        const requestBody = {
-          timeOffLimitId: timeOffLimitId,
-          activityCodeId: null,
-          dateRanges: [{
-            startDate: startDate,
-            endDate: endDate
-          }]
-        };
-        
-        const data = await makeApiRequest(
-          `/api/v2/workforcemanagement/managementunits/${managementUnitId}/timeofflimits/values/query`,
-          'POST',
-          requestBody
-        );
-        
-        return data.values || [];
-      } catch (error) {
-        console.error('Error getting time off limit values:', error);
-        return [];
-      }
-    }
-
-    // ==== Calendar Functions ====
-    function initializeCalendarSelectors() {
-      // Populate month selector
-      const monthSelect = document.getElementById('calendar-month-select');
-      const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-      ];
-      
-      monthSelect.innerHTML = '';
-      months.forEach((month, index) => {
-        const option = document.createElement('option');
-        option.value = index + 1;
-        option.textContent = month;
-        monthSelect.appendChild(option);
-      });
-      
-      // Set current month as default
-      const currentMonth = new Date().getMonth() + 1;
-      monthSelect.value = currentMonth;
-      
-      // Populate year selector
-      const yearSelect = document.getElementById('calendar-year-select');
-      const currentYear = new Date().getFullYear();
-      
-      yearSelect.innerHTML = '';
-      for (let year = currentYear - 1; year <= currentYear + 1; year++) {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearSelect.appendChild(option);
-      }
-      
-      // Set current year as default
-      yearSelect.value = currentYear;
-      
-      // Add event listeners
-      monthSelect.addEventListener('change', generateCalendar);
-      yearSelect.addEventListener('change', generateCalendar);
-      document.getElementById('calendar-plan-select').addEventListener('change', generateCalendar);
-      
-      // Generate initial calendar
-      generateCalendar();
-    }
-
-    async function generateCalendar() {
-      const month = parseInt(document.getElementById('calendar-month-select').value);
-      const year = parseInt(document.getElementById('calendar-year-select').value);
-      const managementUnitId = document.getElementById('calendar-management-unit-select').value;
-      const timeOffPlanId = document.getElementById('calendar-plan-select').value;
-      
-      if (!managementUnitId || !timeOffPlanId) {
-        return;
-      }
-      
-      // Get first day of month and how many days in month
-      const firstDay = new Date(year, month - 1, 1);
-      const daysInMonth = new Date(year, month, 0).getDate();
-      
-      // Get day of week for first day (0 = Sunday, 1 = Monday, etc.)
-      const startingDay = firstDay.getDay();
-      
-      // Generate calendar grid
-      const calendar = document.getElementById('calendar');
-      calendar.innerHTML = '';
-      
-      // Add empty cells for days before the first day of the month
-      for (let i = 0; i < startingDay; i++) {
-        const emptyDay = document.createElement('div');
-        emptyDay.className = 'day empty';
-        calendar.appendChild(emptyDay);
-      }
-      
-      // Get time off limit values for the month
-      const startDate = formatDate(firstDay);
-      const endDate = formatDate(new Date(year, month - 1, daysInMonth));
-      
-      // Find the time off limit ID for the selected plan
-      const selectedPlan = timeOffPlans.find(plan => plan.id === timeOffPlanId);
-      if (!selectedPlan || !selectedPlan.timeOffLimits || selectedPlan.timeOffLimits.length === 0) {
-        showError('No time off limits found for the selected plan');
-        return;
-      }
-      
-      const timeOffLimitId = selectedPlan.timeOffLimits[0].id;
-      
-      try {
-        const limitValues = await getTimeOffLimitValues(managementUnitId, timeOffLimitId, startDate, endDate);
-        
-        // Create a map of date to limit values for easy lookup
-        const limitValuesMap = {};
-        limitValues.forEach(value => {
-          const date = value.date.split('T')[0];
-          limitValuesMap[date] = value;
-        });
-        
-        // Add cells for each day of the month
-        for (let day = 1; day <= daysInMonth; day++) {
-          const dayElement = document.createElement('div');
-          dayElement.className = 'day';
-          
-          // Format the current date
-          const currentDate = new Date(year, month - 1, day);
-          const formattedDate = formatDate(currentDate);
-          
-          // Add date
-          const dateElement = document.createElement('div');
-          dateElement.className = 'date';
-          dateElement.textContent = day;
-          dayElement.appendChild(dateElement);
-          
-          // Add balance info
-          const balanceElement = document.createElement('div');
-          balanceElement.className = 'balance-info';
-          
-          // Add remaining hours
-          const hoursElement = document.createElement('div');
-          hoursElement.className = 'remaining-hours';
-          
-          const limitValue = limitValuesMap[formattedDate];
-          if (limitValue) {
-            const remainingHours = limitValue.availableMinutes / 60;
-            hoursElement.textContent = `${remainingHours.toFixed(1)}h remaining`;
-            
-            // Color code based on availability
-            if (remainingHours <= 0) {
-              dayElement.style.backgroundColor = 'var(--full-color)';
-              balanceElement.textContent = 'Fully booked';
-            } else if (remainingHours <= 4) { // Assuming 4 hours is the threshold for "nearly full"
-              dayElement.style.backgroundColor = 'var(--nearly-color)';
-              balanceElement.textContent = 'Nearly full';
-            } else {
-              dayElement.style.backgroundColor = 'var(--available-color)';
-              balanceElement.textContent = 'Available';
-            }
-          } else {
-            // No data for this date
-            dayElement.style.backgroundColor = 'var(--light-bg)';
-            balanceElement.textContent = 'No data';
-            hoursElement.textContent = 'N/A';
-          }
-          
-          dayElement.appendChild(balanceElement);
-          dayElement.appendChild(hoursElement);
-          calendar.appendChild(dayElement);
-        }
-      } catch (error) {
-        console.error('Error generating calendar:', error);
-        showError('Failed to load calendar data');
-      }
-    }
-
-    function formatDate(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
-
-    // ==== Tab Management ====
+    // ==== Tab switching ====
     function openTab(evt, tabName) {
-      const tabcontent = document.getElementsByClassName('tabcontent');
-      for (let i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = 'none';
-      }
+      const tabs = document.getElementsByClassName("tabcontent");
+      for (let t of tabs) t.style.display = "none";
+      const links = document.getElementsByClassName("tablinks");
+      for (let l of links) l.className = l.className.replace(" active", "");
+      document.getElementById(tabName).style.display = "flex";
+      evt.currentTarget.className += " active";
       
-      const tablinks = document.getElementsByClassName('tablinks');
-      for (let i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(' active', '');
-      }
-      
-      document.getElementById(tabName).style.display = 'block';
-      evt.currentTarget.className += ' active';
-      
-      // Refresh calendar when tab is shown
+      // Special handling for calendar tab
       if (tabName === 'TimeOffCalendar') {
-        generateCalendar();
+        updateCalendar();
       }
     }
 
-    // ==== Time Off Balances Functions ====
+    // ==== Sample data for balances & details ====
+    const sampleBalances = [
+      { name: "Craig Farley", team: "Team Reading", unit: "Customer Service", holidayCurrent: 120, holidayNext: 80, toil: 15 },
+      { name: "Sasha Smith", team: "Team Sheffield", unit: "Customer Service", holidayCurrent: 95, holidayNext: 60, toil: 8 },
+      { name: "Lisa Lowe", team: "Team Manchester", unit: "Sales & Retentions", holidayCurrent: 110, holidayNext: 70, toil: 12 },
+      { name: "Sian Gibbs", team: "Sales & Retentions", unit: "Sales & Retentions", holidayCurrent: 85, holidayNext: 55, toil: 5 },
+      { name: "John Thompson", team: "Customer Service 2", unit: "Customer Service", holidayCurrent: 100, holidayNext: 65, toil: 10 },
+      { name: "Olivia Jenson", team: "Team Reading", unit: "Customer Service", holidayCurrent: 115, holidayNext: 75, toil: 7 },
+      { name: "Ethan Reynolds", team: "Team Sheffield", unit: "Customer Service", holidayCurrent: 90, holidayNext: 50, toil: 3 },
+      { name: "Ava Mitchell", team: "Team Manchester", unit: "Sales & Retentions", holidayCurrent: 105, holidayNext: 85, toil: 9 },
+      { name: "Gerard McGlynn", team: "Sales & Retentions", unit: "Sales & Retentions", holidayCurrent: 80, holidayNext: 45, toil: 6 },
+      { name: "Rhys Turner", team: "Customer Service 2", unit: "Customer Service", holidayCurrent: 125, holidayNext: 90, toil: 14 },
+      { name: "Tom Collins", team: "Team Reading", unit: "Customer Service", holidayCurrent: 75, holidayNext: 40, toil: 2 }
+    ];
+
+    const sampleDetails = [
+      { name: "Craig Farley", team: "Team Reading", unit: "Customer Service", start: "2024-01-15", end: "2024-01-22", deduction: 56, days: 7 },
+      { name: "Sasha Smith", team: "Team Sheffield", unit: "Customer Service", start: "2024-02-10", end: "2024-02-12", deduction: 24, days: 2 },
+      { name: "Lisa Lowe", team: "Team Manchester", unit: "Sales & Retentions", start: "2024-03-05", end: "2024-03-08", deduction: 32, days: 3 },
+      { name: "Sian Gibbs", team: "Sales & Retentions", unit: "Sales & Retentions", start: "2024-04-20", end: "2024-04-27", deduction: 56, days: 7 },
+      { name: "John Thompson", team: "Customer Service 2", unit: "Customer Service", start: "2024-05-15", end: "2024-05-17", deduction: 24, days: 2 },
+      { name: "Olivia Jenson", team: "Team Reading", unit: "Customer Service", start: "2024-06-10", end: "2024-06-14", deduction: 40, days: 4 },
+      { name: "Ethan Reynolds", team: "Team Sheffield", unit: "Customer Service", start: "2024-07-22", end: "2024-07-26", deduction: 40, days: 4 },
+      { name: "Ava Mitchell", team: "Team Manchester", unit: "Sales & Retentions", start: "2024-08-05", end: "2024-08-09", deduction: 40, days: 4 },
+      { name: "Gerard McGlynn", team: "Sales & Retentions", unit: "Sales & Retentions", start: "2024-09-15", end: "2024-09-22", deduction: 56, days: 7 },
+      { name: "Rhys Turner", team: "Customer Service 2", unit: "Customer Service", start: "2024-10-10", end: "2024-10-12", deduction: 24, days: 2 },
+      { name: "Tom Collins", team: "Team Reading", unit: "Customer Service", start: "2024-11-05", end: "2024-11-08", deduction: 32, days: 3 }
+    ];
+
+    // ==== Initialize tables with editable fields ==== 
     function updateTables() {
-      // In a real implementation, this would fetch data from PureCloud API
-      // For now, we'll use mock data
-      const mockBalances = [
-        { name: 'Craig Farley', team: 'Team Reading', unit: 'Customer Service', holidayCurrent: 120, holidayNext: 0, lieu: 15.5 },
-        { name: 'Sasha Smith', team: 'Team Sheffield', unit: 'Customer Service', holidayCurrent: 95.25, holidayNext: 0, lieu: 8 },
-        { name: 'Lisa Lowe', team: 'Team Manchester', unit: 'Sales & Retentions', holidayCurrent: 150, holidayNext: 0, lieu: 0 },
-        { name: 'Sian Gibbs', team: 'Sales & Retentions', unit: 'Sales & Retentions', holidayCurrent: 80, holidayNext: 0, lieu: 12.5 },
-        { name: 'John Thompson', team: 'Customer Service 2', unit: 'Customer Service', holidayCurrent: 110, holidayNext: 0, lieu: 5.75 },
-        { name: 'Olivia Jenson', team: 'Team Reading', unit: 'Customer Service', holidayCurrent: 65, holidayNext: 0, lieu: 20 },
-        { name: 'Ethan Reynolds', team: 'Team Sheffield', unit: 'Customer Service', holidayCurrent: 140, holidayNext: 0, lieu: 0 },
-        { name: 'Ava Mitchell', team: 'Team Manchester', unit: 'Sales & Retentions', holidayCurrent: 75.5, holidayNext: 0, lieu: 10.25 },
-        { name: 'Gerard McGlynn', team: 'Sales & Retentions', unit: 'Sales & Retentions', holidayCurrent: 100, holidayNext: 0, lieu: 0 },
-        { name: 'Rhys Turner', team: 'Customer Service 2', unit: 'Customer Service', holidayCurrent: 90, holidayNext: 0, lieu: 15 },
-        { name: 'Tom Collins', team: 'Team Reading', unit: 'Customer Service', holidayCurrent: 125.75, holidayNext: 0, lieu: 7.5 }
-      ];
-      
-      // Apply filters
-      const agentFilter = document.getElementById('agent-select').value;
-      const yearFilter = document.getElementById('year-select').value;
-      const unitFilter = document.getElementById('management-unit-select').value;
-      const teamFilter = document.getElementById('team-select').value;
-      
-      let filteredBalances = mockBalances;
-      
-      if (agentFilter !== 'Select' && agentFilter !== 'all') {
-        filteredBalances = filteredBalances.filter(b => b.name === agentFilter);
-      }
-      
-      if (unitFilter !== 'Select' && unitFilter !== 'all') {
-        filteredBalances = filteredBalances.filter(b => b.unit === unitFilter);
-      }
-      
-      if (teamFilter !== 'Select' && teamFilter !== 'all') {
-        filteredBalances = filteredBalances.filter(b => b.team === teamFilter);
-      }
-      
-      // Populate balances table
-      const balancesBody = document.getElementById('balances-table-body');
-      balancesBody.innerHTML = '';
-      
-      filteredBalances.forEach(balance => {
-        const row = document.createElement('tr');
-        
+      const agentSelect = document.getElementById("agent-select").value;
+      const unitSelect  = document.getElementById("management-unit-select").value;
+      const teamSelect  = document.getElementById("team-select").value;
+
+      let filteredBalances = sampleBalances.filter(item =>
+        (agentSelect==="all"||agentSelect==="Select"||item.name===agentSelect) &&
+        (unitSelect==="all"||unitSelect==="Select"||item.unit===unitSelect) &&
+        (teamSelect==="all"||teamSelect==="Select"||item.team===teamSelect)
+      );
+      let filteredDetails = sampleDetails.filter(item =>
+        (agentSelect==="all"||agentSelect==="Select"||item.name===agentSelect) &&
+        (unitSelect==="all"||unitSelect==="Select"||item.unit===unitSelect) &&
+        (teamSelect==="all"||teamSelect==="Select"||item.team===teamSelect)
+      );
+
+      const balancesBody = document.getElementById("balances-table-body");
+      balancesBody.innerHTML = "";
+      filteredBalances.forEach(item => {
+        const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${balance.name}</td>
-          <td>${balance.team}</td>
-          <td>${balance.unit}</td>
-          <td><input type="number" class="balance-input" value="${balance.holidayCurrent}" onchange="markRowChanged(this)"></td>
-          <td><input type="number" class="balance-input" value="${balance.holidayNext}" onchange="markRowChanged(this)"></td>
-          <td><input type="number" class="balance-input" value="${balance.lieu}" onchange="markRowChanged(this)"></td>
+          <td>${item.name}</td>
+          <td>${item.team}</td>
+          <td>${item.unit}</td>
+          <td><input type="number" class="balance-input" data-field="holidayCurrent" value="${item.holidayCurrent}"></td>
+          <td><input type="number" class="balance-input" data-field="holidayNext"    value="${item.holidayNext}"></td>
+          <td><input type="number" class="balance-input toil-input" data-field="toil" value="${item.toil}"></td>
         `;
-        
         balancesBody.appendChild(row);
       });
-    }
 
-    function filterTables() {
-      const searchTerm = document.getElementById('search-input').value.toLowerCase();
-      const rows = document.querySelectorAll('#balances-table-body tr');
-      
-      rows.forEach(row => {
-        const name = row.cells[0].textContent.toLowerCase();
-        if (name.includes(searchTerm)) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
-      });
-    }
-
-    function markRowChanged(input) {
-      const row = input.closest('tr');
-      row.style.backgroundColor = 'rgba(99, 171, 143, 0.2)';
-    }
-
-    function saveChanges() {
-      // In a real implementation, this would save changes back to PureCloud
-      alert('Changes saved successfully!');
-      
-      // Reset row highlighting
-      document.querySelectorAll('#balances-table-body tr').forEach(row => {
-        row.style.backgroundColor = '';
-      });
-    }
-
-    // ==== Export/Import Functions ====
-    function exportTableToCSV(tableId, filename) {
-      const table = document.getElementById(tableId);
-      const rows = table.querySelectorAll('tr');
-      let csv = [];
-      
-      for (let i = 0; i < rows.length; i++) {
-        const row = [], cols = rows[i].querySelectorAll('td, th');
-        
-        for (let j = 0; j < cols.length; j++) {
-          // Handle input elements in cells
-          if (cols[j].querySelector('input')) {
-            row.push(cols[j].querySelector('input').value);
+      // Attach input listeners for negative styling on toil fields
+      document.querySelectorAll('.balance-input').forEach(input => {
+        input.addEventListener('input', e => {
+          if (e.target.classList.contains('toil-input') && parseFloat(e.target.value) < 0) {
+            e.target.classList.add('negative');
           } else {
-            row.push(cols[j].textContent.trim());
+            e.target.classList.remove('negative');
           }
-        }
-        
-        csv.push(row.join(','));
-      }
-      
-      // Download CSV file
-      const csvContent = csv.join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        });
+      });
+
+      // Populate details table as before
+      const detailsBody = document.getElementById("details-table-body");
+      detailsBody.innerHTML = "";
+      filteredDetails.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.team}</td>
+          <td>${item.unit}</td>
+          <td>${item.start}</td>
+          <td>${item.end}</td>
+          <td>${item.deduction}</td>
+          <td>${item.days}</td>
+        `;
+        detailsBody.appendChild(row);
+      });
     }
 
-    function importTableFromCSV(event) {
-      const file = event.target.files[0];
+    // ==== Search filter ====
+    function filterTables() {
+      const term = document.getElementById("search-input").value.toLowerCase();
+      document.querySelectorAll("#balances-table-body tr").forEach(r => {
+        r.style.display = r.cells[0].textContent.toLowerCase().includes(term) ? "" : "none";
+      });
+      document.querySelectorAll("#details-table-body tr").forEach(r => {
+        r.style.display = r.cells[0].textContent.toLowerCase().includes(term) ? "" : "none";
+      });
+    }
+
+    // ==== CSV & save functions ====
+    function exportTableToCSV(tableId, filename) {
+      const rows = document.getElementById(tableId).querySelectorAll("tr");
+      const csv = Array.from(rows).map(r =>
+        Array.from(r.querySelectorAll("th,td")).map(c => {
+          // Handle input elements in cells
+          const input = c.querySelector('input');
+          return input ? input.value : c.innerText;
+        }).join(",")
+      ).join("\n");
+      downloadCSV(csv, filename);
+    }
+    
+    function downloadCSV(csv, filename) {
+      const blob = new Blob([csv], { type: "text/csv" });
+      const link = document.createElement("a");
+      link.download = filename;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+    }
+    
+    function importTableFromCSV(evt) {
+      const file = evt.target.files[0];
       if (!file) return;
       
       const reader = new FileReader();
-      reader.onload = function(e) {
-        const contents = e.target.result;
-        const rows = contents.split('\n');
-        
-        // Skip header row
-        for (let i = 1; i < rows.length; i++) {
-          if (!rows[i]) continue;
+      reader.onload = e => {
+        try {
+          const csv = e.target.result;
+          const lines = csv.split('\n');
+          const headers = lines[0].split(',');
           
-          const cols = rows[i].split(',');
-          // In a real implementation, you would update the table with imported data
-          console.log('Imported row:', cols);
+          // Simple validation
+          if (headers.length < 3) {
+            throw new Error("Invalid CSV format");
+          }
+          
+          // Process the CSV data - this is a simple example
+          // You would need to implement your specific import logic here
+          console.log("CSV data:", lines);
+          alert(`CSV imported with ${lines.length} rows`);
+          
+          // Reset file input
+          evt.target.value = '';
+        } catch (error) {
+          console.error("Error importing CSV:", error);
+          alert("Error importing CSV: " + error.message);
         }
-        
-        alert('CSV imported successfully!');
       };
-      
+      reader.onerror = () => {
+        alert("Error reading file");
+      };
       reader.readAsText(file);
-      event.target.value = ''; // Reset file input
+    }
+    
+    function saveChanges() {
+      // Collect all editable data
+      const editableRows = document.querySelectorAll('#balances-table-body tr');
+      const updatedData = Array.from(editableRows).map(row => {
+        return {
+          name: row.cells[0].textContent,
+          team: row.cells[1].textContent,
+          unit: row.cells[2].textContent,
+          holidayCurrent: row.cells[3].querySelector('input').value,
+          holidayNext: row.cells[4].querySelector('input').value,
+          toil: row.cells[5].querySelector('input').value
+        };
+      });
+      
+      // Here you would typically send this data to your backend
+      console.log("Data to save:", updatedData);
+      alert("Changes saved successfully (check console for data)");
     }
 
-    // ==== Calculator Functions ====
+    // ==== Calculator functions ====
+    function calculateWeeklyHolidayHours() {
+      const agents = parseFloat(document.getElementById("agents-count").value) || 0;
+      const avg    = parseFloat(document.getElementById("avg-weekly-hours").value) || 0;
+      const pct    = parseFloat(document.getElementById("holiday-percentage").value) || 0;
+      const total  = agents * avg * (pct/100);
+      document.getElementById("weekly-holiday-hours").textContent = total.toFixed(2);
+      return total;
+    }
+    
+    function calculateDayDistribution() {
+      const total = calculateWeeklyHolidayHours();
+      const days  = ["mon","tue","wed","thu","fri","sat","sun"];
+      let sumPct = 0;
+      
+      days.forEach(d => {
+        const pct = parseFloat(document.getElementById(`${d}-percent").value) || 0;
+        sumPct += pct;
+        document.getElementById(`${d}-hours").textContent = (total * pct/100).toFixed(2);
+      });
+      
+      document.getElementById("total-percent").textContent = sumPct.toFixed(0) + "%";
+      document.getElementById("total-hours").textContent   = total.toFixed(2);
+    }
+    
     function initializeMonthlyInputs() {
       const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
+        "January","February","March","April","May","June",
+        "July","August","September","October","November","December"
       ];
+      const tbody = document.getElementById("monthly-inputs");
+      tbody.innerHTML = "";
       
-      const monthlyInputs = document.getElementById('monthly-inputs');
-      monthlyInputs.innerHTML = '';
-      
-      months.forEach((month, index) => {
-        const row = document.createElement('tr');
+      months.forEach(m => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${m}</td>
+          <td><input type="number" id="${m.toLowerCase()}-percent" class="input-cell" value="8.33" min="0" max="100"></td>`;
+        tbody.appendChild(tr);
         
-        // Default percentages - higher in summer months
-        let defaultPercent = 7;
-        if (index >= 4 && index <= 7) defaultPercent = 10; // May-August
-        if (index === 5 || index === 6) defaultPercent = 12; // June-July
-        
-        row.innerHTML = `
-          <td>${month}</td>
-          <td><input type="number" class="input-cell monthly-percent" value="${defaultPercent}" min="0" max="100" step="0.01"></td>
-        `;
-        
-        monthlyInputs.appendChild(row);
-      });
-      
-      // Add event listeners to monthly inputs
-      document.querySelectorAll('.monthly-percent').forEach(input => {
-        input.addEventListener('change', validateMonthlyPercentages);
+        // Add event listener to recalculate when values change
+        document.getElementById(`${m.toLowerCase()}-percent").addEventListener('input', () => {
+          const totalPct = Array.from(document.querySelectorAll('#monthly-inputs input')).reduce((sum, input) => {
+            return sum + (parseFloat(input.value) || 0);
+          }, 0);
+          
+          const validation = document.getElementById("total-validation");
+          if (Math.abs(totalPct - 100) > 0.1) {
+            validation.innerHTML = `<span style="color:red;">Total ${totalPct.toFixed(2)}% (should be 100%)</span>`;
+          } else {
+            validation.innerHTML = `<span style="color:green;">Total: ${totalPct.toFixed(2)}% (Valid)</span>`;
+          }
+        });
       });
     }
-
-    function validateMonthlyPercentages() {
-      let total = 0;
-      const inputs = document.querySelectorAll('.monthly-percent');
+    
+    function calculateMonthlyAllocation() {
+      const months = [
+        "january","february","march","april","may","june",
+        "july","august","september","october","november","december"
+      ];
       
-      inputs.forEach(input => {
-        total += parseFloat(input.value) || 0;
+      let totalPct = 0;
+      months.forEach(m => totalPct += parseFloat(document.getElementById(`${m}-percent").value) || 0);
+      
+      const validation = document.getElementById("total-validation");
+      if (Math.abs(totalPct - 100) > 0.1) {
+        validation.innerHTML = `<span style="color:red;">Total ${totalPct.toFixed(2)}% (should be 100%)</span>`;
+        return;
+      } else {
+        validation.innerHTML = `<span style="color:green;">Total: ${totalPct.toFixed(2)}% (Valid)</span>`;
+      }
+      
+      const tbody = document.getElementById("monthly-results");
+      tbody.innerHTML = "";
+      
+      months.forEach(m => {
+        const pctMonth = parseFloat(document.getElementById(`${m}-percent").value) || 0;
+        const tr = document.createElement("tr");
+        let row = `<td>${m.charAt(0).toUpperCase()+m.slice(1)}</td>`;
+        let daySum = 0;
+        
+        ["mon","tue","wed","thu","fri","sat","sun"].forEach(d => {
+          const pctDay = parseFloat(document.getElementById(`${d}-percent").value) || 0;
+          const hrs    = calculateWeeklyHolidayHours() * (pctDay/100) * (pctMonth/100) * 12;
+          daySum += hrs;
+          row += `<td>${hrs.toFixed(2)}</td>`;
+        });
+        
+        row += `<td>${daySum.toFixed(2)}</td>`;
+        tr.innerHTML = row;
+        tbody.appendChild(tr);
+      });
+    }
+    
+    function initializeCalculator() {
+      ["agents-count","avg-weekly-hours","holiday-percentage",
+       "mon-percent","tue-percent","wed-percent","thu-percent",
+       "fri-percent","sat-percent","sun-percent"
+      ].forEach(id => {
+        document.getElementById(id).addEventListener("input", calculateDayDistribution);
       });
       
-      const validationElement = document.getElementById('total-validation');
-      
-      if (Math.abs(total - 100) < 0.01) {
-        validationElement.textContent = `Total: ${total.toFixed(2)}% (Valid)`;
-        validationElement.style.color = 'green';
-      } else {
-        validationElement.textContent = `Total: ${total.toFixed(2)}% (Needs to equal 100%)`;
-        validationElement.style.color = 'red';
+      initializeMonthlyInputs();
+      calculateDayDistribution();
+    }
+
+    // ==== Calendar API calls ====
+    async function fetchManagementUnits() {
+      try {
+        const data = await pcFetch(`${API_URL}/api/v2/workforcemanagement/managementunits`);
+        const sel = document.getElementById('calendar-management-unit-select');
+        sel.innerHTML = '<option value="">Please select</option>';
+        
+        data.entities.forEach(mu => {
+          const o = document.createElement('option');
+          o.value = mu.id;
+          o.textContent = mu.name;
+          sel.appendChild(o);
+        });
+      } catch (error) {
+        console.error('Error fetching management units:', error);
+        alert('Failed to load management units. Please try again.');
+      }
+    }
+    
+    async function fetchTimeOffPlans(unitId) {
+      try {
+        const data = await pcFetch(`${API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplans`);
+        const sel = document.getElementById('calendar-plan-select');
+        sel.innerHTML = '<option value="">Please select</option>';
+        
+        data.entities.forEach(plan => {
+          const o = document.createElement('option');
+          o.value = plan.id;
+          o.textContent = plan.name;
+          sel.appendChild(o);
+        });
+      } catch (error) {
+        console.error('Error fetching time off plans:', error);
+        alert('Failed to load time off plans. Please try again.');
+      }
+    }
+    
+    async function fetchPlanBalances(unitId, planId, startDate, endDate) {
+      try {
+        const data = await pcFetch(
+          `${API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplanbalances?timeOffPlanIds=${planId}&startDate=${startDate}&endDate=${endDate}`
+        );
+        renderCalendarData(data.entities || []);
+      } catch (error) {
+        console.error('Error fetching plan balances:', error);
+        alert('Failed to load calendar data. Please try again.');
       }
     }
 
-    function calculateHolidayAllocation() {
-      // Get input values
-      const fteHours = parseFloat(document.getElementById('fte-hours').value) || 40;
-      const annualLeaveDays = parseFloat(document.getElementById('annual-leave-days').value) || 33;
-      const workingDays = parseFloat(document.getElementById('working-days').value) || 5;
-      const agentsCount = parseFloat(document.getElementById('agents-count').value) || 100;
-      const avgWeeklyHours = parseFloat(document.getElementById('avg-weekly-hours').value) || 32;
-      const holidayPercentage = parseFloat(document.getElementById('holiday-percentage').value) || 14;
+    // ==== Calendar rendering ====
+    function initializeCalendar() {
+      const monthSel = document.getElementById('calendar-month-select');
+      const yearSel  = document.getElementById('calendar-year-select');
+      const months   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
       
-      // Calculate daily hours
-      const dailyHours = (fteHours / workingDays) * (annualLeaveDays / 52);
+      // Clear existing options
+      monthSel.innerHTML = '';
+      yearSel.innerHTML = '';
       
-      // Calculate weekly and daily holiday allocation
-      const weeklyHolidayHours = (avgWeeklyHours * agentsCount * holidayPercentage) / 100;
-      const dailyHolidayHours = weeklyHolidayHours / workingDays;
-      
-      // Update results
-      document.getElementById('weekly-holiday-hours').textContent = weeklyHolidayHours.toFixed(2);
-      document.getElementById('daily-holiday-hours').textContent = dailyHolidayHours.toFixed(2);
-      
-      // Calculate day distribution
-      calculateDayDistribution(weeklyHolidayHours);
-      
-      // Validate monthly percentages
-      validateMonthlyPercentages();
-    }
-
-    function calculateDayDistribution(weeklyHours) {
-      const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-      let totalPercent = 0;
-      let totalHours = 0;
-      
-      days.forEach(day => {
-        const percent = parseFloat(document.getElementById(`${day}-percent`).value) || 0;
-        totalPercent += percent;
-        
-        const hours = (weeklyHours * percent) / 100;
-        totalHours += hours;
-        
-        document.getElementById(`${day}-hours`).textContent = hours.toFixed(2);
+      // Populate months
+      months.forEach((m, i) => {
+        monthSel.appendChild(new Option(m, i + 1));
       });
       
-      // Update totals
-      document.getElementById('total-percent').textContent = `${totalPercent.toFixed(0)}%`;
-      document.getElementById('total-hours').textContent = totalHours.toFixed(2);
-    }
-
-    function calculateMonthlyAllocation() {
-      // Validate percentages first
-      let totalPercent = 0;
-      const monthlyPercents = [];
-      const inputs = document.querySelectorAll('.monthly-percent');
-      
-      inputs.forEach(input => {
-        const percent = parseFloat(input.value) || 0;
-        monthlyPercents.push(percent);
-        totalPercent += percent;
+      // Populate years (current year -1, current, current +1)
+      const currentYear = new Date().getFullYear();
+      [currentYear - 1, currentYear, currentYear + 1].forEach(y => {
+        yearSel.appendChild(new Option(y, y));
       });
       
-      if (Math.abs(totalPercent - 100) > 0.01) {
-        alert('Monthly percentages must total exactly 100%');
+      // Set current month/year
+      monthSel.value = new Date().getMonth() + 1;
+      yearSel.value = currentYear;
+      
+      // Add event listeners
+      document.getElementById('calendar-management-unit-select')
+        .addEventListener('change', e => {
+          if (e.target.value) fetchTimeOffPlans(e.target.value);
+        });
+      
+      document.getElementById('calendar-plan-select')
+        .addEventListener('change', updateCalendar);
+      
+      // Initial fetch of management units
+      fetchManagementUnits();
+    }
+    
+    function updateCalendar() {
+      const unitId = document.getElementById('calendar-management-unit-select').value;
+      const planId = document.getElementById('calendar-plan-select').value;
+      const month  = document.getElementById('calendar-month-select').value;
+      const year   = document.getElementById('calendar-year-select').value;
+      
+      if (!unitId || !planId) return;
+      
+      const sd = `${year}-${String(month).padStart(2, '0')}-01`;
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const ed = `${year}-${String(month).padStart(2, '0')}-${daysInMonth}`;
+      
+      fetchPlanBalances(unitId, planId, sd, ed);
+    }
+    
+    function renderCalendarData(balances) {
+      const cal = document.getElementById('calendar');
+      cal.innerHTML = '';
+      
+      const year  = +document.getElementById('calendar-year-select').value;
+      const month = +document.getElementById('calendar-month-select').value;
+      const days  = new Date(year, month, 0).getDate();
+      
+      // Get first day of month to determine weekday offset
+      const firstDay = new Date(year, month - 1, 1).getDay();
+      
+      // Add empty cells for days before the first of the month
+      for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'day empty';
+        cal.appendChild(emptyCell);
+      }
+      
+      // Create day cells
+      for (let d = 1; d <= days; d++) {
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const dayData = balances.find(b => b.date === dateStr) || {};
+        const sb = dayData.startingBalance || 0;
+        const br = dayData.balance || 0;
+        const wl = dayData.waitlist || 0;
+        
+        const tile = document.createElement('div');
+        tile.className = 'day';
+        
+        // Determine background color based on availability
+        const ratio = sb ? br / sb : 0;
+        if (br === 0) {
+          tile.style.background = 'var(--full-color)';
+        } else if (ratio < 0.1) {
+          tile.style.background = 'var(--nearly-color)';
+        } else {
+          tile.style.background = 'var(--available-color)';
+        }
+        
+        // Highlight current day
+        const today = new Date();
+        if (d === today.getDate() && month === today.getMonth() + 1 && year === today.getFullYear()) {
+          tile.style.border = '2px solid var(--primary-color)';
+        }
+        
+        tile.innerHTML = `
+          <div class="date">${d}</div>
+          <div class="balance-info">
+            <div>Start: ${sb}</div>
+            <div>Remain: ${br}</div>
+            ${wl ? `<div>Wait: ${wl}</div>` : ''}
+          </div>`;
+        cal.appendChild(tile);
+      }
+    }
+
+    // ==== On page load ====
+    window.onload = function() {
+      // First check for token in URL hash
+      const hasTokenInUrl = parseTokenFromHash();
+      
+      // If no token in URL, check sessionStorage
+      if (!hasTokenInUrl && !checkForStoredToken()) {
+        window.location = AUTH_URL;
         return;
       }
       
-      // Get weekly holiday hours
-      const weeklyHolidayHours = parseFloat(document.getElementById('weekly-holiday-hours').textContent) || 0;
+      // Initialize UI components
+      document.getElementById("defaultOpen").click();
+      updateTables();
+      initializeCalculator();
+      initializeCalendar();
       
-      // Calculate monthly allocation
-      const monthlyResults = document.getElementById('monthly-results');
-      monthlyResults.innerHTML = '';
-      
-      const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-      ];
-      
-      const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-      
-      months.forEach((month, monthIndex) => {
-        const row = document.createElement('tr');
-        const monthPercent = monthlyPercents[monthIndex];
-        const monthHours = (weeklyHolidayHours * 4.345) * (monthPercent / 100); // 4.345 weeks per month
-        
-        let rowHTML = `<td>${month}</td>`;
-        let dayTotal = 0;
-        
-        days.forEach(day => {
-          const dayPercent = parseFloat(document.getElementById(`${day}-percent`).value) || 0;
-          const dayHours = (monthHours * dayPercent) / 100;
-          dayTotal += dayHours;
-          
-          rowHTML += `<td>${dayHours.toFixed(1)}</td>`;
+      // Add event listeners for tab switching
+      document.querySelectorAll('.tablinks').forEach(button => {
+        button.addEventListener('click', function(e) {
+          openTab(e, this.getAttribute('onclick').match(/'([^']+)'/)[1]);
         });
-        
-        rowHTML += `<td>${dayTotal.toFixed(1)}</td>`;
-        row.innerHTML = rowHTML;
-        monthlyResults.appendChild(row);
       });
-    }
+    };
   </script>
 </body>
 </html>
