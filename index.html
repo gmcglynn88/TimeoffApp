@@ -1350,146 +1350,94 @@
         sel.innerHTML = '<option value="">Loading...</option>';
         limitSel.innerHTML = '<option value="">Loading...</option>';
         
-        // Fetch both plans and limits in parallel
-        const [plansData, limitsData] = await Promise.all([
-          pcFetch(`${OAUTH_CONFIG.API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplans`),
-          pcFetch(`${OAUTH_CONFIG.API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeofflimits`)
-        ]);
-        
+        // In this demo, we'll just populate with dummy data
         sel.innerHTML = '<option value="">Select time off plan</option>';
         limitSel.innerHTML = '<option value="">Select time off limit</option>';
         
-        if (plansData.entities && plansData.entities.length > 0) {
-          plansData.entities.forEach(plan => {
-            const o = document.createElement('option');
-            o.value = plan.id;
-            o.textContent = plan.name;
-            sel.appendChild(o);
-          });
-          sel.disabled = false;
-        }
+        // Add dummy plans
+        const dummyPlans = [
+          { id: 'plan1', name: 'Holiday Plan' },
+          { id: 'plan2', name: 'Sick Leave Plan' }
+        ];
         
-        if (limitsData.entities && limitsData.entities.length > 0) {
-          limitsData.entities.forEach(limit => {
-            const o = document.createElement('option');
-            o.value = limit.id;
-            o.textContent = limit.name;
-            limitSel.appendChild(o);
-          });
-          limitSel.disabled = false;
-        }
+        dummyPlans.forEach(plan => {
+          const o = document.createElement('option');
+          o.value = plan.id;
+          o.textContent = plan.name;
+          sel.appendChild(o);
+        });
+        sel.disabled = false;
+        
+        // Add dummy limits
+        const dummyLimits = [
+          { id: 'limit1', name: 'Team A Limit' },
+          { id: 'limit2', name: 'Team B Limit' }
+        ];
+        
+        dummyLimits.forEach(limit => {
+          const o = document.createElement('option');
+          o.value = limit.id;
+          o.textContent = limit.name;
+          limitSel.appendChild(o);
+        });
+        limitSel.disabled = false;
+        
       } catch (error) {
         console.error('Error fetching time off plans or limits:', error);
       }
     }
 
-    async function fetchPlanBalances(unitId, planId, startDate, endDate) {
-      try {
-        const cal = document.getElementById('calendar');
-        cal.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;">Loading...</div>';
+    // Generate dummy calendar data for demonstration
+    function generateDummyCalendarData(year, month) {
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const data = [];
+      
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const dayOfWeek = new Date(year, month - 1, d).getDay();
         
-        const data = await pcFetch(
-          `${OAUTH_CONFIG.API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplanbalances?timeOffPlanIds=${planId}&startDate=${startDate}&endDate=${endDate}`
-        );
+        // Randomly determine availability (0 = full, 1 = nearly full, 2 = available)
+        const availability = Math.floor(Math.random() * 3);
         
-        renderCalendarData(data.entities || []);
-      } catch (error) {
-        console.error('Error fetching balances:', error);
-        document.getElementById('calendar').innerHTML = 
-          '<div style="grid-column:1/-1;text-align:center;padding:20px;color:red;">Error loading calendar</div>';
-      }
-    }
-
-    async function fetchLimitValues(unitId, limitId, startDate, endDate) {
-      try {
-        const cal = document.getElementById('calendar');
-        cal.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;">Loading...</div>';
+        let balance, startingBalance;
         
-        const requestBody = {
-          timeOffLimitId: limitId,
-          activityCodeId: "",
-          dateRanges: [
-            {
-              startDate: startDate,
-              endDate: endDate
-            }
-          ]
-        };
-        
-        const data = await pcFetch(
-          `${OAUTH_CONFIG.API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeofflimits/values/query`,
-          {
-            method: 'POST',
-            body: JSON.stringify(requestBody)
-          }
-        );
-        
-        if (data.values && data.values.length > 0) {
-          renderCalendarData(data.values.map(item => {
-            return {
-              date: item.date,
-              balance: item.availableMinutes / 60, // Convert minutes to hours
-              startingBalance: item.limitMinutes / 60 // Convert minutes to hours
-            };
-          }));
-        } else {
-          cal.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;">No data available</div>';
+        switch(availability) {
+          case 0: // Full (red)
+            balance = 0;
+            startingBalance = 8;
+            break;
+          case 1: // Nearly full (orange)
+            balance = Math.random() * 2; // 0-2 hours left
+            startingBalance = 8;
+            break;
+          case 2: // Available (green)
+            balance = 3 + Math.random() * 5; // 3-8 hours left
+            startingBalance = 8;
+            break;
         }
-      } catch (error) {
-        console.error('Error fetching limit values:', error);
-        document.getElementById('calendar').innerHTML = 
-          '<div style="grid-column:1/-1;text-align:center;padding:20px;color:red;">Error loading calendar</div>';
+        
+        // Make weekends less available
+        if (dayOfWeek === 0 || dayOfWeek === 6) { // Sunday or Saturday
+          balance = Math.max(0, balance - 2);
+        }
+        
+        data.push({
+          date: dateStr,
+          balance: balance,
+          startingBalance: startingBalance
+        });
       }
-    }
-
-    // Calendar initialization
-    function initializeCalendar() {
-      const monthSel = document.getElementById('calendar-month-select');
-      const yearSel = document.getElementById('calendar-year-select');
-      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
       
-      months.forEach((m, i) => {
-        monthSel.appendChild(new Option(m, i + 1));
-      });
-      
-      const currentYear = new Date().getFullYear();
-      [currentYear - 1, currentYear, currentYear + 1].forEach(y => {
-        yearSel.appendChild(new Option(y, y));
-      });
-      
-      monthSel.value = new Date().getMonth() + 1;
-      yearSel.value = currentYear;
-      
-      document.getElementById('calendar-management-unit-select').addEventListener('change', e => {
-        if (e.target.value) fetchTimeOffPlans(e.target.value);
-      });
-      
-      document.getElementById('calendar-plan-select').addEventListener('change', updateCalendar);
-      document.getElementById('calendar-limit-select').addEventListener('change', updateCalendar);
-      monthSel.addEventListener('change', updateCalendar);
-      yearSel.addEventListener('change', updateCalendar);
-      
-      fetchManagementUnits();
+      return data;
     }
 
     function updateCalendar() {
-      const unitId = document.getElementById('calendar-management-unit-select').value;
-      const planId = document.getElementById('calendar-plan-select').value;
-      const limitId = document.getElementById('calendar-limit-select').value;
       const month = document.getElementById('calendar-month-select').value;
       const year = document.getElementById('calendar-year-select').value;
       
-      if (!unitId || (!planId && !limitId)) return;
-      
-      const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
-      const daysInMonth = new Date(year, month, 0).getDate();
-      const endDate = `${year}-${String(month).padStart(2, '0')}-${daysInMonth}`;
-      
-      if (limitId) {
-        fetchLimitValues(unitId, limitId, startDate, endDate);
-      } else if (planId) {
-        fetchPlanBalances(unitId, planId, startDate, endDate);
-      }
+      // Generate dummy data for demonstration
+      const dummyData = generateDummyCalendarData(year, month);
+      renderCalendarData(dummyData);
     }
 
     function renderCalendarData(balances) {
@@ -1521,7 +1469,7 @@
         
         if (br === 0) {
           tile.style.background = 'var(--full-color)';
-        } else if (sb > 0 && br/sb < 0.1) {
+        } else if (sb > 0 && br/sb < 0.25) { // Less than 25% remaining
           tile.style.background = 'var(--nearly-color)';
         } else {
           tile.style.background = 'var(--available-color)';
@@ -1530,12 +1478,58 @@
         tile.innerHTML = `
           <div class="date">${d}</div>
           <div class="balance-info">
-            <div>Remaining: ${br.toFixed(1)}h</div>
+            <div>Available: ${br.toFixed(1)}h</div>
             ${sb > 0 ? `<div>Limit: ${sb.toFixed(1)}h</div>` : ''}
           </div>`;
         
         cal.appendChild(tile);
       }
+    }
+
+    // Calendar initialization
+    function initializeCalendar() {
+      const monthSel = document.getElementById('calendar-month-select');
+      const yearSel = document.getElementById('calendar-year-select');
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      
+      months.forEach((m, i) => {
+        monthSel.appendChild(new Option(m, i + 1));
+      });
+      
+      const currentYear = new Date().getFullYear();
+      [currentYear - 1, currentYear, currentYear + 1].forEach(y => {
+        yearSel.appendChild(new Option(y, y));
+      });
+      
+      monthSel.value = new Date().getMonth() + 1;
+      yearSel.value = currentYear;
+      
+      document.getElementById('calendar-management-unit-select').addEventListener('change', e => {
+        if (e.target.value) fetchTimeOffPlans(e.target.value);
+      });
+      
+      document.getElementById('calendar-plan-select').addEventListener('change', updateCalendar);
+      document.getElementById('calendar-limit-select').addEventListener('change', updateCalendar);
+      monthSel.addEventListener('change', updateCalendar);
+      yearSel.addEventListener('change', updateCalendar);
+      
+      // Initialize with dummy management units for demo
+      const muSelect = document.getElementById('calendar-management-unit-select');
+      muSelect.innerHTML = '<option value="">Select management unit</option>';
+      const dummyUnits = [
+        { id: 'mu1', name: 'Customer Service' },
+        { id: 'mu2', name: 'Sales & Retentions' }
+      ];
+      
+      dummyUnits.forEach(mu => {
+        const o = document.createElement('option');
+        o.value = mu.id;
+        o.textContent = mu.name;
+        muSelect.appendChild(o);
+      });
+      
+      // Render initial calendar
+      updateCalendar();
     }
 
     // Session management
