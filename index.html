@@ -857,6 +857,12 @@
               </select>
             </div>
             <div>
+              <h3>Select Time Off Limit</h3>
+              <select id="calendar-limit-select" disabled>
+                <option value="">Please select unit first</option>
+              </select>
+            </div>
+            <div>
               <h3>Select Month</h3>
               <select id="calendar-month-select"></select>
             </div>
@@ -1338,15 +1344,23 @@
     async function fetchTimeOffPlans(unitId) {
       try {
         const sel = document.getElementById('calendar-plan-select');
+        const limitSel = document.getElementById('calendar-limit-select');
         sel.disabled = true;
+        limitSel.disabled = true;
         sel.innerHTML = '<option value="">Loading...</option>';
+        limitSel.innerHTML = '<option value="">Loading...</option>';
         
-        const data = await pcFetch(`${OAUTH_CONFIG.API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplans`);
+        // Fetch both plans and limits in parallel
+        const [plansData, limitsData] = await Promise.all([
+          pcFetch(`${OAUTH_CONFIG.API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeoffplans`),
+          pcFetch(`${OAUTH_CONFIG.API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeofflimits`)
+        ]);
         
         sel.innerHTML = '<option value="">Select time off plan</option>';
+        limitSel.innerHTML = '<option value="">Select time off limit</option>';
         
-        if (data.entities && data.entities.length > 0) {
-          data.entities.forEach(plan => {
+        if (plansData.entities && plansData.entities.length > 0) {
+          plansData.entities.forEach(plan => {
             const o = document.createElement('option');
             o.value = plan.id;
             o.textContent = plan.name;
@@ -1354,8 +1368,18 @@
           });
           sel.disabled = false;
         }
+        
+        if (limitsData.entities && limitsData.entities.length > 0) {
+          limitsData.entities.forEach(limit => {
+            const o = document.createElement('option');
+            o.value = limit.id;
+            o.textContent = limit.name;
+            limitSel.appendChild(o);
+          });
+          limitSel.disabled = false;
+        }
       } catch (error) {
-        console.error('Error fetching time off plans:', error);
+        console.error('Error fetching time off plans or limits:', error);
       }
     }
 
@@ -1371,6 +1395,48 @@
         renderCalendarData(data.entities || []);
       } catch (error) {
         console.error('Error fetching balances:', error);
+        document.getElementById('calendar').innerHTML = 
+          '<div style="grid-column:1/-1;text-align:center;padding:20px;color:red;">Error loading calendar</div>';
+      }
+    }
+
+    async function fetchLimitValues(unitId, limitId, startDate, endDate) {
+      try {
+        const cal = document.getElementById('calendar');
+        cal.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;">Loading...</div>';
+        
+        const requestBody = {
+          timeOffLimitId: limitId,
+          activityCodeId: "",
+          dateRanges: [
+            {
+              startDate: startDate,
+              endDate: endDate
+            }
+          ]
+        };
+        
+        const data = await pcFetch(
+          `${OAUTH_CONFIG.API_URL}/api/v2/workforcemanagement/managementunits/${unitId}/timeofflimits/values/query`,
+          {
+            method: 'POST',
+            body: JSON.stringify(requestBody)
+          }
+        );
+        
+        if (data.values && data.values.length > 0) {
+          renderCalendarData(data.values.map(item => {
+            return {
+              date: item.date,
+              balance: item.availableMinutes / 60, // Convert minutes to hours
+              startingBalance: item.limitMinutes / 60 // Convert minutes to hours
+            };
+          }));
+        } else {
+          cal.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;">No data available</div>';
+        }
+      } catch (error) {
+        console.error('Error fetching limit values:', error);
         document.getElementById('calendar').innerHTML = 
           '<div style="grid-column:1/-1;text-align:center;padding:20px;color:red;">Error loading calendar</div>';
       }
@@ -1399,6 +1465,7 @@
       });
       
       document.getElementById('calendar-plan-select').addEventListener('change', updateCalendar);
+      document.getElementById('calendar-limit-select').addEventListener('change', updateCalendar);
       monthSel.addEventListener('change', updateCalendar);
       yearSel.addEventListener('change', updateCalendar);
       
@@ -1408,16 +1475,21 @@
     function updateCalendar() {
       const unitId = document.getElementById('calendar-management-unit-select').value;
       const planId = document.getElementById('calendar-plan-select').value;
+      const limitId = document.getElementById('calendar-limit-select').value;
       const month = document.getElementById('calendar-month-select').value;
       const year = document.getElementById('calendar-year-select').value;
       
-      if (!unitId || !planId) return;
+      if (!unitId || (!planId && !limitId)) return;
       
       const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
       const daysInMonth = new Date(year, month, 0).getDate();
       const endDate = `${year}-${String(month).padStart(2, '0')}-${daysInMonth}`;
       
-      fetchPlanBalances(unitId, planId, startDate, endDate);
+      if (limitId) {
+        fetchLimitValues(unitId, limitId, startDate, endDate);
+      } else if (planId) {
+        fetchPlanBalances(unitId, planId, startDate, endDate);
+      }
     }
 
     function renderCalendarData(balances) {
@@ -1459,6 +1531,7 @@
           <div class="date">${d}</div>
           <div class="balance-info">
             <div>Remaining: ${br.toFixed(1)}h</div>
+            ${sb > 0 ? `<div>Limit: ${sb.toFixed(1)}h</div>` : ''}
           </div>`;
         
         cal.appendChild(tile);
