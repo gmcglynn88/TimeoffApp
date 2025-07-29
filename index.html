@@ -425,6 +425,7 @@
     </div>
   </div>
   <script>
+    // Prepopulate monthly allocation percentages
     function initializeMonthlyInputs() {
       const months = [
         "January","February","March","April","May","June",
@@ -432,18 +433,18 @@
       ];
 
       const percentages = {
-        january: 8,
-        february: 9,
-        march: 12,
-        april: 7,
-        may: 10,
-        june: 6,
-        july: 15,
-        august: 13,
-        september: 5,
-        october: 8,
-        november: 4,
-        december: 6
+        january: 15,
+        february: 10,
+        march: 18,
+        april: 12,
+        may: 20,
+        june: 8,
+        july: 16,
+        august: 14,
+        september: 11,
+        october: 17,
+        november: 13,
+        december: 9
       };
 
       const tbody = document.getElementById("monthly-inputs");
@@ -456,6 +457,37 @@
           <td><input type="number" id="${monthKey}-percent" class="input-cell" value="${percentages[monthKey]}" min="0" max="100" step="0.01"></td>`;
         tbody.appendChild(tr);
       });
+    }
+
+    function calculateMonthlyAllocation() {
+      const months = [
+        "january", "february", "march", "april", "may", "june", 
+        "july", "august", "september", "october", "november", "december"
+      ];
+
+      let totalPct = 0;
+      let monthlyResults = '';
+
+      months.forEach(m => {
+        const pct = parseFloat(document.getElementById(`${m}-percent`).value);
+        totalPct += pct;
+        
+        const row = `<tr><td>${m.charAt(0).toUpperCase() + m.slice(1)}</td><td>${pct}%</td></tr>`;
+        monthlyResults += row;
+      });
+
+      // Update the monthly results table
+      document.getElementById("monthly-results").innerHTML = monthlyResults;
+
+      // Validate the total percentage
+      const validation = document.getElementById("total-validation");
+      if (Math.abs(totalPct - 100) < 0.1) {
+        validation.style.color = 'green';
+        validation.innerHTML = `Total: 100.00% (Valid)`;
+      } else {
+        validation.style.color = 'red';
+        validation.innerHTML = `Total: ${totalPct.toFixed(2)}% (Invalid)`;
+      }
     }
 
     window.onload = function() {
