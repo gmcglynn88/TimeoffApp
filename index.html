@@ -49,8 +49,8 @@
     tr:hover{background-color:rgba(99,171,143,.1)}
     .balance-input{width:100%;padding:4px 6px;border:1px solid var(--border-color);border-radius:4px;background:var(--card-bg);font-size:14px}
 
-    /* Calculator */
-    #Calculator{padding:20px;display:flex;flex-direction:column;overflow:hidden}
+    /* Calculator — IMPORTANT: no display here so tabs control visibility */
+    #Calculator{padding:20px; /* display removed */ ;display:block}
     .calc-container{flex:1;display:flex;flex-direction:column;overflow:hidden}
     .calc-header h2{font-size:1.3em;margin:0 0 20px;color:var(--primary-color);font-weight:700}
     .flex-container{flex:1;display:flex;gap:20px;overflow:hidden}
@@ -440,7 +440,7 @@
         if(!validRange){ sum.innerHTML=`<span style="color:#c0392b;">Invalid range: "To" is before "From".</span>`; }
         else{
           const bits=[]; if(fromStr) bits.push(`from <strong>${fromStr}</strong>`); if(toStr) bits.push(`to <strong>${toStr}</strong>`);
-          sum.innerHTML=`Showing <strong>${details.length</strong>} record(s) ${bits.length?`(${bits.join(' ')})`:''}. Total deducted: <strong>${totH.toFixed(2)} hrs</strong> · Total days: <strong>${totD}</strong>`;
+          sum.innerHTML=`Showing <strong>${details.length}</strong> record(s) ${bits.length?`(${bits.join(' ')})`:''}. Total deducted: <strong>${totH.toFixed(2)} hrs</strong> · Total days: <strong>${totD}</strong>`;
         }
       }
     }
@@ -552,7 +552,6 @@
       if(tabId==='TimeOffCalendar') renderCalendarData();
     }
 
-    // attach once to avoid inline JS mistakes
     document.addEventListener('click', (e)=>{
       const btn=e.target.closest('.tablinks');
       if(!btn) return;
@@ -564,7 +563,9 @@
     window.onload=function(){
       // start on balances
       openTabById('TimeOffBalances');
-      updateTables(); initializeCalculator(); initializeCalendar();
+      updateTables(); 
+      initializeCalculator(); 
+      initializeCalendar();
     };
   </script>
 </body>
