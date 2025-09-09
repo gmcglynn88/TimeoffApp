@@ -13,8 +13,9 @@
     }
     *{box-sizing:border-box}
     body{font-family:'Aptos',Arial,sans-serif;margin:0;background:var(--light-bg);color:var(--text-color);min-height:100vh;display:flex;flex-direction:column}
-    header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;background:var(--primary-color);color:#fff;box-shadow:0 2px 5px rgba(0,0,0,.1)}
-    header h1{margin:0;font-size:1.5em;font-weight:700}
+    header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--primary-color);color:#fff;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-logo{height:40px;object-fit:contain}
     .logo{height:40px;object-fit:contain}
     .divider{border:none;height:1px;background:var(--border-color);margin:0}
     .tab-container{display:flex;justify-content:space-between;align-items:center;background:var(--light-bg);border-bottom:1px solid var(--border-color);padding:0 20px}
@@ -28,7 +29,7 @@
     .import-button-label input{display:none}
     .main-content{flex:1;padding:20px;display:flex;flex-direction:column;overflow:hidden}
     .tabcontent{display:none;flex:1;overflow:hidden;background:var(--card-bg);border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
-    /* KEY FIX: let the balances tab scroll, don’t force children to stretch */
+    /* Key layout fixes */
     .balances-container{flex:1;display:flex;flex-direction:column;overflow:auto;padding:20px}
     .filters{display:flex;gap:15px;margin-bottom:20px;flex-wrap:wrap}
     .filters>div{flex:1;min-width:200px}
@@ -36,7 +37,6 @@
     .filters select{width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:4px;font-size:14px;background:var(--card-bg)}
     .search-container{margin-bottom:20px}
     .search-container input{width:100%;max-width:400px;padding:8px 12px;border:1px solid var(--border-color);border-radius:4px;font-size:14px}
-    /* KEY FIX: cards size to content, no stretching/bleed */
     .table-container{flex:0 0 auto;overflow:auto;margin:15px 0 20px;border:1px solid var(--border-color);border-radius:6px;background:var(--card-bg)}
     .table-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px}
     .toolbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -69,7 +69,7 @@
     .calculate-button:hover{background:var(--secondary-color)}
     .monthly-results-container{flex:1}
 
-    /* Calendar (unchanged layout) */
+    /* Calendar */
     .calendar-filters .filters{display:flex;gap:15px;flex-wrap:wrap;padding:20px;background:var(--card-bg);border-bottom:1px solid var(--border-color)}
     .calendar-container{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:0 20px 20px}
     .calendar-header{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;padding:8px 0;font-weight:bold;text-align:center;background:var(--light-bg)}
@@ -98,7 +98,15 @@
 <body>
   <div id="app-content" style="width:100%;height:100%;flex:1;display:flex;flex-direction:column;">
     <header>
-      <h1>Your Time by IPI</h1>
+      <!-- LEFT: brand logo instead of text -->
+      <div class="brand">
+        <img
+          src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/Yourtime.png"
+          alt="Your Time"
+          class="brand-logo"
+        >
+      </div>
+      <!-- RIGHT: existing IPI logo -->
       <img src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/IPI_Primary%20Identity_Corporate_REVERSED_ECC.png" alt="Consulting Logo" class="logo">
     </header>
     <hr class="divider">
@@ -532,7 +540,9 @@
     function openTab(evt,tabName){
       const tabs=document.getElementsByClassName("tabcontent"); for(let t of tabs) t.style.display="none";
       const links=document.getElementsByClassName("tablinks"); for(let l of links) l.className=l.className.replace(" active","");
-      document.getElementById(tabName).style.display="flex"; evt.currentTarget.className+=" active";
+      document.getElementById(tabName).display="flex";
+      document.getElementById(tabName).style.display="flex";
+      evt.currentTarget.className+=" active";
       if(tabName==='TimeOffCalendar') renderCalendarData();
     }
 
