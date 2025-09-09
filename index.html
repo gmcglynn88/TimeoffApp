@@ -47,7 +47,11 @@
     th{background:var(--primary-color);color:#fff;font-weight:600;position:sticky;top:0}
     tr:nth-child(even){background-color:var(--light-bg)}
     tr:hover{background-color:rgba(99,171,143,.1)}
-    .balance-input{width:100%;padding:4px 6px;border:1px solid var(--border-color);border-radius:4px;background:var(--card-bg);font-size:14px}
+    .balance-input{width:100%;padding:4px 6px;border:1px solid var(--border-color);border-radius:4px;background:var(--card-bg);font-size:14px;transition:background .15s,border-color .15s,color .15s}
+
+    /* NEW: colour coding for low & negative balances */
+    .balance-input.low{background:#FFF4E5;border-color:#FFB74D}
+    .balance-input.negative{background:#FFE8E8;border-color:#E57373;color:#C62828}
 
     /* Calculator */
     #Calculator{padding:20px}
@@ -323,7 +327,7 @@
   </div>
 
   <script>
-    // -------- Balances (updated to your latest list) --------
+    // -------- Balances (your latest list) --------
     const sampleBalances = [
       { name:"Craig Farley",  team:"Team Reading",   unit:"Customer Service",     holidayCurrent:120, holidayNext:80,  toil:15 },
       { name:"Sasha Smith",   team:"Team Sheffield", unit:"Customer Service",     holidayCurrent:95,  holidayNext:60,  toil:8  },
@@ -339,9 +343,7 @@
     ];
 
     // -------- Time-off details (~6 per person across 2025–2026) --------
-    // Hours are roughly days * 8 for simplicity.
     const sampleDetails = [
-      // Craig Farley — Team Reading (CS)
       { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2025-01-15", end:"2025-01-22", deduction:56, days:7 },
       { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2025-03-10", end:"2025-03-12", deduction:24, days:3 },
       { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2025-07-01", end:"2025-07-05", deduction:40, days:5 },
@@ -349,7 +351,6 @@
       { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2026-04-14", end:"2026-04-16", deduction:24, days:3 },
       { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2026-08-08", end:"2026-08-12", deduction:40, days:5 },
 
-      // Sasha Smith — Team Sheffield (CS)
       { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2025-02-10", end:"2025-02-12", deduction:24, days:3 },
       { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2025-05-27", end:"2025-05-27", deduction:8,  days:1 },
       { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2025-09-14", end:"2025-09-18", deduction:40, days:5 },
@@ -357,7 +358,6 @@
       { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2026-06-20", end:"2026-06-21", deduction:16, days:2 },
       { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2026-10-12", end:"2026-10-16", deduction:40, days:5 },
 
-      // Lisa Lowe — Team Manchester (S&R)
       { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-01-30", end:"2025-01-31", deduction:16, days:2 },
       { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-04-07", end:"2025-04-11", deduction:40, days:5 },
       { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-08-24", end:"2025-08-28", deduction:40, days:5 },
@@ -365,7 +365,6 @@
       { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2026-05-18", end:"2026-05-20", deduction:24, days:3 },
       { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2026-11-02", end:"2026-11-06", deduction:40, days:5 },
 
-      // Sian Gibbs — Team London (S&R)
       { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2025-02-24", end:"2025-02-26", deduction:24, days:3 },
       { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2025-06-10", end:"2025-06-12", deduction:24, days:3 },
       { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2025-10-19", end:"2025-10-23", deduction:40, days:5 },
@@ -373,7 +372,6 @@
       { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2026-07-15", end:"2026-07-17", deduction:24, days:3 },
       { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2026-12-21", end:"2026-12-24", deduction:32, days:4 },
 
-      // John Thompson — Team Nashville (CS)
       { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2025-03-03", end:"2025-03-07", deduction:40, days:5 },
       { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2025-06-22", end:"2025-06-22", deduction:8,  days:1 },
       { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2025-10-10", end:"2025-10-15", deduction:48, days:6 },
@@ -381,7 +379,6 @@
       { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2026-05-05", end:"2026-05-08", deduction:32, days:4 },
       { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2026-09-14", end:"2026-09-18", deduction:40, days:5 },
 
-      // Olivia Jenson — Team Reading (CS)
       { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2025-01-06", end:"2025-01-08", deduction:24, days:3 },
       { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2025-05-12", end:"2025-05-16", deduction:40, days:5 },
       { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2025-09-01", end:"2025-09-01", deduction:8,  days:1 },
@@ -389,7 +386,6 @@
       { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2026-06-29", end:"2026-07-03", deduction:40, days:5 },
       { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2026-11-09", end:"2026-11-10", deduction:16, days:2 },
 
-      // Ethan Reynolds — Team Sheffield (CS)
       { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2025-02-03", end:"2025-02-04", deduction:16, days:2 },
       { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2025-04-21", end:"2025-04-25", deduction:40, days:5 },
       { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2025-08-05", end:"2025-08-07", deduction:24, days:3 },
@@ -397,7 +393,6 @@
       { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2026-05-25", end:"2026-05-29", deduction:40, days:5 },
       { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2026-10-05", end:"2026-10-09", deduction:40, days:5 },
 
-      // Ava Mitchell — Team Manchester (S&R)
       { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-03-17", end:"2025-03-20", deduction:32, days:4 },
       { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-07-27", end:"2025-07-31", deduction:40, days:5 },
       { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-12-14", end:"2025-12-15", deduction:16, days:2 },
@@ -405,7 +400,6 @@
       { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2026-07-20", end:"2026-07-24", deduction:40, days:5 },
       { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2026-12-01", end:"2026-12-03", deduction:24, days:3 },
 
-      // Gerard McGlynn — Team Nashville (S&R)
       { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2025-01-22", end:"2025-01-23", deduction:16, days:2 },
       { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2025-05-05", end:"2025-05-09", deduction:40, days:5 },
       { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2025-09-28", end:"2025-09-30", deduction:24, days:3 },
@@ -413,7 +407,6 @@
       { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2026-06-08", end:"2026-06-12", deduction:40, days:5 },
       { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2026-10-19", end:"2026-10-23", deduction:40, days:5 },
 
-      // Rhys Turner — Team London (CS)
       { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2025-02-17", end:"2025-02-19", deduction:24, days:3 },
       { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2025-06-01", end:"2025-06-05", deduction:40, days:5 },
       { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2025-10-26", end:"2025-10-27", deduction:16, days:2 },
@@ -421,7 +414,6 @@
       { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2026-07-06", end:"2026-07-10", deduction:40, days:5 },
       { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2026-12-14", end:"2026-12-18", deduction:40, days:5 },
 
-      // Tom Collins — Team Reading (CS)
       { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:"2025-01-13", end:"2025-01-13", deduction:8,  days:1 },
       { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:"2025-04-29", end:"2025-05-01", deduction:24, days:3 },
       { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:"2025-09-07", end:"2025-09-11", deduction:40, days:5 },
@@ -430,7 +422,7 @@
       { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:"2026-10-12", end:"2026-10-14", deduction:24, days:3 }
     ];
 
-    // -------- Utilities --------
+    // --- Utilities ---
     const toDate=(s)=>{ if(!s) return null; const [y,m,d]=s.split('-').map(Number); return new Date(y,(m||1)-1,d||1); };
     function clearDetailsDateRange(){ document.getElementById('details-from').value=''; document.getElementById('details-to').value=''; updateTables(); }
 
@@ -452,7 +444,21 @@
       const a=document.createElement('a'); a.href=url; a.download=filename||'export.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     }
 
-    // -------- Filtering & rendering --------
+    // --- Balance input colouring helper ---
+    function classifyBalance(val){
+      if(val <= 0) return 'negative';
+      if(val < 15) return 'low';
+      return '';
+    }
+    function applyColourToInput(inputEl){
+      if(!inputEl) return;
+      const v = parseFloat(inputEl.value);
+      const cls = classifyBalance(isNaN(v)?0:v);
+      inputEl.classList.remove('low','negative');
+      if(cls) inputEl.classList.add(cls);
+    }
+
+    // --- Filtering & rendering ---
     function filterTables(){ updateTables(); }
 
     function updateTables(){
@@ -472,25 +478,32 @@
       const passTeam =t=>team==="Select"||team==="all"||t===team;
       const passSearch=n=>n.toLowerCase().includes(term);
       const passYear=d=>{
-        if((fromDate||toDateVal)) return true; // if range set, ignore year selector
+        if((fromDate||toDateVal)) return true; // if date range set, ignore year selector
         if(year==="Select"||year==="all") return true;
         return String(new Date(d).getFullYear())===String(year);
       };
 
-      // --- Balances ---
+      // --- Balances table render ---
       const balances=sampleBalances.filter(x=>passAgent(x.name)&&passUnit(x.unit)&&passTeam(x.team)&&passSearch(x.name));
       const bBody=document.getElementById("balances-table-body"); bBody.innerHTML="";
       balances.forEach(x=>{
+        const clsHC = classifyBalance(x.holidayCurrent);
+        const clsHN = classifyBalance(x.holidayNext);
+        const clsTO = classifyBalance(x.toil);
         const tr=document.createElement("tr");
         tr.innerHTML=`
           <td>${x.name}</td><td>${x.team}</td><td>${x.unit}</td>
-          <td><input type="number" class="balance-input" value="${x.holidayCurrent}"></td>
-          <td><input type="number" class="balance-input" value="${x.holidayNext}"></td>
-          <td><input type="number" class="balance-input" value="${x.toil}"></td>`;
+          <td><input type="number" class="balance-input ${clsHC}" value="${x.holidayCurrent}"></td>
+          <td><input type="number" class="balance-input ${clsHN}" value="${x.holidayNext}"></td>
+          <td><input type="number" class="balance-input ${clsTO}" value="${x.toil}"></td>`;
         bBody.appendChild(tr);
       });
 
-      // --- Details ---
+      // ensure live recolouring when user edits values
+      // (event listener is attached once below, this just ensures freshly added inputs look right)
+      document.querySelectorAll('#balances-table .balance-input').forEach(applyColourToInput);
+
+      // --- Details table render ---
       const overlaps=(sStr,eStr)=>{
         if(!fromDate && !toDateVal) return true;
         if(!validRange) return false;
@@ -524,6 +537,13 @@
         }
       }
     }
+
+    // --- Live recolour on input in balances table ---
+    document.addEventListener('input', (e)=>{
+      if(e.target && e.target.classList.contains('balance-input')){
+        applyColourToInput(e.target);
+      }
+    });
 
     // -------- Calculator --------
     function calculateWeeklyHolidayHours(){
