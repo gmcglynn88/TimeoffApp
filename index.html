@@ -481,9 +481,9 @@
       margin-left: 12px;
       background: var(--primary-color);
       color: white;
-      border: none;
       padding: 8px 18px;
       border-radius: 5px;
+      border: none;
       cursor: pointer;
     }
     #calendar-save-btn {
@@ -872,16 +872,44 @@
       { name: "John Thompson", team: "Customer Service 2", unit: "Customer Service", start: "2025-10-10", end: "2025-10-15", deduction: 40, days: 5 },
     ];
 
-    // Balances tab JS
+    // ---------- FILTERED RENDERING (REPLACED FUNCTIONS) ----------
+    function filterTables() {
+      // Rebuild both tables using current filters & search term
+      updateTables();
+    }
+
     function updateTables() {
+      // Read current filters
       const agentSelect = document.getElementById("agent-select").value;
       const unitSelect = document.getElementById("management-unit-select").value;
       const teamSelect = document.getElementById("team-select").value;
+      const yearSelect = document.getElementById("year-select").value;
+      const term = (document.getElementById("search-input").value || "").toLowerCase();
 
-      let filteredBalances = sampleBalances.filter(item =>
-        (agentSelect === "all" || agentSelect === "Select" || item.name === agentSelect) &&
-        (unitSelect === "all" || unitSelect === "Select" || item.unit === unitSelect) &&
-        (teamSelect === "all" || teamSelect === "Select" || item.team === teamSelect)
+      // Helper predicates
+      const passAgent = (name) =>
+        agentSelect === "Select" || agentSelect === "all" || name === agentSelect;
+
+      const passUnit = (unit) =>
+        unitSelect === "Select" || unitSelect === "all" || unit === unitSelect;
+
+      const passTeam = (team) =>
+        teamSelect === "Select" || teamSelect === "all" || team === teamSelect;
+
+      const passSearch = (name) => name.toLowerCase().includes(term);
+
+      const passYear = (dateStr) => {
+        if (yearSelect === "Select" || yearSelect === "all") return true;
+        const y = new Date(dateStr).getFullYear();
+        return String(y) === String(yearSelect);
+      };
+
+      // ----- BALANCES TABLE -----
+      const filteredBalances = sampleBalances.filter(item =>
+        passAgent(item.name) &&
+        passUnit(item.unit) &&
+        passTeam(item.team) &&
+        passSearch(item.name)
       );
 
       const balancesBody = document.getElementById("balances-table-body");
@@ -900,11 +928,20 @@
         balancesBody.appendChild(row);
       });
 
-      // Details table
+      // ----- DETAILS TABLE -----
+      // Apply same filters AND the Year filter (based on start date)
+      const filteredDetails = sampleDetails.filter(item =>
+        passAgent(item.name) &&
+        passUnit(item.unit) &&
+        passTeam(item.team) &&
+        passSearch(item.name) &&
+        passYear(item.start)
+      );
+
       const detailsBody = document.getElementById("details-table-body");
       detailsBody.innerHTML = "";
 
-      sampleDetails.forEach(item => {
+      filteredDetails.forEach(item => {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${item.name}</td>
@@ -918,13 +955,7 @@
         detailsBody.appendChild(row);
       });
     }
-
-    function filterTables() {
-      const term = document.getElementById("search-input").value.toLowerCase();
-      document.querySelectorAll("#balances-table-body tr").forEach(r => {
-        r.style.display = r.cells[0].textContent.toLowerCase().includes(term) ? "" : "none";
-      });
-    }
+    // ---------- END REPLACED SECTION ----------
 
     function exportTableToCSV(tableId, filename) {
       const rows = document.getElementById(tableId).querySelectorAll("tr");
