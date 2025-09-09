@@ -15,8 +15,7 @@
     body{font-family:'Aptos',Arial,sans-serif;margin:0;background:var(--light-bg);color:var(--text-color);min-height:100vh;display:flex;flex-direction:column}
     header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--primary-color);color:#fff;box-shadow:0 2px 5px rgba(0,0,0,.1)}
     .brand{display:flex;align-items:center;gap:10px}
-    .brand-logo{height:40px;object-fit:contain}
-    .logo{height:40px;object-fit:contain}
+    .brand-logo,.logo{height:40px;object-fit:contain}
     .divider{border:none;height:1px;background:var(--border-color);margin:0}
     .tab-container{display:flex;justify-content:space-between;align-items:center;background:var(--light-bg);border-bottom:1px solid var(--border-color);padding:0 20px}
     .tab{display:flex}
@@ -27,9 +26,11 @@
     .save-button,.export-button,.import-button-label{padding:8px 16px;background:var(--primary-color);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px;font-weight:600;transition:.3s}
     .save-button:hover,.export-button:hover,.import-button-label:hover{background:var(--secondary-color)}
     .import-button-label input{display:none}
+
     .main-content{flex:1;padding:20px;display:flex;flex-direction:column;overflow:hidden}
-    .tabcontent{display:none;flex:1;overflow:hidden;background:var(--card-bg);border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
-    /* Key layout fixes */
+    .tabcontent{display:none; /* shown via JS */ flex:1;overflow:hidden;background:var(--card-bg);border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+
+    /* Balances tab layout (no bleed, scroll inside) */
     .balances-container{flex:1;display:flex;flex-direction:column;overflow:auto;padding:20px}
     .filters{display:flex;gap:15px;margin-bottom:20px;flex-wrap:wrap}
     .filters>div{flex:1;min-width:200px}
@@ -47,7 +48,6 @@
     tr:nth-child(even){background-color:var(--light-bg)}
     tr:hover{background-color:rgba(99,171,143,.1)}
     .balance-input{width:100%;padding:4px 6px;border:1px solid var(--border-color);border-radius:4px;background:var(--card-bg);font-size:14px}
-    .export-buttons{display:flex;gap:10px;margin-bottom:20px}
 
     /* Calculator */
     #Calculator{padding:20px;display:flex;flex-direction:column;overflow:hidden}
@@ -98,7 +98,7 @@
 <body>
   <div id="app-content" style="width:100%;height:100%;flex:1;display:flex;flex-direction:column;">
     <header>
-      <!-- LEFT: brand logo instead of text -->
+      <!-- LEFT: YourTime brand logo -->
       <div class="brand">
         <img
           src="https://raw.githubusercontent.com/gmcglynn88/TimeoffApp/main/Yourtime.png"
@@ -113,9 +113,9 @@
 
     <div class="tab-container">
       <div class="tab">
-        <button class="tablinks active" onclick="openTab(event,'TimeOffBalances')">Time Off Balances</button>
-        <button class="tablinks" onclick="openTab(event,'Calculator')">Calculator</button>
-        <button class="tablinks" onclick="openTab(event,'TimeOffCalendar')">Time Off Calendar</button>
+        <button class="tablinks active" data-tab="TimeOffBalances">Time Off Balances</button>
+        <button class="tablinks" data-tab="Calculator">Calculator</button>
+        <button class="tablinks" data-tab="TimeOffCalendar">Time Off Calendar</button>
       </div>
       <div class="button-container">
         <label class="import-button-label">Import Balances
@@ -127,7 +127,7 @@
 
     <div class="main-content">
       <!-- Time Off Balances Tab -->
-      <div id="TimeOffBalances" class="tabcontent" style="display:flex;">
+      <div id="TimeOffBalances" class="tabcontent">
         <div class="balances-container">
           <div class="filters">
             <div>
@@ -354,7 +354,7 @@
     const toDate=(s)=>{ if(!s) return null; const [y,m,d]=s.split('-').map(Number); return new Date(y,(m||1)-1,d||1); };
     function clearDetailsDateRange(){ document.getElementById('details-from').value=''; document.getElementById('details-to').value=''; updateTables(); }
 
-    // Robust CSV export (headers + filtered rows, quoting, BOM)
+    // CSV export (headers + filtered rows, quoting, BOM)
     function exportTableToCSV(tableId, filename){
       const table=document.getElementById(tableId); if(!table) return;
       const rows=[];
@@ -440,7 +440,7 @@
         if(!validRange){ sum.innerHTML=`<span style="color:#c0392b;">Invalid range: "To" is before "From".</span>`; }
         else{
           const bits=[]; if(fromStr) bits.push(`from <strong>${fromStr}</strong>`); if(toStr) bits.push(`to <strong>${toStr}</strong>`);
-          sum.innerHTML=`Showing <strong>${details.length}</strong> record(s) ${bits.length?`(${bits.join(' ')})`:''}. Total deducted: <strong>${totH.toFixed(2)} hrs</strong> · Total days: <strong>${totD}</strong>`;
+          sum.innerHTML=`Showing <strong>${details.length</strong>} record(s) ${bits.length?`(${bits.join(' ')})`:''}. Total deducted: <strong>${totH.toFixed(2)} hrs</strong> · Total days: <strong>${totD}</strong>`;
         }
       }
     }
@@ -537,17 +537,33 @@
     }
 
     // -------- Tabs & init --------
-    function openTab(evt,tabName){
-      const tabs=document.getElementsByClassName("tabcontent"); for(let t of tabs) t.style.display="none";
-      const links=document.getElementsByClassName("tablinks"); for(let l of links) l.className=l.className.replace(" active","");
-      document.getElementById(tabName).display="flex";
-      document.getElementById(tabName).style.display="flex";
-      evt.currentTarget.className+=" active";
-      if(tabName==='TimeOffCalendar') renderCalendarData();
+    function openTabById(tabId){
+      // hide all
+      const tabs=document.getElementsByClassName("tabcontent");
+      for(let i=0;i<tabs.length;i++){ tabs[i].style.display="none"; }
+      // show one
+      const el=document.getElementById(tabId);
+      if(el){ el.style.display="flex"; }
+      // set button state
+      const links=document.getElementsByClassName("tablinks");
+      for(let i=0;i<links.length;i++){
+        links[i].classList.toggle("active", links[i].getAttribute("data-tab")===tabId);
+      }
+      if(tabId==='TimeOffCalendar') renderCalendarData();
     }
 
+    // attach once to avoid inline JS mistakes
+    document.addEventListener('click', (e)=>{
+      const btn=e.target.closest('.tablinks');
+      if(!btn) return;
+      e.preventDefault();
+      const tabId=btn.getAttribute('data-tab');
+      openTabById(tabId);
+    });
+
     window.onload=function(){
-      document.getElementById("TimeOffBalances").style.display="flex";
+      // start on balances
+      openTabById('TimeOffBalances');
       updateTables(); initializeCalculator(); initializeCalendar();
     };
   </script>
