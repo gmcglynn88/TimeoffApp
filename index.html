@@ -49,468 +49,123 @@
       font-weight: 700;
     }
 
-    .logo {
-      height: 40px;
-      object-fit: contain;
-    }
+    .logo { height: 40px; object-fit: contain; }
 
-    .divider {
-      border: none;
-      height: 1px;
-      background: var(--border-color);
-      margin: 0;
-    }
+    .divider { border: none; height: 1px; background: var(--border-color); margin: 0; }
 
     .tab-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--light-bg);
-      border-bottom: 1px solid var(--border-color);
-      padding: 0 20px;
-      flex-direction: row;
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--light-bg); border-bottom: 1px solid var(--border-color);
+      padding: 0 20px; flex-direction: row;
     }
 
-    .tab {
-      display: flex;
-      flex-direction: row;
-    }
+    .tab { display: flex; flex-direction: row; }
 
     .tab button {
-      background: transparent;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      padding: 12px 20px;
-      font-size: 15px;
-      transition: all 0.3s;
-      color: var(--text-light);
-      font-weight: 600;
-      border-bottom: 3px solid transparent;
+      background: transparent; border: none; outline: none; cursor: pointer;
+      padding: 12px 20px; font-size: 15px; transition: all 0.3s;
+      color: var(--text-light); font-weight: 600; border-bottom: 3px solid transparent;
     }
+    .tab button:hover { color: var(--primary-color); }
+    .tab button.active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); }
 
-    .tab button:hover {
-      color: var(--primary-color);
-    }
+    .button-container { display: flex; gap: 10px; align-items: center; }
 
-    .tab button.active {
-      color: var(--primary-color);
-      border-bottom: 3px solid var(--primary-color);
+    .save-button, .export-button, .import-button-label {
+      padding: 8px 16px; background: var(--primary-color); color: white; border: none;
+      border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.3s;
     }
+    .save-button:hover, .export-button:hover, .import-button-label:hover { background: var(--secondary-color); }
+    .import-button-label input { display: none; }
 
-    .button-container {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .save-button, .import-button-label {
-      padding: 8px 16px;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: background 0.3s;
-    }
-
-    .save-button:hover, .import-button-label:hover {
-      background: var(--secondary-color);
-    }
-
-    .import-button-label input {
-      display: none;
-    }
-
-    .main-content {
-      flex: 1;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+    .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; overflow: hidden; }
 
     .tabcontent {
-      display: none;
-      flex: 1;
-      overflow: hidden;
-      background: var(--card-bg);
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: none; flex: 1; overflow: hidden; background: var(--card-bg);
+      border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
-    .balances-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      padding: 20px;
-    }
+    .balances-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 20px; }
 
-    .filters {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .filters > div {
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .filters h3 {
-      font-size: 14px;
-      margin-bottom: 8px;
-      color: var(--text-light);
-      font-weight: 600;
-    }
-
+    .filters { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+    .filters > div { flex: 1; min-width: 200px; }
+    .filters h3 { font-size: 14px; margin-bottom: 8px; color: var(--text-light); font-weight: 600; }
     .filters select {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      font-size: 14px;
-      background: var(--card-bg);
+      width: 100%; padding: 8px 12px; border: 1px solid var(--border-color);
+      border-radius: 4px; font-size: 14px; background: var(--card-bg);
     }
 
-    .search-container {
-      margin-bottom: 20px;
-    }
-
+    .search-container { margin-bottom: 20px; }
     .search-container input {
-      width: 100%;
-      max-width: 400px;
-      padding: 8px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      font-size: 14px;
+      width: 100%; max-width: 400px; padding: 8px 12px; border: 1px solid var(--border-color);
+      border-radius: 4px; font-size: 14px;
     }
 
     .table-container {
-      flex: 1;
-      overflow: auto;
-      margin-bottom: 20px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      background: var(--card-bg);
-      margin-top: 15px;
+      flex: 1; overflow: auto; margin-bottom: 20px; border: 1px solid var(--border-color);
+      border-radius: 6px; background: var(--card-bg); margin-top: 15px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      background: var(--card-bg);
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--card-bg); }
 
-    th, td {
-      padding: 12px 15px;
-      text-align: left;
-      border: 1px solid var(--border-color);
-    }
+    th, td { padding: 12px 15px; text-align: left; border: 1px solid var(--border-color); }
 
-    th {
-      background: var(--primary-color);
-      color: white;
-      font-weight: 600;
-      position: sticky;
-      top: 0;
-    }
+    th { background: var(--primary-color); color: white; font-weight: 600; position: sticky; top: 0; }
 
-    tr:nth-child(even) {
-      background-color: var(--light-bg);
-    }
+    tr:nth-child(even) { background-color: var(--light-bg); }
+    tr:hover { background-color: rgba(99, 171, 143, 0.1); }
 
-    tr:hover {
-      background-color: rgba(99, 171, 143, 0.1);
-    }
+    .balance-input { width: 100%; padding: 4px 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px; background: var(--card-bg); }
 
-    .balance-input {
-      width: 100%;
-      padding: 4px 6px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      font-size: 14px;
-      background: var(--card-bg);
-    }
-
-    .balance-input.negative {
-      color: red;
-    }
-
-    .export-buttons {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .export-button {
-      padding: 8px 16px;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: background 0.3s;
-    }
-
-    .export-button:hover {
-      background: var(--secondary-color);
-    }
+    .export-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
 
     /* Calculator */
-    #Calculator {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .calc-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .calc-header h2 {
-      font-size: 1.3em;
-      margin: 0 0 20px 0;
-      color: var(--primary-color);
-      font-weight: 700;
-    }
-
-    .flex-container {
-      flex: 1;
-      display: flex;
-      gap: 20px;
-      overflow: hidden;
-    }
-
-    .left-panel, .right-panel {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .left-panel {
-      flex: 0 0 35%;
-    }
-
-    .right-panel {
-      flex: 1;
-    }
-
-    .panel-section {
-      margin-bottom: 20px;
-    }
-
-    .section-title {
-      font-weight: 600;
-      color: var(--primary-color);
-      margin-bottom: 10px;
-      font-size: 15px;
-    }
-
-    .calc-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
-
-    .calc-table th, .calc-table td {
-      padding: 10px 12px;
-      border: 1px solid var(--border-color);
-      text-align: left;
-    }
-
-    .calc-table th {
-      background: var(--primary-color);
-      color: white;
-    }
-
-    .input-cell {
-      width: 100%;
-      padding: 6px 8px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      background: var(--light-bg);
-      font-size: 14px;
-    }
-
-    .calculation-cell {
-      background: rgba(99, 171, 143, 0.1);
-      border: 1px solid var(--primary-color);
-      border-radius: 4px;
-      padding: 6px 8px;
-      font-weight: 600;
-    }
-
-    .monthly-tables-container {
-      display: flex;
-      gap: 20px;
-      margin-top: 10px;
-    }
-
-    .monthly-input-container {
-      flex: 0 0 40%;
-    }
-
-    .calculate-button {
-      padding: 8px 16px;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: background 0.3s;
-      margin-top: 10px;
-    }
-
-    .calculate-button:hover {
-      background: var(--secondary-color);
-    }
-
-    .monthly-results-container {
-      flex: 1;
-    }
+    #Calculator { padding: 20px; display: flex; flex-direction: column; overflow: hidden; }
+    .calc-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .calc-header h2 { font-size: 1.3em; margin: 0 0 20px 0; color: var(--primary-color); font-weight: 700; }
+    .flex-container { flex: 1; display: flex; gap: 20px; overflow: hidden; }
+    .left-panel, .right-panel { display: flex; flex-direction: column; overflow: hidden; }
+    .left-panel { flex: 0 0 35%; } .right-panel { flex: 1; }
+    .panel-section { margin-bottom: 20px; }
+    .section-title { font-weight: 600; color: var(--primary-color); margin-bottom: 10px; font-size: 15px; }
+    .calc-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 14px; }
+    .calc-table th, .calc-table td { padding: 10px 12px; border: 1px solid var(--border-color); text-align: left; }
+    .calc-table th { background: var(--primary-color); color: white; }
+    .input-cell { width: 100%; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--light-bg); font-size: 14px; }
+    .calculation-cell { background: rgba(99, 171, 143, 0.1); border: 1px solid var(--primary-color); border-radius: 4px; padding: 6px 8px; font-weight: 600; }
+    .monthly-tables-container { display: flex; gap: 20px; margin-top: 10px; }
+    .monthly-input-container { flex: 0 0 40%; }
+    .calculate-button { padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.3s; margin-top: 10px; }
+    .calculate-button:hover { background: var(--secondary-color); }
+    .monthly-results-container { flex: 1; }
 
     /* Calendar */
     .calendar-filters .filters {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      padding: 20px;
-      background: var(--card-bg);
+      display: flex; gap: 15px; flex-wrap: wrap; padding: 20px; background: var(--card-bg);
       border-bottom: 1px solid var(--border-color);
     }
+    .calendar-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0 20px 20px; }
+    .calendar-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; padding: 8px 0; font-weight: bold; text-align: center; background: var(--light-bg); }
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 1fr; gap: 8px; flex: 1; min-height: 0; }
+    .calendar .day { border: 1px solid var(--border-color); border-radius: 4px; padding: 8px 4px 4px 4px; display: flex; flex-direction: column; justify-content: space-between; min-height: 80px; height: 100%; box-sizing: border-box; transition: background 0.25s; }
+    .calendar .day.empty { background-color: var(--light-bg); border: 1px dashed var(--border-color); }
+    .calendar .day .date { font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+    .calendar .day .balance-info { font-size: 12px; color: var(--text-light); line-height: 1.2; margin-bottom: 2px; }
+    .day-input { width: 48px; font-size: 13px; padding: 2px 3px; border: 1px solid var(--border-color); border-radius: 4px; }
+    .bulk-update-panel { margin-top: 10px; background: #f3f7f4; border-radius: 8px; padding: 16px; }
+    .bulk-update-panel label { display: flex; align-items: center; gap: 4px; font-size: 14px; }
+    .bulk-update-panel input { font-size: 14px; padding: 3px 4px; border-radius: 4px; border: 1px solid var(--border-color); }
+    .bulk-update-panel button { margin-left: 12px; background: var(--primary-color); color: white; padding: 8px 18px; border-radius: 5px; border: none; cursor: pointer; }
+    #calendar-save-btn { margin: 16px auto 0 auto; display: block; background: var(--primary-color); color: white; border: none; padding: 10px 28px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 600; }
+    #calendar-save-btn:active, .bulk-update-panel button:active { background: var(--secondary-color); }
 
-    .calendar-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      padding: 0 20px 20px;
-    }
-
-    .calendar-header {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
-      padding: 8px 0 8px 0;
-      font-weight: bold;
-      text-align: center;
-      background: var(--light-bg);
-    }
-
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      grid-auto-rows: 1fr;
-      gap: 8px;
-      flex: 1;
-      min-height: 0;
-    }
-
-    .calendar .day {
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 8px 4px 4px 4px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 80px;
-      height: 100%;
-      box-sizing: border-box;
-      transition: background 0.25s;
-    }
-
-    .calendar .day.empty {
-      background-color: var(--light-bg);
-      border: 1px dashed var(--border-color);
-    }
-
-    .calendar .day .date {
-      font-weight: 600;
-      margin-bottom: 6px;
-      font-size: 14px;
-    }
-
-    .calendar .day .balance-info {
-      font-size: 12px;
-      color: var(--text-light);
-      line-height: 1.2;
-      margin-bottom: 2px;
-    }
-
-    .day-input {
-      width: 48px;
-      font-size: 13px;
-      padding: 2px 3px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-    }
-    .bulk-update-panel {
-      margin-top: 10px;
-      background: #f3f7f4;
-      border-radius: 8px;
-      padding: 16px;
-    }
-    .bulk-update-panel label {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 14px;
-    }
-    .bulk-update-panel input {
-      font-size: 14px;
-      padding: 3px 4px;
-      border-radius: 4px;
-      border: 1px solid var(--border-color);
-    }
-    .bulk-update-panel button {
-      margin-left: 12px;
-      background: var(--primary-color);
-      color: white;
-      padding: 8px 18px;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-    }
-    #calendar-save-btn {
-      margin: 16px auto 0 auto;
-      display: block;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 10px 28px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-    }
-    #calendar-save-btn:active, .bulk-update-panel button:active {
-      background: var(--secondary-color);
-    }
     @media (max-width: 1200px) {
       .flex-container { flex-direction: column; }
       .left-panel, .right-panel { min-width: 100%; }
       .monthly-tables-container { flex-direction: column; }
       .monthly-input-container, .monthly-results-container { flex: 1; width: 100%; }
     }
-    @media (max-width: 900px) {
-      .calendar-header, .calendar { font-size: 13px; }
-      .calendar .day { min-height: 60px; }
-    }
+    @media (max-width: 900px) { .calendar-header, .calendar { font-size: 13px; } .calendar .day { min-height: 60px; } }
     @media (max-width: 700px) {
       .calendar-header, .calendar { font-size: 11px; }
       .calendar .day { min-height: 40px; padding: 4px 1px; }
@@ -528,6 +183,7 @@
     </header>
     <hr class="divider">
     <div class="error-message" id="error-message"></div>
+
     <div class="tab-container">
       <div class="tab">
         <button class="tablinks active" onclick="openTab(event,'TimeOffBalances')">Time Off Balances</button>
@@ -541,6 +197,7 @@
         <button class="save-button" onclick="alert('Changes saved! (Just a demo)')">Save</button>
       </div>
     </div>
+
     <div class="main-content">
       <!-- Time Off Balances Tab -->
       <div id="TimeOffBalances" class="tabcontent" style="display: flex;">
@@ -595,9 +252,11 @@
               </select>
             </div>
           </div>
+
           <div class="search-container">
             <input type="text" id="search-input" placeholder="Search by agent name" onkeyup="filterTables()">
           </div>
+
           <div class="table-container">
             <h3>Time off Balances</h3>
             <table id="balances-table">
@@ -614,13 +273,34 @@
               <tbody id="balances-table-body"></tbody>
             </table>
           </div>
+
           <div class="export-buttons">
-            <button class="export-button" onclick="exportTableToCSV('balances-table','time_off_balances.csv')">
+            <button class="export-button" type="button" onclick="exportTableToCSV('balances-table','time_off_balances.csv')">
               Export Time Off Balances
             </button>
           </div>
+
+          <!-- Time off Details with Date Range -->
           <div class="table-container">
-            <h3>Time off Details</h3>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:10px 10px 0;">
+              <h3 style="margin:0;">Time off Details</h3>
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                <label style="font-size:14px; color:var(--text-light);">
+                  From
+                  <input type="date" id="details-from" style="padding:6px 8px; border:1px solid var(--border-color); border-radius:4px;">
+                </label>
+                <label style="font-size:14px; color:var(--text-light);">
+                  To
+                  <input type="date" id="details-to" style="padding:6px 8px; border:1px solid var(--border-color); border-radius:4px;">
+                </label>
+                <button class="export-button" type="button" onclick="updateTables()">Apply</button>
+                <button class="export-button" type="button" onclick="clearDetailsDateRange()">Clear</button>
+                <button class="export-button" type="button" onclick="exportTableToCSV('details-table','time_off_details.csv')">Export</button>
+              </div>
+            </div>
+
+            <div id="details-summary" style="padding:6px 10px 0; font-size:14px; color:var(--text-light);"></div>
+
             <table id="details-table">
               <thead>
                 <tr>
@@ -636,116 +316,53 @@
               <tbody id="details-table-body"></tbody>
             </table>
           </div>
-          <div class="export-buttons">
-            <button class="export-button" onclick="exportTableToCSV('details-table','time_off_details.csv')">
-              Export Time Off Details
-            </button>
-          </div>
         </div>
       </div>
-      
+
       <!-- Calculator Tab -->
       <div id="Calculator" class="tabcontent">
         <div class="calc-container">
-          <div class="calc-header">
-            <h2>Annual Leave By Day Calculator</h2>
-          </div>
+          <div class="calc-header"><h2>Annual Leave By Day Calculator</h2></div>
           <div class="flex-container">
             <div class="left-panel">
               <div class="panel-section">
                 <div class="section-title">FTE & Leave Settings</div>
                 <table class="calc-table">
                   <tr><th>Variable</th><th>Value</th></tr>
-                  <tr>
-                    <td>FTE definition (Hours)</td>
-                    <td><input type="number" id="fte-hours" class="input-cell" value="40" min="1"></td>
-                  </tr>
-                  <tr>
-                    <td>Annual Leave Allocation (Days)</td>
-                    <td><input type="number" id="annual-leave-days" class="input-cell" value="33" min="0"></td>
-                  </tr>
-                  <tr>
-                    <td>Working Days per Week</td>
-                    <td><input type="number" id="working-days" class="input-cell" value="5" min="1" max="7"></td>
-                  </tr>
+                  <tr><td>FTE definition (Hours)</td><td><input type="number" id="fte-hours" class="input-cell" value="40" min="1"></td></tr>
+                  <tr><td>Annual Leave Allocation (Days)</td><td><input type="number" id="annual-leave-days" class="input-cell" value="33" min="0"></td></tr>
+                  <tr><td>Working Days per Week</td><td><input type="number" id="working-days" class="input-cell" value="5" min="1" max="7"></td></tr>
                 </table>
               </div>
               <div class="panel-section">
                 <div class="section-title">Staffing Inputs</div>
                 <table class="calc-table">
                   <tr><th>Variable</th><th>Value</th></tr>
-                  <tr>
-                    <td>Agents In Staffing Group</td>
-                    <td><input type="number" id="agents-count" class="input-cell" value="100" min="1"></td>
-                  </tr>
-                  <tr>
-                    <td>Average Weekly Hours Per Agent</td>
-                    <td><input type="number" id="avg-weekly-hours" class="input-cell" value="32" min="1" max="40"></td>
-                  </tr>
-                  <tr>
-                    <td>Holiday Weekly Target (%)</td>
-                    <td><input type="number" id="holiday-percentage" class="input-cell" value="14" min="0" max="100"></td>
-                  </tr>
+                  <tr><td>Agents In Staffing Group</td><td><input type="number" id="agents-count" class="input-cell" value="100" min="1"></td></tr>
+                  <tr><td>Average Weekly Hours Per Agent</td><td><input type="number" id="avg-weekly-hours" class="input-cell" value="32" min="1" max="40"></td></tr>
+                  <tr><td>Holiday Weekly Target (%)</td><td><input type="number" id="holiday-percentage" class="input-cell" value="14" min="0" max="100"></td></tr>
                 </table>
               </div>
               <div class="panel-section">
                 <div class="section-title">Weekly Holiday Allocation</div>
                 <table class="calc-table">
                   <tr><th>Metric</th><th>Result</th></tr>
-                  <tr>
-                    <td>Weekly Holiday Allocation Hours</td>
-                    <td id="weekly-holiday-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Daily Holiday Allocation Hours</td>
-                    <td id="daily-holiday-hours" class="calculation-cell">0.00</td>
-                  </tr>
+                  <tr><td>Weekly Holiday Allocation Hours</td><td id="weekly-holiday-hours" class="calculation-cell">0.00</td></tr>
+                  <tr><td>Daily Holiday Allocation Hours</td><td id="daily-holiday-hours" class="calculation-cell">0.00</td></tr>
                 </table>
               </div>
               <div class="panel-section">
                 <div class="section-title">Day-of-Week Distribution</div>
                 <table class="calc-table" id="day-distribution">
                   <tr><th>Day</th><th>% Distribution</th><th>Hours</th></tr>
-                  <tr>
-                    <td>Mon</td>
-                    <td><input type="number" id="mon-percent" class="input-cell" value="20" min="0" max="100"></td>
-                    <td id="mon-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Tue</td>
-                    <td><input type="number" id="tue-percent" class="input-cell" value="17" min="0" max="100"></td>
-                    <td id="tue-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Wed</td>
-                    <td><input type="number" id="wed-percent" class="input-cell" value="16" min="0" max="100"></td>
-                    <td id="wed-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Thu</td>
-                    <td><input type="number" id="thu-percent" class="input-cell" value="15" min="0" max="100"></td>
-                    <td id="thu-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Fri</td>
-                    <td><input type="number" id="fri-percent" class="input-cell" value="14" min="0" max="100"></td>
-                    <td id="fri-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Sat</td>
-                    <td><input type="number" id="sat-percent" class="input-cell" value="10" min="0" max="100"></td>
-                    <td id="sat-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Sun</td>
-                    <td><input type="number" id="sun-percent" class="input-cell" value="8" min="0" max="100"></td>
-                    <td id="sun-hours" class="calculation-cell">0.00</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Total</strong></td>
-                    <td id="total-percent" class="calculation-cell">100%</td>
-                    <td id="total-hours" class="calculation-cell">0.00</td>
-                  </tr>
+                  <tr><td>Mon</td><td><input type="number" id="mon-percent" class="input-cell" value="20" min="0" max="100"></td><td id="mon-hours" class="calculation-cell">0.00</td></tr>
+                  <tr><td>Tue</td><td><input type="number" id="tue-percent" class="input-cell" value="17" min="0" max="100"></td><td id="tue-hours" class="calculation-cell">0.00</td></tr>
+                  <tr><td>Wed</td><td><input type="number" id="wed-percent" class="input-cell" value="16" min="0" max="100"></td><td id="wed-hours" class="calculation-cell">0.00</td></tr>
+                  <tr><td>Thu</td><td><input type="number" id="thu-percent" class="input-cell" value="15" min="0" max="100"></td><td id="thu-hours" class="calculation-cell">0.00</td></tr>
+                  <tr><td>Fri</td><td><input type="number" id="fri-percent" class="input-cell" value="14" min="0" max="100"></td><td id="fri-hours" class="calculation-cell">0.00</td></tr>
+                  <tr><td>Sat</td><td><input type="number" id="sat-percent" class="input-cell" value="10" min="0" max="100"></td><td id="sat-hours" class="calculation-cell">0.00</td></tr>
+                  <tr><td>Sun</td><td><input type="number" id="sun-percent" class="input-cell" value="8" min="0" max="100"></td><td id="sun-hours" class="calculation-cell">0.00</td></tr>
+                  <tr><td><strong>Total</strong></td><td id="total-percent" class="calculation-cell">100%</td><td id="total-hours" class="calculation-cell">0.00</td></tr>
                 </table>
               </div>
             </div>
@@ -755,23 +372,16 @@
                 <div class="monthly-tables-container">
                   <div class="monthly-input-container">
                     <table class="calc-table">
-                      <thead>
-                        <tr><th>Month</th><th>% Distribution</th></tr>
-                      </thead>
+                      <thead><tr><th>Month</th><th>% Distribution</th></tr></thead>
                       <tbody id="monthly-inputs"></tbody>
                     </table>
                     <div id="total-validation" style="margin-top:10px;font-size:14px;color:green;">Total: 100.00% (Valid)</div>
-                    <button class="calculate-button" onclick="calculateMonthlyAllocation()">
-                      Calculate Monthly Allocation
-                    </button>
+                    <button class="calculate-button" onclick="calculateMonthlyAllocation()">Calculate Monthly Allocation</button>
                   </div>
                   <div class="monthly-results-container">
                     <table class="calc-table">
                       <thead>
-                        <tr>
-                          <th>Month</th><th>Mon</th><th>Tue</th><th>Wed</th>
-                          <th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th><th>Total</th>
-                        </tr>
+                        <tr><th>Month</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th><th>Total</th></tr>
                       </thead>
                       <tbody id="monthly-results"></tbody>
                     </table>
@@ -781,8 +391,8 @@
             </div>
           </div>
         </div>
-      </div>
-      
+      </div> <!-- /Calculator -->
+
       <!-- Time Off Calendar Tab -->
       <div id="TimeOffCalendar" class="tabcontent">
         <div class="calendar-filters">
@@ -808,14 +418,8 @@
                 <option value="Team B">Team B Limit</option>
               </select>
             </div>
-            <div>
-              <h3>Select Month</h3>
-              <select id="calendar-month-select"></select>
-            </div>
-            <div>
-              <h3>Select Year</h3>
-              <select id="calendar-year-select"></select>
-            </div>
+            <div><h3>Select Month</h3><select id="calendar-month-select"></select></div>
+            <div><h3>Select Year</h3><select id="calendar-year-select"></select></div>
           </div>
           <div class="bulk-update-panel">
             <strong>Bulk update by weekday:</strong>
@@ -833,25 +437,16 @@
           </div>
         </div>
         <div class="calendar-container">
-          <div class="calendar-header">
-            <div>Mon</div>
-            <div>Tue</div>
-            <div>Wed</div>
-            <div>Thu</div>
-            <div>Fri</div>
-            <div>Sat</div>
-            <div>Sun</div>
-          </div>
+          <div class="calendar-header"><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div></div>
           <div id="calendar" class="calendar"></div>
           <button id="calendar-save-btn">Save</button>
         </div>
       </div>
-    </div>
-  </div>
-  <script>
-    // -- JS for all tabs --
+    </div> <!-- /main-content -->
+  </div> <!-- /app-content -->
 
-    // Dummy data for balances tab
+  <script>
+    // ---------- Demo Data ----------
     const sampleBalances = [
       { name: "Craig Farley", team: "Team Reading", unit: "Customer Service", holidayCurrent: 120, holidayNext: 80, toil: 15 },
       { name: "Sasha Smith", team: "Team Sheffield", unit: "Customer Service", holidayCurrent: 95, holidayNext: 60, toil: 8 },
@@ -872,52 +467,101 @@
       { name: "John Thompson", team: "Customer Service 2", unit: "Customer Service", start: "2025-10-10", end: "2025-10-15", deduction: 40, days: 5 },
     ];
 
-    // ---------- FILTERED RENDERING (REPLACED FUNCTIONS) ----------
+    // ---------- Utilities ----------
+    function toDate(s) {
+      if (!s) return null;
+      const [yy, mm, dd] = s.split('-').map(Number);
+      return new Date(yy, (mm || 1) - 1, dd || 1);
+    }
+
+    function clearDetailsDateRange() {
+      document.getElementById('details-from').value = '';
+      document.getElementById('details-to').value = '';
+      updateTables();
+    }
+
+    // Robust CSV export (handles inputs, quoting, UTF-8 BOM)
+    function exportTableToCSV(tableId, filename) {
+      const table = document.getElementById(tableId);
+      if (!table) return;
+
+      const rows = [];
+      // header
+      const headerCells = table.querySelectorAll('thead tr th');
+      if (headerCells.length) {
+        rows.push(Array.from(headerCells).map(th => th.textContent.trim()));
+      }
+      // body
+      table.querySelectorAll('tbody tr').forEach(tr => {
+        const cells = Array.from(tr.querySelectorAll('td')).map(td => {
+          const input = td.querySelector('input');
+          const val = input ? input.value : td.textContent;
+          return String(val).trim();
+        });
+        rows.push(cells);
+      });
+
+      // CSV escaping
+      const esc = (v) => {
+        const needsQuotes = /[",\n]/.test(v);
+        const value = v.replace(/"/g, '""');
+        return needsQuotes ? `"${value}"` : value;
+      };
+
+      const csv = rows.map(r => r.map(esc).join(',')).join('\n');
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" }); // BOM for Excel
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename || "export.csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    // ---------- Filtering & Rendering ----------
     function filterTables() {
-      // Rebuild both tables using current filters & search term
       updateTables();
     }
 
     function updateTables() {
       // Read current filters
       const agentSelect = document.getElementById("agent-select").value;
-      const unitSelect = document.getElementById("management-unit-select").value;
-      const teamSelect = document.getElementById("team-select").value;
-      const yearSelect = document.getElementById("year-select").value;
+      const unitSelect  = document.getElementById("management-unit-select").value;
+      const teamSelect  = document.getElementById("team-select").value;
+      const yearSelect  = document.getElementById("year-select").value;
       const term = (document.getElementById("search-input").value || "").toLowerCase();
 
+      // Date range (optional) for Details
+      const fromStr = (document.getElementById('details-from')?.value || '').trim();
+      const toStr   = (document.getElementById('details-to')?.value || '').trim();
+      const fromDateVal = toDate(fromStr);
+      const toDateVal   = toDate(toStr);
+      let validRange = true;
+      if (fromDateVal && toDateVal && toDateVal < fromDateVal) validRange = false;
+
       // Helper predicates
-      const passAgent = (name) =>
-        agentSelect === "Select" || agentSelect === "all" || name === agentSelect;
-
-      const passUnit = (unit) =>
-        unitSelect === "Select" || unitSelect === "all" || unit === unitSelect;
-
-      const passTeam = (team) =>
-        teamSelect === "Select" || teamSelect === "all" || team === teamSelect;
-
+      const passAgent = (name) => agentSelect === "Select" || agentSelect === "all" || name === agentSelect;
+      const passUnit  = (unit) => unitSelect === "Select" || unitSelect === "all" || unit === unitSelect;
+      const passTeam  = (team) => teamSelect === "Select" || teamSelect === "all" || team === teamSelect;
       const passSearch = (name) => name.toLowerCase().includes(term);
-
       const passYear = (dateStr) => {
         if (yearSelect === "Select" || yearSelect === "all") return true;
         const y = new Date(dateStr).getFullYear();
         return String(y) === String(yearSelect);
       };
 
-      // ----- BALANCES TABLE -----
+      // ----- BALANCES -----
       const filteredBalances = sampleBalances.filter(item =>
-        passAgent(item.name) &&
-        passUnit(item.unit) &&
-        passTeam(item.team) &&
-        passSearch(item.name)
+        passAgent(item.name) && passUnit(item.unit) && passTeam(item.team) && passSearch(item.name)
       );
 
       const balancesBody = document.getElementById("balances-table-body");
       balancesBody.innerHTML = "";
-
       filteredBalances.forEach(item => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
           <td>${item.name}</td>
           <td>${item.team}</td>
           <td>${item.unit}</td>
@@ -925,25 +569,34 @@
           <td><input type="number" class="balance-input" value="${item.holidayNext}"></td>
           <td><input type="number" class="balance-input" value="${item.toil}"></td>
         `;
-        balancesBody.appendChild(row);
+        balancesBody.appendChild(tr);
       });
 
-      // ----- DETAILS TABLE -----
-      // Apply same filters AND the Year filter (based on start date)
+      // ----- DETAILS -----
+      const overlaps = (startStr, endStr) => {
+        if (!fromDateVal && !toDateVal) return true;           // no date filter
+        if (!validRange) return false;
+        const s = toDate(startStr), e = toDate(endStr);
+        if (!s || !e) return false;
+        const fromOk = fromDateVal ? e >= fromDateVal : true;  // ends on/after from
+        const toOk   = toDateVal   ? s <= toDateVal   : true;  // starts on/before to
+        return fromOk && toOk;
+      };
+
       const filteredDetails = sampleDetails.filter(item =>
-        passAgent(item.name) &&
-        passUnit(item.unit) &&
-        passTeam(item.team) &&
-        passSearch(item.name) &&
-        passYear(item.start)
+        passAgent(item.name) && passUnit(item.unit) && passTeam(item.team) &&
+        passSearch(item.name) && passYear(item.start) && overlaps(item.start, item.end)
       );
 
       const detailsBody = document.getElementById("details-table-body");
       detailsBody.innerHTML = "";
 
+      let totalHours = 0, totalDays = 0;
       filteredDetails.forEach(item => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
+        totalHours += Number(item.deduction) || 0;
+        totalDays  += Number(item.days) || 0;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
           <td>${item.name}</td>
           <td>${item.team}</td>
           <td>${item.unit}</td>
@@ -952,316 +605,159 @@
           <td>${item.deduction}</td>
           <td>${item.days}</td>
         `;
-        detailsBody.appendChild(row);
+        detailsBody.appendChild(tr);
       });
-    }
-    // ---------- END REPLACED SECTION ----------
 
-    function exportTableToCSV(tableId, filename) {
-      const rows = document.getElementById(tableId).querySelectorAll("tr");
-      const csv = Array.from(rows).map(r =>
-        Array.from(r.querySelectorAll("th,td")).map(c => {
-          const input = c.querySelector('input');
-          return input ? input.value : c.innerText;
-        }).join(",")
-      ).join("\n");
-      const blob = new Blob([csv], { type: "text/csv" });
-      const link = document.createElement("a");
-      link.download = filename;
-      link.href = URL.createObjectURL(blob);
-      link.click();
+      const summaryEl = document.getElementById('details-summary');
+      if (summaryEl) {
+        if (!validRange) {
+          summaryEl.innerHTML = `<span style="color:#c0392b;">Invalid range: "To" is before "From".</span>`;
+        } else {
+          const parts = [];
+          if (fromStr) parts.push(`from <strong>${fromStr}</strong>`);
+          if (toStr) parts.push(`to <strong>${toStr}</strong>`);
+          const rangeTxt = parts.length ? ` (${parts.join(' ')})` : '';
+          summaryEl.innerHTML = `Showing <strong>${filteredDetails.length}</strong> record(s)${rangeTxt}. Total deducted: <strong>${totalHours.toFixed(2)} hrs</strong> · Total days: <strong>${totalDays}</strong>`;
+        }
+      }
     }
 
-    // Calculator JS
+    // ---------- Calculator ----------
     function calculateWeeklyHolidayHours() {
       const agents = parseFloat(document.getElementById("agents-count").value) || 0;
       const avg = parseFloat(document.getElementById("avg-weekly-hours").value) || 0;
       const pct = parseFloat(document.getElementById("holiday-percentage").value) || 0;
       const total = agents * avg * (pct/100);
       document.getElementById("weekly-holiday-hours").textContent = total.toFixed(2);
-
       const workingDays = parseFloat(document.getElementById("working-days").value) || 5;
       const dailyHours = total / workingDays;
       document.getElementById("daily-holiday-hours").textContent = dailyHours.toFixed(2);
-
       return total;
     }
-
     function calculateDayDistribution() {
       const total = calculateWeeklyHolidayHours();
       const days = ["mon","tue","wed","thu","fri","sat","sun"];
       let sumPct = 0;
-
       days.forEach(d => {
         const pct = parseFloat(document.getElementById(`${d}-percent`).value) || 0;
         sumPct += pct;
         const hours = total * (pct/100);
         document.getElementById(`${d}-hours`).textContent = hours.toFixed(2);
       });
-
       document.getElementById("total-percent").textContent = sumPct.toFixed(0) + "%";
       document.getElementById("total-hours").textContent = total.toFixed(2);
     }
-
     function initializeMonthlyInputs() {
-      const months = [
-        "January","February","March","April","May","June",
-        "July","August","September","October","November","December"
-      ];
-      
-      // Predefined monthly percentages
-      const monthlyPercentages = {
-        "January": 8,
-        "February": 9,
-        "March": 12,
-        "April": 7,
-        "May": 9,
-        "June": 6,
-        "July": 14,
-        "August": 13,
-        "September": 5,
-        "October": 7,
-        "November": 4,
-        "December": 6
-      };
-
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      const monthlyPercentages = { "January":8,"February":9,"March":12,"April":7,"May":9,"June":6,"July":14,"August":13,"September":5,"October":7,"November":4,"December":6 };
       const tbody = document.getElementById("monthly-inputs");
       tbody.innerHTML = "";
-
       months.forEach(m => {
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${m}</td>
-          <td><input type="number" id="${m.toLowerCase()}-percent" class="input-cell" value="${monthlyPercentages[m]}" min="0" max="100" step="0.01"></td>`;
+        tr.innerHTML = `<td>${m}</td><td><input type="number" id="${m.toLowerCase()}-percent" class="input-cell" value="${monthlyPercentages[m]}" min="0" max="100" step="0.01"></td>`;
         tbody.appendChild(tr);
       });
     }
-
     function calculateMonthlyAllocation() {
-      const months = [
-        "january","february","march","april","may","june",
-        "july","august","september","october","november","december"
-      ];
-
+      const months = ["january","february","march","april","may","june","july","august","september","october","november","december"];
       let totalPct = 0;
-      months.forEach(m => {
-        totalPct += parseFloat(document.getElementById(`${m}-percent`).value) || 0;
-      });
-
+      months.forEach(m => { totalPct += parseFloat(document.getElementById(`${m}-percent`).value) || 0; });
       const validation = document.getElementById("total-validation");
-      if (Math.abs(totalPct - 100) > 0.1) {
-        validation.innerHTML = `<span style="color:red;">Total ${totalPct.toFixed(2)}% (should be 100%)</span>`;
-        return;
-      }
-
+      if (Math.abs(totalPct - 100) > 0.1) { validation.innerHTML = `<span style="color:red;">Total ${totalPct.toFixed(2)}% (should be 100%)</span>`; return; }
       const weeklyHolidayHours = calculateWeeklyHolidayHours();
       const tbody = document.getElementById("monthly-results");
       tbody.innerHTML = "";
-
       months.forEach(m => {
         const pctMonth = parseFloat(document.getElementById(`${m}-percent`).value) || 0;
-        const tr = document.createElement("tr");
-        let row = `<td>${m.charAt(0).toUpperCase()+m.slice(1)}</td>`;
-        let daySum = 0;
-
+        const tr = document.createElement("tr"); let row = `<td>${m.charAt(0).toUpperCase()+m.slice(1)}</td>`; let daySum = 0;
         ["mon","tue","wed","thu","fri","sat","sun"].forEach(d => {
           const pctDay = parseFloat(document.getElementById(`${d}-percent`).value) || 0;
           const hrs = weeklyHolidayHours * (pctDay/100) * (pctMonth/100) * (52/12);
-          daySum += hrs;
-          row += `<td>${hrs.toFixed(2)}</td>`;
+          daySum += hrs; row += `<td>${hrs.toFixed(2)}</td>`;
         });
-
-        row += `<td>${daySum.toFixed(2)}</td>`;
-        tr.innerHTML = row;
-        tbody.appendChild(tr);
+        row += `<td>${daySum.toFixed(2)}</td>`; tr.innerHTML = row; tbody.appendChild(tr);
       });
     }
-
     function initializeCalculator() {
-      [
-        "agents-count","avg-weekly-hours","holiday-percentage","working-days",
-        "mon-percent","tue-percent","wed-percent","thu-percent",
-        "fri-percent","sat-percent","sun-percent"
-      ].forEach(id => {
+      ["agents-count","avg-weekly-hours","holiday-percentage","working-days","mon-percent","tue-percent","wed-percent","thu-percent","fri-percent","sat-percent","sun-percent"].forEach(id => {
         document.getElementById(id).addEventListener("input", calculateDayDistribution);
       });
-
-      initializeMonthlyInputs();
-      calculateDayDistribution();
+      initializeMonthlyInputs(); calculateDayDistribution();
     }
 
-    // Calendar stuff
-
-    // Simple in-memory "calendarData" for the visible month/year
+    // ---------- Calendar ----------
     let calendarData = [];
-
-    function getDaysInMonth(year, month) {
-      // month: 1-based (Jan = 1)
-      return new Date(year, month, 0).getDate();
-    }
-
+    function getDaysInMonth(year, month) { return new Date(year, month, 0).getDate(); }
     function renderCalendarData() {
-      const cal = document.getElementById('calendar');
-      cal.innerHTML = '';
-
-      // Get selected year/month
+      const cal = document.getElementById('calendar'); cal.innerHTML = '';
       const year = parseInt(document.getElementById('calendar-year-select').value, 10);
-      const month = parseInt(document.getElementById('calendar-month-select').value, 10); // 1-based
-
-      const jsMonth = month - 1; // JS Date uses 0-indexed months
-      const daysInMonth = getDaysInMonth(year, month);
-
-      // Get first weekday (Monday = 1, Sunday = 0)
+      const month = parseInt(document.getElementById('calendar-month-select').value, 10);
+      const jsMonth = month - 1; const daysInMonth = getDaysInMonth(year, month);
       const firstDate = new Date(year, jsMonth, 1);
-      let firstDayOfWeek = firstDate.getDay(); // 0 (Sun) - 6 (Sat)
-      // Convert to Monday=1 ... Sunday=0 (but our grid starts Mon)
-      firstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
-
-      // Blank cells before the 1st
-      for (let i = 0; i < firstDayOfWeek; i++) {
-        const emptyCell = document.createElement('div');
-        emptyCell.className = 'day empty';
-        cal.appendChild(emptyCell);
-      }
-
-      // Fill calendar with days
+      let firstDayOfWeek = firstDate.getDay(); firstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+      for (let i = 0; i < firstDayOfWeek; i++) { const empty = document.createElement('div'); empty.className = 'day empty'; cal.appendChild(empty); }
       for (let d = 1; d <= daysInMonth; d++) {
-        const date = new Date(year, jsMonth, d);
-        const dayOfWeek = date.getDay(); // Sunday=0, Monday=1...Saturday=6
-
-        // Find this day in data or create new default
         let dayData = calendarData.find(x => x.day === d);
-        if (!dayData) {
-          // Default: random hours to show variety
-          dayData = {
-            day: d,
-            balance: Math.round(Math.random() * 50 + 20), // 20-70h for demo
-            startingBalance: 70
-          };
-          calendarData.push(dayData);
-        }
-
-        // Colour coding
+        if (!dayData) { dayData = { day: d, balance: Math.round(Math.random() * 50 + 20), startingBalance: 70 }; calendarData.push(dayData); }
         let tileBg = "var(--available-color)";
         if (dayData.balance <= 0.1) tileBg = "var(--full-color)";
         else if (dayData.balance / (dayData.startingBalance||70) < 0.25) tileBg = "var(--nearly-color)";
-
-        // Build day cell
         const tile = document.createElement('div');
-        tile.className = 'day';
-        tile.style.background = tileBg;
+        tile.className = 'day'; tile.style.background = tileBg;
         tile.innerHTML = `
           <div class="date">${d}</div>
           <div class="balance-info">
             <div>Available: <input class="day-input" type="number" min="0" max="999" value="${dayData.balance.toFixed(1)}" data-day="${d}" /></div>
             <div style="font-size:11px; color:#9a9a9a;">Limit: ${(dayData.startingBalance||70).toFixed(1)}h</div>
-          </div>
-        `;
+          </div>`;
         cal.appendChild(tile);
       }
     }
-
-    // Initialises the dropdowns and data for the calendar tab
     function initializeCalendar() {
       const monthSel = document.getElementById('calendar-month-select');
       const yearSel = document.getElementById('calendar-year-select');
       const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-      monthSel.innerHTML = "";
-      months.forEach((m, i) => {
-        monthSel.appendChild(new Option(m, i + 1));
-      });
-
-      yearSel.innerHTML = "";
-      const thisYear = new Date().getFullYear();
-      for (let y = thisYear-1; y <= thisYear+2; y++) {
-        yearSel.appendChild(new Option(y, y));
-      }
-      monthSel.value = (new Date().getMonth() + 1);
-      yearSel.value = thisYear;
-
-      // Init calendarData to empty
-      calendarData = [];
-
-      // Attach change events to reload calendar
-      ['calendar-month-select','calendar-year-select'].forEach(id => {
-        document.getElementById(id).addEventListener('change', () => {
-          calendarData = [];
-          renderCalendarData();
-        });
-      });
-
-      // Also support weekday bulk update
+      monthSel.innerHTML = ""; months.forEach((m, i) => monthSel.appendChild(new Option(m, i + 1)));
+      yearSel.innerHTML = ""; const thisYear = new Date().getFullYear(); for (let y = thisYear-1; y <= thisYear+2; y++) yearSel.appendChild(new Option(y, y));
+      monthSel.value = (new Date().getMonth() + 1); yearSel.value = thisYear; calendarData = [];
+      ['calendar-month-select','calendar-year-select'].forEach(id => { document.getElementById(id).addEventListener('change', () => { calendarData = []; renderCalendarData(); }); });
       document.getElementById('bulk-apply-btn').onclick = function() {
         const year = parseInt(document.getElementById('calendar-year-select').value, 10);
         const month = parseInt(document.getElementById('calendar-month-select').value, 10);
-        const jsMonth = month - 1;
-        const daysInMonth = getDaysInMonth(year, month);
-
-        // For each bulk input, get value and weekday
+        const jsMonth = month - 1; const daysInMonth = getDaysInMonth(year, month);
         document.querySelectorAll('.bulk-input').forEach(input => {
-          const val = input.value;
-          if (val !== '' && !isNaN(val)) {
-            const weekday = parseInt(input.dataset.weekday, 10); // 0=Sun ... 6=Sat
+          const val = input.value; if (val !== '' && !isNaN(val)) {
+            const weekday = parseInt(input.dataset.weekday, 10);
             for (let d = 1; d <= daysInMonth; d++) {
-              const date = new Date(year, jsMonth, d);
-              let calWeekday = date.getDay(); // JS: 0=Sun..6=Sat
-              // Adjust for our grid starting Monday
-              // Our labels: Mon=1..Sun=0, so no change needed (Sunday=0)
-              if (calWeekday === weekday) {
+              const date = new Date(year, jsMonth, d); if (date.getDay() === weekday) {
                 let dayData = calendarData.find(x => x.day === d);
-                if (!dayData) {
-                  dayData = { day: d, balance: Number(val), startingBalance: 70 };
-                  calendarData.push(dayData);
-                } else {
-                  dayData.balance = Number(val);
-                }
+                if (!dayData) { dayData = { day: d, balance: Number(val), startingBalance: 70 }; calendarData.push(dayData); }
+                else { dayData.balance = Number(val); }
               }
             }
           }
         });
         renderCalendarData();
       };
-
-      // Calendar save button
-      document.getElementById('calendar-save-btn').onclick = function() {
-        alert("Calendar changes saved! (For this demo, data is in memory only.)");
-      };
-
-      // Inline editing for days
+      document.getElementById('calendar-save-btn').onclick = () => alert("Calendar changes saved! (For this demo, data is in memory only.)");
       document.addEventListener('input', function(evt) {
         if (evt.target && evt.target.classList.contains('day-input')) {
-          const day = parseInt(evt.target.dataset.day, 10);
-          let val = Number(evt.target.value);
-          let dayData = calendarData.find(x => x.day === day);
-          if (dayData) {
-            dayData.balance = val;
-            renderCalendarData();
-          }
+          const day = parseInt(evt.target.dataset.day, 10); const val = Number(evt.target.value);
+          let dayData = calendarData.find(x => x.day === day); if (dayData) { dayData.balance = val; renderCalendarData(); }
         }
       });
-
       renderCalendarData();
     }
 
-    // Tabs
+    // ---------- Tabs & Init ----------
     function openTab(evt, tabName) {
-      const tabs = document.getElementsByClassName("tabcontent");
-      for (let t of tabs) t.style.display = "none";
-
-      const links = document.getElementsByClassName("tablinks");
-      for (let l of links) l.className = l.className.replace(" active", "");
-
-      document.getElementById(tabName).style.display = "flex";
-      evt.currentTarget.className += " active";
-
-      if (tabName === 'TimeOffCalendar') {
-        renderCalendarData();
-      }
+      const tabs = document.getElementsByClassName("tabcontent"); for (let t of tabs) t.style.display = "none";
+      const links = document.getElementsByClassName("tablinks"); for (let l of links) l.className = l.className.replace(" active", "");
+      document.getElementById(tabName).style.display = "flex"; evt.currentTarget.className += " active";
+      if (tabName === 'TimeOffCalendar') renderCalendarData();
     }
 
-    // On page load
     window.onload = function() {
-      // Init tabs
       document.getElementById("TimeOffBalances").style.display = "flex";
       updateTables();
       initializeCalculator();
