@@ -842,14 +842,15 @@
         // Use the actual starting balance from the balances data
         const startingBalance = agent.startingBalance;
         
-        // Calculate used hours (starting - current)
+        // FIXED: Calculate used hours correctly - holidayCurrent is what's LEFT, not what's used
         const usedHours = startingBalance - agent.holidayCurrent;
         
         // Calculate percentage used
-        const percentageUsed = (usedHours / startingBalance) * 100;
+        const percentageUsed = startingBalance > 0 ? (usedHours / startingBalance) * 100 : 0;
         
         // Calculate period usage from time off details
         const periodUsage = calculatePeriodUsage(agent.name, year, holidayYearStartMonth);
+        const totalUsedFromDetails = periodUsage.P1 + periodUsage.P2 + periodUsage.P3 + periodUsage.P4;
         
         // Determine status based on period usage patterns
         const currentPeriod = getCurrentPeriod(holidayYearStartMonth);
@@ -859,22 +860,31 @@
         let status = "On Track";
         let statusClass = "good";
         
-        // FIXED: The logic was backwards - people who have used MORE than expected should be flagged as "Using Too Much"
-        if (currentPeriod > 0 && actualUsageByPeriod > expectedUsageByPeriod * 1.2) {
-          status = "Using Too Much";
-          statusClass = "warning";
-          data.tooMuchCount++;
-        } else if (currentPeriod > 0 && actualUsageByPeriod < expectedUsageByPeriod * 0.8) {
-          status = "Using Too Little";
-          statusClass = "neutral";
-          data.tooLittleCount++;
+        // FIXED: Proper status logic
+        if (currentPeriod > 0) {
+          if (actualUsageByPeriod > expectedUsageByPeriod * 1.15) {
+            status = "Using Too Much";
+            statusClass = "warning";
+            data.tooMuchCount++;
+          } else if (actualUsageByPeriod < expectedUsageByPeriod * 0.85) {
+            status = "Using Too Little";
+            statusClass = "neutral";
+            data.tooLittleCount++;
+          }
         }
         
-        // Check for carryover risk in final period - people with too much remaining
+        // FIXED: Carryover risk - only for people with LOTS of time left at the end of the year
+        // If we're in the final period and they've used less than 60% of their allocation
         if (currentPeriod === 4 && percentageUsed < 60) {
           status = "Risk of Carryover";
           statusClass = "warning";
           data.carryoverRisk++;
+        }
+        
+        // FIXED: Special case - if someone has used ALL their time, they should not show carryover risk
+        if (agent.holidayCurrent <= 0) {
+          status = "No Time Remaining";
+          statusClass = "warning";
         }
         
         // Add to agent data
@@ -969,7 +979,7 @@
     function calculateExpectedUsageByPeriod(startingBalance, currentPeriod) {
       // Expected usage pattern: 25% per period for even distribution
       const expectedPercentageByPeriod = [0.25, 0.5, 0.75, 1.0];
-      return startingBalance * expectedPercentageByPeriod[currentPeriod - 1];
+      return startingBalance * (expectedPercentageByPeriod[currentPeriod - 1] || 0);
     }
 
     function calculateActualUsageByPeriod(periodUsage, currentPeriod) {
@@ -977,7 +987,7 @@
       let actualUsage = 0;
       for (let i = 1; i <= currentPeriod; i++) {
         const periodKey = 'P' + i;
-        actualUsage += periodUsage[periodKey];
+        actualUsage += periodUsage[periodKey] || 0;
       }
       return actualUsage;
     }
@@ -1100,7 +1110,7 @@
       const teamLabels = Object.keys(data.teams);
       const teamData = teamLabels.map(team => {
         const teamInfo = data.teams[team];
-        return (teamInfo.totalUsed / teamInfo.totalStarting) * 100;
+        return teamInfo.totalStarting > 0 ? (teamInfo.totalUsed / teamInfo.totalStarting) * 100 : 0;
       });
       
       teamChart = new Chart(teamCtx, {
@@ -1211,7 +1221,7 @@
           <td>${agent.remaining.toFixed(1)}</td>
           <td>
             <div class="progress-bar">
-              <div class="progress-fill" style="width: ${agent.percentageUsed}%"></div>
+              <div class="progress-fill" style="width: ${Math.min(agent.percentageUsed, 100)}%"></div>
             </div>
             ${agent.percentageUsed.toFixed(1)}%
           </td>
