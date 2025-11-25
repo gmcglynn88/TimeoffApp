@@ -416,19 +416,19 @@
               <div class="subtext">Across all selected agents</div>
             </div>
             <div class="summary-card">
-              <h3>Agents Using Too Much</h3>
-              <div class="value" id="too-much-count">0</div>
-              <div class="subtext">Ahead of holiday year target</div>
-            </div>
-            <div class="summary-card">
               <h3>Agents Using Too Little</h3>
               <div class="value" id="too-little-count">0</div>
-              <div class="subtext">Behind holiday year target</div>
+              <div class="subtext"><30% used with limited time remaining</div>
             </div>
             <div class="summary-card">
               <h3>Risk of Carryover</h3>
               <div class="value" id="carryover-risk">0</div>
-              <div class="subtext">>40% remaining in final period</div>
+              <div class="subtext">31-69% used with limited time remaining</div>
+            </div>
+            <div class="summary-card">
+              <h3>No Time Remaining</h3>
+              <div class="value" id="no-time-count">0</div>
+              <div class="subtext">100% of allocation used</div>
             </div>
           </div>
 
@@ -833,16 +833,16 @@
         periodUsage: { P1: 0, P2: 0, P3: 0, P4: 0 },
         usageDistribution: { low: 0, medium: 0, high: 0, veryHigh: 0 },
         monthlyTrend: Array(12).fill(0),
-        tooMuchCount: 0,
         tooLittleCount: 0,
-        carryoverRisk: 0
+        carryoverRisk: 0,
+        noTimeCount: 0
       };
       
       filteredBalances.forEach(agent => {
         // Use the actual starting balance from the balances data
         const startingBalance = agent.startingBalance;
         
-        // FIXED: Calculate used hours correctly - holidayCurrent is what's LEFT, not what's used
+        // Calculate used hours correctly - holidayCurrent is what's LEFT, not what's used
         const usedHours = startingBalance - agent.holidayCurrent;
         
         // Calculate percentage used
@@ -850,41 +850,30 @@
         
         // Calculate period usage from time off details
         const periodUsage = calculatePeriodUsage(agent.name, year, holidayYearStartMonth);
-        const totalUsedFromDetails = periodUsage.P1 + periodUsage.P2 + periodUsage.P3 + periodUsage.P4;
         
-        // Determine status based on period usage patterns
+        // Determine status based on new threshold logic
         const currentPeriod = getCurrentPeriod(holidayYearStartMonth);
-        const expectedUsageByPeriod = calculateExpectedUsageByPeriod(startingBalance, currentPeriod);
-        const actualUsageByPeriod = calculateActualUsageByPeriod(periodUsage, currentPeriod);
+        const timeRemainingInYear = calculateTimeRemainingInYear(holidayYearStartMonth);
         
         let status = "On Track";
         let statusClass = "good";
         
-        // FIXED: Proper status logic
-        if (currentPeriod > 0) {
-          if (actualUsageByPeriod > expectedUsageByPeriod * 1.15) {
-            status = "Using Too Much";
-            statusClass = "warning";
-            data.tooMuchCount++;
-          } else if (actualUsageByPeriod < expectedUsageByPeriod * 0.85) {
-            status = "Using Too Little";
-            statusClass = "neutral";
-            data.tooLittleCount++;
-          }
-        }
-        
-        // FIXED: Carryover risk - only for people with LOTS of time left at the end of the year
-        // If we're in the final period and they've used less than 60% of their allocation
-        if (currentPeriod === 4 && percentageUsed < 60) {
+        // NEW THRESHOLD LOGIC
+        if (percentageUsed >= 100) {
+          status = "No Time Remaining";
+          statusClass = "warning";
+          data.noTimeCount++;
+        } else if (percentageUsed <= 30 && timeRemainingInYear < 0.25) {
+          status = "Using Too Little";
+          statusClass = "neutral";
+          data.tooLittleCount++;
+        } else if (percentageUsed > 30 && percentageUsed < 70 && timeRemainingInYear < 0.25) {
           status = "Risk of Carryover";
           statusClass = "warning";
           data.carryoverRisk++;
-        }
-        
-        // FIXED: Special case - if someone has used ALL their time, they should not show carryover risk
-        if (agent.holidayCurrent <= 0) {
-          status = "No Time Remaining";
-          statusClass = "warning";
+        } else if (percentageUsed >= 70) {
+          status = "On Track";
+          statusClass = "good";
         }
         
         // Add to agent data
@@ -928,6 +917,16 @@
       });
       
       return data;
+    }
+
+    function calculateTimeRemainingInYear(holidayYearStartMonth) {
+      const currentMonth = new Date().getMonth() + 1;
+      
+      // Calculate adjusted month based on holiday year start
+      const adjustedMonth = ((currentMonth - holidayYearStartMonth + 12) % 12) + 1;
+      
+      // Return fraction of year remaining (0-1)
+      return (12 - adjustedMonth) / 12;
     }
 
     function calculatePeriodUsage(agentName, year, holidayYearStartMonth) {
@@ -976,22 +975,6 @@
       return monthly;
     }
 
-    function calculateExpectedUsageByPeriod(startingBalance, currentPeriod) {
-      // Expected usage pattern: 25% per period for even distribution
-      const expectedPercentageByPeriod = [0.25, 0.5, 0.75, 1.0];
-      return startingBalance * (expectedPercentageByPeriod[currentPeriod - 1] || 0);
-    }
-
-    function calculateActualUsageByPeriod(periodUsage, currentPeriod) {
-      // Calculate actual usage up to current period
-      let actualUsage = 0;
-      for (let i = 1; i <= currentPeriod; i++) {
-        const periodKey = 'P' + i;
-        actualUsage += periodUsage[periodKey] || 0;
-      }
-      return actualUsage;
-    }
-
     function getCurrentPeriod(holidayYearStartMonth) {
       const currentMonth = new Date().getMonth() + 1;
       
@@ -1009,9 +992,9 @@
         (data.agents.reduce((sum, agent) => sum + agent.percentageUsed, 0) / data.agents.length).toFixed(1) : 0;
       
       document.getElementById('avg-leave-used').textContent = `${avgLeaveUsed}%`;
-      document.getElementById('too-much-count').textContent = data.tooMuchCount;
       document.getElementById('too-little-count').textContent = data.tooLittleCount;
       document.getElementById('carryover-risk').textContent = data.carryoverRisk;
+      document.getElementById('no-time-count').textContent = data.noTimeCount;
     }
 
     function updateCharts(data, holidayYearStartMonth) {
