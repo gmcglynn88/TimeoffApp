@@ -904,10 +904,10 @@
         else data.usageDistribution.veryHigh++;
         
         // Update period usage from time off details
-        data.periodUsage.P1 += periodUsage.P1;
-        data.periodUsage.P2 += periodUsage.P2;
-        data.periodUsage.P3 += periodUsage.P3;
-        data.periodUsage.P4 += periodUsage.P4;
+        data.periodUsage.Q1 += periodUsage.Q1;
+        data.periodUsage.Q2 += periodUsage.Q2;
+        data.periodUsage.Q3 += periodUsage.Q3;
+        data.periodUsage.Q4 += periodUsage.Q4;
         
         // Update monthly trend from time off details
         const monthlyUsage = calculateMonthlyUsage(agent.name, year);
@@ -937,7 +937,7 @@
       );
       
       // Calculate period usage based on holiday year
-      const periods = { P1: 0, P2: 0, P3: 0, P4: 0 };
+      const periods = { Q1: 0, Q2: 0, Q3: 0, Q4: 0 };
       
       agentDetails.forEach(detail => {
         const month = parseInt(detail.start.split('-')[1]);
@@ -946,10 +946,10 @@
         // Determine which period the month falls into based on holiday year start
         const adjustedMonth = ((month - holidayYearStartMonth + 12) % 12) + 1;
         
-        if (adjustedMonth <= 3) period = 'P1';
-        else if (adjustedMonth <= 6) period = 'P2';
-        else if (adjustedMonth <= 9) period = 'P3';
-        else period = 'P4';
+        if (adjustedMonth <= 3) period = 'Q1';
+        else if (adjustedMonth <= 6) period = 'Q2';
+        else if (adjustedMonth <= 9) period = 'Q3';
+        else period = 'Q4';
         
         periods[period] += detail.deduction;
       });
@@ -1012,10 +1012,10 @@
           datasets: [{
             label: 'Hours Used',
             data: [
-              data.periodUsage.P1,
-              data.periodUsage.P2,
-              data.periodUsage.P3,
-              data.periodUsage.P4
+              data.periodUsage.Q1,
+              data.periodUsage.Q2,
+              data.periodUsage.Q3,
+              data.periodUsage.Q4
             ],
             backgroundColor: [
               'rgba(99, 171, 143, 0.7)',
@@ -1210,10 +1210,10 @@
           </td>
           <td class="${agent.statusClass}">${agent.status}</td>
           <td>
-            P1: ${agent.periodUsage.P1}h<br>
-            P2: ${agent.periodUsage.P2}h<br>
-            P3: ${agent.periodUsage.P3}h<br>
-            P4: ${agent.periodUsage.P4}h
+            Q1: ${agent.periodUsage.Q1}h<br>
+            Q2: ${agent.periodUsage.Q2}h<br>
+            Q3: ${agent.periodUsage.Q3}h<br>
+            Q4: ${agent.periodUsage.Q4}h
           </td>
         `;
         tbody.appendChild(tr);
@@ -1265,5 +1265,6 @@
   </script>
 </body>
 </html>
+
 
 
