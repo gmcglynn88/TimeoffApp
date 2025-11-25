@@ -398,6 +398,15 @@
                 <option>Team Nashville</option>
               </select>
             </div>
+            <div>
+              <h3>Holiday Year Start Month</h3>
+              <select id="holiday-year-start-month" onchange="updateAnalytics()">
+                <option value="1">January</option>
+                <option value="4">April</option>
+                <option value="7">July</option>
+                <option value="10">October</option>
+              </select>
+            </div>
           </div>
 
           <div class="analytics-summary">
@@ -409,25 +418,25 @@
             <div class="summary-card">
               <h3>Agents Using Too Much</h3>
               <div class="value" id="too-much-count">0</div>
-              <div class="subtext">Ahead of quarterly target</div>
+              <div class="subtext">Ahead of holiday year target</div>
             </div>
             <div class="summary-card">
               <h3>Agents Using Too Little</h3>
               <div class="value" id="too-little-count">0</div>
-              <div class="subtext">Behind quarterly target</div>
+              <div class="subtext">Behind holiday year target</div>
             </div>
             <div class="summary-card">
               <h3>Risk of Carryover</h3>
               <div class="value" id="carryover-risk">0</div>
-              <div class="subtext">>40% remaining in Q4</div>
+              <div class="subtext">>40% remaining in final period</div>
             </div>
           </div>
 
           <div class="analytics-charts">
             <div class="chart-container">
-              <h3>Leave Usage by Quarter</h3>
+              <h3>Leave Usage by Holiday Year Period</h3>
               <div class="chart-wrapper">
-                <canvas id="quarterly-chart"></canvas>
+                <canvas id="period-chart"></canvas>
               </div>
             </div>
             <div class="chart-container">
@@ -462,7 +471,7 @@
                   <th>Remaining</th>
                   <th>% Used</th>
                   <th>Status</th>
-                  <th>Quarterly Usage</th>
+                  <th>Holiday Year Usage</th>
                 </tr>
               </thead>
               <tbody id="analytics-table-body"></tbody>
@@ -785,7 +794,7 @@
     }
 
     // -------- Analytics --------
-    let quarterlyChart, distributionChart, teamChart, trendChart;
+    let periodChart, distributionChart, teamChart, trendChart;
 
     function updateAnalytics() {
       console.log("Updating analytics...");
@@ -793,6 +802,7 @@
       const unit = document.getElementById("analytics-management-unit-select").value;
       const team = document.getElementById("analytics-team-select").value;
       const year = document.getElementById("analytics-year-select").value;
+      const holidayYearStartMonth = parseInt(document.getElementById("holiday-year-start-month").value);
       
       // Filter data based on selections
       const filteredBalances = sampleBalances.filter(x => {
@@ -804,23 +814,23 @@
       console.log("Filtered balances:", filteredBalances.length);
       
       // Calculate analytics data
-      const analyticsData = calculateAnalyticsData(filteredBalances, year);
+      const analyticsData = calculateAnalyticsData(filteredBalances, year, holidayYearStartMonth);
       
       // Update summary cards
       updateSummaryCards(analyticsData);
       
       // Update charts
-      updateCharts(analyticsData);
+      updateCharts(analyticsData, holidayYearStartMonth);
       
       // Update analytics table
       updateAnalyticsTable(analyticsData);
     }
 
-    function calculateAnalyticsData(filteredBalances, year) {
+    function calculateAnalyticsData(filteredBalances, year, holidayYearStartMonth) {
       const data = {
         agents: [],
         teams: {},
-        quarterlyUsage: { Q1: 0, Q2: 0, Q3: 0, Q4: 0 },
+        periodUsage: { P1: 0, P2: 0, P3: 0, P4: 0 },
         usageDistribution: { low: 0, medium: 0, high: 0, veryHigh: 0 },
         monthlyTrend: Array(12).fill(0),
         tooMuchCount: 0,
@@ -838,30 +848,30 @@
         // Calculate percentage used
         const percentageUsed = (usedHours / startingBalance) * 100;
         
-        // Calculate quarterly usage from time off details
-        const quarterlyUsage = calculateQuarterlyUsage(agent.name, year);
+        // Calculate period usage from time off details
+        const periodUsage = calculatePeriodUsage(agent.name, year, holidayYearStartMonth);
         
-        // Determine status based on quarterly usage patterns
-        const currentQuarter = getCurrentQuarter();
-        const expectedUsageByQuarter = calculateExpectedUsageByQuarter(startingBalance, currentQuarter);
-        const actualUsageByQuarter = calculateActualUsageByQuarter(quarterlyUsage, currentQuarter);
+        // Determine status based on period usage patterns
+        const currentPeriod = getCurrentPeriod(holidayYearStartMonth);
+        const expectedUsageByPeriod = calculateExpectedUsageByPeriod(startingBalance, currentPeriod);
+        const actualUsageByPeriod = calculateActualUsageByPeriod(periodUsage, currentPeriod);
         
         let status = "On Track";
         let statusClass = "good";
         
         // FIXED: The logic was backwards - people who have used MORE than expected should be flagged as "Using Too Much"
-        if (currentQuarter > 0 && actualUsageByQuarter > expectedUsageByQuarter * 1.2) {
+        if (currentPeriod > 0 && actualUsageByPeriod > expectedUsageByPeriod * 1.2) {
           status = "Using Too Much";
           statusClass = "warning";
           data.tooMuchCount++;
-        } else if (currentQuarter > 0 && actualUsageByQuarter < expectedUsageByQuarter * 0.8) {
+        } else if (currentPeriod > 0 && actualUsageByPeriod < expectedUsageByPeriod * 0.8) {
           status = "Using Too Little";
           statusClass = "neutral";
           data.tooLittleCount++;
         }
         
-        // Check for carryover risk in Q4 - people with too much remaining
-        if (currentQuarter === 4 && percentageUsed < 60) {
+        // Check for carryover risk in final period - people with too much remaining
+        if (currentPeriod === 4 && percentageUsed < 60) {
           status = "Risk of Carryover";
           statusClass = "warning";
           data.carryoverRisk++;
@@ -877,7 +887,7 @@
           percentageUsed: percentageUsed,
           status: status,
           statusClass: statusClass,
-          quarterlyUsage: quarterlyUsage
+          periodUsage: periodUsage
         });
         
         // Update team data
@@ -894,11 +904,11 @@
         else if (percentageUsed < 75) data.usageDistribution.high++;
         else data.usageDistribution.veryHigh++;
         
-        // Update quarterly usage from time off details
-        data.quarterlyUsage.Q1 += quarterlyUsage.Q1;
-        data.quarterlyUsage.Q2 += quarterlyUsage.Q2;
-        data.quarterlyUsage.Q3 += quarterlyUsage.Q3;
-        data.quarterlyUsage.Q4 += quarterlyUsage.Q4;
+        // Update period usage from time off details
+        data.periodUsage.P1 += periodUsage.P1;
+        data.periodUsage.P2 += periodUsage.P2;
+        data.periodUsage.P3 += periodUsage.P3;
+        data.periodUsage.P4 += periodUsage.P4;
         
         // Update monthly trend from time off details
         const monthlyUsage = calculateMonthlyUsage(agent.name, year);
@@ -910,28 +920,32 @@
       return data;
     }
 
-    function calculateQuarterlyUsage(agentName, year) {
+    function calculatePeriodUsage(agentName, year, holidayYearStartMonth) {
       // Filter details for this agent and year
       const agentDetails = sampleDetails.filter(detail => 
         detail.name === agentName && 
         detail.start.startsWith(year)
       );
       
-      // Calculate quarterly usage
-      const quarterly = { Q1: 0, Q2: 0, Q3: 0, Q4: 0 };
+      // Calculate period usage based on holiday year
+      const periods = { P1: 0, P2: 0, P3: 0, P4: 0 };
       
       agentDetails.forEach(detail => {
         const month = parseInt(detail.start.split('-')[1]);
-        let quarter;
-        if (month <= 3) quarter = 'Q1';
-        else if (month <= 6) quarter = 'Q2';
-        else if (month <= 9) quarter = 'Q3';
-        else quarter = 'Q4';
+        let period;
         
-        quarterly[quarter] += detail.deduction;
+        // Determine which period the month falls into based on holiday year start
+        const adjustedMonth = ((month - holidayYearStartMonth + 12) % 12) + 1;
+        
+        if (adjustedMonth <= 3) period = 'P1';
+        else if (adjustedMonth <= 6) period = 'P2';
+        else if (adjustedMonth <= 9) period = 'P3';
+        else period = 'P4';
+        
+        periods[period] += detail.deduction;
       });
       
-      return quarterly;
+      return periods;
     }
 
     function calculateMonthlyUsage(agentName, year) {
@@ -952,27 +966,31 @@
       return monthly;
     }
 
-    function calculateExpectedUsageByQuarter(startingBalance, currentQuarter) {
-      // Expected usage pattern: 25% per quarter for even distribution
-      const expectedPercentageByQuarter = [0.25, 0.5, 0.75, 1.0];
-      return startingBalance * expectedPercentageByQuarter[currentQuarter - 1];
+    function calculateExpectedUsageByPeriod(startingBalance, currentPeriod) {
+      // Expected usage pattern: 25% per period for even distribution
+      const expectedPercentageByPeriod = [0.25, 0.5, 0.75, 1.0];
+      return startingBalance * expectedPercentageByPeriod[currentPeriod - 1];
     }
 
-    function calculateActualUsageByQuarter(quarterlyUsage, currentQuarter) {
-      // Calculate actual usage up to current quarter
+    function calculateActualUsageByPeriod(periodUsage, currentPeriod) {
+      // Calculate actual usage up to current period
       let actualUsage = 0;
-      for (let i = 1; i <= currentQuarter; i++) {
-        const quarterKey = 'Q' + i;
-        actualUsage += quarterlyUsage[quarterKey];
+      for (let i = 1; i <= currentPeriod; i++) {
+        const periodKey = 'P' + i;
+        actualUsage += periodUsage[periodKey];
       }
       return actualUsage;
     }
 
-    function getCurrentQuarter() {
-      const month = new Date().getMonth() + 1;
-      if (month <= 3) return 1;
-      if (month <= 6) return 2;
-      if (month <= 9) return 3;
+    function getCurrentPeriod(holidayYearStartMonth) {
+      const currentMonth = new Date().getMonth() + 1;
+      
+      // Calculate adjusted month based on holiday year start
+      const adjustedMonth = ((currentMonth - holidayYearStartMonth + 12) % 12) + 1;
+      
+      if (adjustedMonth <= 3) return 1;
+      if (adjustedMonth <= 6) return 2;
+      if (adjustedMonth <= 9) return 3;
       return 4;
     }
 
@@ -986,21 +1004,25 @@
       document.getElementById('carryover-risk').textContent = data.carryoverRisk;
     }
 
-    function updateCharts(data) {
-      // Quarterly Usage Chart
-      if (quarterlyChart) quarterlyChart.destroy();
-      const quarterlyCtx = document.getElementById('quarterly-chart').getContext('2d');
-      quarterlyChart = new Chart(quarterlyCtx, {
+    function updateCharts(data, holidayYearStartMonth) {
+      // Period Usage Chart
+      if (periodChart) periodChart.destroy();
+      const periodCtx = document.getElementById('period-chart').getContext('2d');
+      
+      // Generate period labels based on holiday year start
+      const periodLabels = generatePeriodLabels(holidayYearStartMonth);
+      
+      periodChart = new Chart(periodCtx, {
         type: 'bar',
         data: {
-          labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+          labels: periodLabels,
           datasets: [{
             label: 'Hours Used',
             data: [
-              data.quarterlyUsage.Q1,
-              data.quarterlyUsage.Q2,
-              data.quarterlyUsage.Q3,
-              data.quarterlyUsage.Q4
+              data.periodUsage.P1,
+              data.periodUsage.P2,
+              data.periodUsage.P3,
+              data.periodUsage.P4
             ],
             backgroundColor: [
               'rgba(99, 171, 143, 0.7)',
@@ -1151,6 +1173,30 @@
       });
     }
 
+    function generatePeriodLabels(holidayYearStartMonth) {
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      
+      // Generate period labels based on holiday year start month
+      const period1Start = holidayYearStartMonth;
+      const period1End = (holidayYearStartMonth + 2) % 12 || 12;
+      
+      const period2Start = (holidayYearStartMonth + 3) % 12 || 12;
+      const period2End = (holidayYearStartMonth + 5) % 12 || 12;
+      
+      const period3Start = (holidayYearStartMonth + 6) % 12 || 12;
+      const period3End = (holidayYearStartMonth + 8) % 12 || 12;
+      
+      const period4Start = (holidayYearStartMonth + 9) % 12 || 12;
+      const period4End = (holidayYearStartMonth + 11) % 12 || 12;
+      
+      return [
+        `${monthNames[period1Start - 1]}-${monthNames[period1End - 1]}`,
+        `${monthNames[period2Start - 1]}-${monthNames[period2End - 1]}`,
+        `${monthNames[period3Start - 1]}-${monthNames[period3End - 1]}`,
+        `${monthNames[period4Start - 1]}-${monthNames[period4End - 1]}`
+      ];
+    }
+
     function updateAnalyticsTable(data) {
       const tbody = document.getElementById('analytics-table-body');
       tbody.innerHTML = '';
@@ -1171,10 +1217,10 @@
           </td>
           <td class="${agent.statusClass}">${agent.status}</td>
           <td>
-            Q1: ${agent.quarterlyUsage.Q1}h<br>
-            Q2: ${agent.quarterlyUsage.Q2}h<br>
-            Q3: ${agent.quarterlyUsage.Q3}h<br>
-            Q4: ${agent.quarterlyUsage.Q4}h
+            P1: ${agent.periodUsage.P1}h<br>
+            P2: ${agent.periodUsage.P2}h<br>
+            P3: ${agent.periodUsage.P3}h<br>
+            P4: ${agent.periodUsage.P4}h
           </td>
         `;
         tbody.appendChild(tr);
@@ -1187,6 +1233,7 @@
       document.getElementById('analytics-year-select').value = '2025';
       document.getElementById('analytics-management-unit-select').value = 'all';
       document.getElementById('analytics-team-select').value = 'all';
+      document.getElementById('holiday-year-start-month').value = '1';
       
       // Initialize analytics
       updateAnalytics();
