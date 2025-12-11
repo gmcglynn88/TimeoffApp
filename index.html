@@ -4,738 +4,360 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Off Analytics</title>
-    
-    <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js for analytics charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <style>
-        :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --success-color: #4cc9f0;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
         }
         
-        .analytics-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-            border-radius: 0 0 15px 15px;
+        .card {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
-        .stat-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            height: 100%;
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 12px 20px;
         }
         
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .stat-card .card-body {
-            padding: 1.5rem;
-        }
-        
-        .stat-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            opacity: 0.8;
-        }
-        
-        .table-container {
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .table thead th {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
+        .table th {
+            background-color: #f8f9fa;
             font-weight: 600;
-            padding: 1rem;
-        }
-        
-        .table tbody tr {
-            transition: background-color 0.2s ease;
-        }
-        
-        .table tbody tr:hover {
-            background-color: rgba(67, 97, 238, 0.05);
+            border-bottom: 2px solid #dee2e6;
         }
         
         .table td {
-            padding: 1rem;
             vertical-align: middle;
+            padding: 10px 12px;
         }
         
-        .trend-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
+        .badge {
+            font-size: 0.85em;
+            padding: 4px 8px;
         }
         
-        .trend-up {
-            background-color: rgba(40, 167, 69, 0.15);
-            color: #28a745;
-        }
-        
-        .trend-down {
-            background-color: rgba(220, 53, 69, 0.15);
-            color: #dc3545;
-        }
-        
-        .trend-stable {
-            background-color: rgba(108, 117, 125, 0.15);
-            color: #6c757d;
-        }
-        
-        .btn-export {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-export:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
-            color: white;
-        }
-        
-        .year-navigation {
-            background-color: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
+        .year-nav {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .year-display {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            min-width: 120px;
+            min-width: 80px;
             text-align: center;
-        }
-        
-        .chart-container {
-            background-color: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-            height: 100%;
-        }
-        
-        .summary-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .balance-indicator {
-            height: 8px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
-        
-        .balance-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-        
-        .low-balance {
-            color: #dc3545;
             font-weight: 600;
         }
         
-        @media (max-width: 768px) {
-            .summary-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .year-navigation .d-flex {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .year-display {
-                order: -1;
-            }
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid px-4 py-3">
-        <!-- Header -->
-        <div class="analytics-header mb-4">
-            <div class="container">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="display-6 fw-bold mb-2">Time Off Analytics Dashboard</h1>
-                        <p class="lead mb-0">Track and analyze employee time off usage and trends</p>
-                    </div>
-                    <div class="d-none d-md-block">
-                        <i class="fas fa-calendar-alt fa-3x opacity-75"></i>
+                    <h5 class="mb-0">Time Off Analytics</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Year Navigation -->
+                        <div class="year-nav">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changeYear(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary px-3" id="currentYearBtn">
+                                <span id="yearDisplay">2024</span>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changeYear(1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Export Button -->
+                        <button onclick="exportToCSV()" class="btn btn-sm btn-primary export-btn">
+                            <i class="fas fa-download"></i> Export CSV
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Year Navigation -->
-        <div class="year-navigation">
-            <div class="d-flex justify-content-between align-items-center">
-                <button id="prevYearBtn" class="btn btn-outline-primary btn-lg">
-                    <i class="fas fa-chevron-left me-2"></i>Previous Year
-                </button>
+            
+            <div class="card-body">
+                <!-- Analytics Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover" id="timeOffTable">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Department</th>
+                                <th>Current Balance</th>
+                                <th>Used This Year</th>
+                                <th>Scheduled</th>
+                                <th>Remaining</th>
+                                <th id="nextYearHeader">Next Year Starting Balance</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Sample Data - This would come from your backend -->
+                            <tr>
+                                <td>John Smith</td>
+                                <td>Engineering</td>
+                                <td>20.00</td>
+                                <td>5.00</td>
+                                <td>3.00</td>
+                                <td>12.00</td>
+                                <td>15.00</td>
+                                <td><span class="badge bg-success">Good</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sarah Johnson</td>
+                                <td>Marketing</td>
+                                <td>18.00</td>
+                                <td>10.00</td>
+                                <td>2.00</td>
+                                <td>6.00</td>
+                                <td>12.00</td>
+                                <td><span class="badge bg-warning">Low</span></td>
+                            </tr>
+                            <tr>
+                                <td>Mike Wilson</td>
+                                <td>Sales</td>
+                                <td>25.00</td>
+                                <td>8.00</td>
+                                <td>5.00</td>
+                                <td>12.00</td>
+                                <td>18.00</td>
+                                <td><span class="badge bg-success">Good</span></td>
+                            </tr>
+                            <tr>
+                                <td>Lisa Chen</td>
+                                <td>HR</td>
+                                <td>22.00</td>
+                                <td>15.00</td>
+                                <td>0.00</td>
+                                <td>7.00</td>
+                                <td>10.00</td>
+                                <td><span class="badge bg-warning">Low</span></td>
+                            </tr>
+                            <tr>
+                                <td>David Brown</td>
+                                <td>Engineering</td>
+                                <td>30.00</td>
+                                <td>2.00</td>
+                                <td>10.00</td>
+                                <td>18.00</td>
+                                <td>25.00</td>
+                                <td><span class="badge bg-success">Good</span></td>
+                            </tr>
+                            <tr>
+                                <td>Emma Davis</td>
+                                <td>Operations</td>
+                                <td>15.00</td>
+                                <td>12.00</td>
+                                <td>1.00</td>
+                                <td>2.00</td>
+                                <td>8.00</td>
+                                <td><span class="badge bg-danger">Critical</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 
-                <div class="text-center">
-                    <div class="year-display" id="yearDisplay">2024</div>
-                    <small class="text-muted">Viewing time off data for</small>
-                </div>
-                
-                <div class="d-flex gap-2">
-                    <button id="currentYearBtn" class="btn btn-primary btn-lg">
-                        <i class="fas fa-calendar-day me-2"></i>Current Year
-                    </button>
-                    <button id="nextYearBtn" class="btn btn-outline-primary btn-lg">
-                        Next Year<i class="fas fa-chevron-right ms-2"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Summary Stats -->
-        <div class="summary-stats">
-            <div class="stat-card">
-                <div class="card-body text-center">
-                    <div class="stat-icon text-primary">
-                        <i class="fas fa-users"></i>
+                <!-- Summary Stats -->
+                <div class="row mt-4">
+                    <div class="col-md-3 col-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-2">Total Employees</h6>
+                                <h4 id="totalEmployees">6</h4>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="card-title" id="totalEmployees">0</h3>
-                    <p class="card-text text-muted">Total Employees</p>
-                </div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="card-body text-center">
-                    <div class="stat-icon text-success">
-                        <i class="fas fa-umbrella-beach"></i>
+                    <div class="col-md-3 col-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-2">Total Balance</h6>
+                                <h4 id="totalBalance">57.00</h4>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="card-title" id="avgTimeOff">0</h3>
-                    <p class="card-text text-muted">Avg. Time Off Used (Days)</p>
-                </div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="card-body text-center">
-                    <div class="stat-icon text-warning">
-                        <i class="fas fa-clock"></i>
+                    <div class="col-md-3 col-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-2">Avg Used</h6>
+                                <h4 id="avgUsed">8.67</h4>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="card-title" id="totalBalance">0</h3>
-                    <p class="card-text text-muted">Total Time Off Balance</p>
-                </div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="card-body text-center">
-                    <div class="stat-icon text-info">
-                        <i class="fas fa-calendar-plus"></i>
+                    <div class="col-md-3 col-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-2">Next Year Balance</h6>
+                                <h4 id="nextYearTotal">88.00</h4>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="card-title" id="nextYearBalance">0</h3>
-                    <p class="card-text text-muted">Next Year Starting Balance</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Charts Row -->
-        <div class="row mb-4">
-            <div class="col-lg-8">
-                <div class="chart-container">
-                    <h4 class="mb-3">Time Off Usage by Department</h4>
-                    <canvas id="departmentChart" height="250"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="chart-container">
-                    <h4 class="mb-3">Balance Distribution</h4>
-                    <canvas id="balanceChart" height="250"></canvas>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Main Table Section -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white border-0 py-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Employee Time Off Details</h4>
-                    <button id="exportBtn" class="btn-export">
-                        <i class="fas fa-file-export me-2"></i>Export to CSV
-                    </button>
-                </div>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-container">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0" id="timeOffTable">
-                            <thead>
-                                <tr>
-                                    <th>Employee</th>
-                                    <th>Department</th>
-                                    <th>Current Balance</th>
-                                    <th>Used This Year</th>
-                                    <th>Scheduled</th>
-                                    <th>Remaining</th>
-                                    <th id="nextYearHeader">Next Year Starting Balance</th>
-                                    <th>Trend</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="timeOffTableBody">
-                                <!-- Data will be populated by JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Footer Notes -->
-        <div class="alert alert-info" role="alert">
-            <div class="d-flex">
-                <div class="me-3">
-                    <i class="fas fa-info-circle fa-lg"></i>
-                </div>
-                <div>
-                    <h5 class="alert-heading mb-2">About Time Off Analytics</h5>
-                    <p class="mb-2">This dashboard provides comprehensive analysis of employee time off usage. Use the year navigation buttons to view historical data or project next year's allocations.</p>
-                    <ul class="mb-0">
-                        <li><strong>Next Year Starting Balance:</strong> Projected time off balance at the start of next year</li>
-                        <li><strong>Trend:</strong> Compares current year usage to previous year</li>
-                        <li><strong>Export:</strong> Download complete dataset for external analysis</li>
-                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap & Popper.js -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Main JavaScript -->
     <script>
-        class TimeOffAnalytics {
-            constructor() {
-                this.currentYear = new Date().getFullYear();
-                this.selectedYear = this.currentYear;
-                this.data = [];
-                this.init();
+        // Year Navigation
+        let currentYear = new Date().getFullYear();
+        
+        function changeYear(delta) {
+            currentYear += delta;
+            updateYearDisplay();
+            loadDataForYear(currentYear);
+        }
+        
+        function updateYearDisplay() {
+            document.getElementById('yearDisplay').textContent = currentYear;
+            
+            // Update next year column header
+            const nextYearHeader = document.getElementById('nextYearHeader');
+            if (currentYear === new Date().getFullYear()) {
+                nextYearHeader.textContent = 'Next Year Starting Balance';
+            } else {
+                nextYearHeader.textContent = 'Starting Balance';
             }
-
-            async init() {
-                await this.generateSampleData();
-                this.setupEventListeners();
-                this.renderDashboard();
-                this.setupCharts();
-            }
-
-            setupEventListeners() {
-                document.getElementById('prevYearBtn').addEventListener('click', () => this.changeYear(-1));
-                document.getElementById('nextYearBtn').addEventListener('click', () => this.changeYear(1));
-                document.getElementById('currentYearBtn').addEventListener('click', () => this.goToCurrentYear());
-                document.getElementById('exportBtn').addEventListener('click', () => this.exportData());
-            }
-
-            changeYear(delta) {
-                this.selectedYear += delta;
-                this.updateYearDisplay();
-                this.renderDashboard();
-                this.updateCharts();
-            }
-
-            goToCurrentYear() {
-                this.selectedYear = this.currentYear;
-                this.updateYearDisplay();
-                this.renderDashboard();
-                this.updateCharts();
-            }
-
-            updateYearDisplay() {
-                document.getElementById('yearDisplay').textContent = this.selectedYear;
-                
-                // Update next year header based on selected year
-                const nextYearHeader = document.getElementById('nextYearHeader');
-                if (this.selectedYear === this.currentYear) {
-                    nextYearHeader.textContent = 'Next Year Starting Balance';
-                } else {
-                    nextYearHeader.textContent = 'Starting Balance';
-                }
-            }
-
-            async generateSampleData() {
-                // Generate sample data for demonstration
-                const departments = ['Engineering', 'Sales', 'Marketing', 'HR', 'Operations', 'Finance'];
-                const firstNames = ['John', 'Jane', 'Robert', 'Emily', 'Michael', 'Sarah', 'David', 'Lisa'];
-                const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
-                
-                this.data = [];
-                
-                for (let i = 1; i <= 25; i++) {
-                    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-                    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-                    const department = departments[Math.floor(Math.random() * departments.length)];
-                    
-                    const currentBalance = Math.floor(Math.random() * 30) + 5;
-                    const usedThisYear = Math.floor(Math.random() * currentBalance);
-                    const scheduled = Math.floor(Math.random() * 10);
-                    const remaining = currentBalance - usedThisYear - scheduled;
-                    
-                    // Generate next year starting balance (based on current usage patterns)
-                    let nextYearStartingBalance;
-                    if (usedThisYear > 15) {
-                        nextYearStartingBalance = 15; // Heavy users get less next year
-                    } else if (usedThisYear < 5) {
-                        nextYearStartingBalance = 25; // Light users get more
-                    } else {
-                        nextYearStartingBalance = 20; // Average users
+        }
+        
+        function loadDataForYear(year) {
+            console.log('Loading data for year:', year);
+            
+            // In your app, this would fetch from your API
+            // For example:
+            // fetch(`/api/time-off-data?year=${year}`)
+            //     .then(response => response.json())
+            //     .then(data => updateTable(data));
+            
+            // Update the year display
+            document.getElementById('yearDisplay').textContent = year;
+            
+            // Show loading state
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center">
+                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                        Loading data for ${year}...
+                    </td>
+                </tr>
+            `;
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // In real app, you would update with actual data
+                // For now, just reload the sample data
+                location.reload();
+            }, 500);
+        }
+        
+        // Export to CSV
+        function exportToCSV() {
+            const table = document.getElementById('timeOffTable');
+            const rows = table.querySelectorAll('tr');
+            let csv = [];
+            
+            // Add headers
+            const headers = [];
+            table.querySelectorAll('th').forEach(th => {
+                headers.push(th.textContent.trim());
+            });
+            csv.push(headers.join(','));
+            
+            // Add data rows
+            table.querySelectorAll('tbody tr').forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach(cell => {
+                    let text = cell.textContent.trim();
+                    // Handle CSV escaping
+                    if (text.includes(',') || text.includes('"') || text.includes('\n')) {
+                        text = '"' + text.replace(/"/g, '""') + '"';
                     }
-                    
-                    // Add some randomness
-                    nextYearStartingBalance += Math.floor(Math.random() * 6) - 2;
-                    
-                    // Determine trend
-                    let trend;
-                    const trendRandom = Math.random();
-                    if (trendRandom > 0.7) {
-                        trend = '↑ Increasing';
-                    } else if (trendRandom < 0.3) {
-                        trend = '↓ Decreasing';
-                    } else {
-                        trend = '→ Stable';
-                    }
-                    
-                    this.data.push({
-                        id: i,
-                        name: `${firstName} ${lastName}`,
-                        department: department,
-                        currentBalance: currentBalance,
-                        usedThisYear: usedThisYear,
-                        scheduled: scheduled,
-                        remaining: remaining,
-                        nextYearStartingBalance: nextYearStartingBalance,
-                        trend: trend,
-                        email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@company.com`,
-                        hireDate: `${Math.floor(Math.random() * 5) + 2018}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`
-                    });
-                }
-            }
-
-            getFilteredData() {
-                // In a real app, this would filter by selected year
-                // For demo, we'll just return all data
-                return this.data;
-            }
-
-            renderDashboard() {
-                const filteredData = this.getFilteredData();
-                this.renderTable(filteredData);
-                this.updateSummaryStats(filteredData);
-            }
-
-            renderTable(data) {
-                const tableBody = document.getElementById('timeOffTableBody');
-                tableBody.innerHTML = '';
-                
-                data.forEach(employee => {
-                    const row = document.createElement('tr');
-                    
-                    // Determine trend class
-                    let trendClass = '';
-                    if (employee.trend.includes('Increasing')) trendClass = 'trend-up';
-                    else if (employee.trend.includes('Decreasing')) trendClass = 'trend-down';
-                    else trendClass = 'trend-stable';
-                    
-                    // Determine status
-                    let status = '';
-                    let statusClass = '';
-                    if (employee.remaining < 5) {
-                        status = 'Low Balance';
-                        statusClass = 'low-balance';
-                    } else if (employee.remaining > 20) {
-                        status = 'High Balance';
-                        statusClass = 'text-success';
-                    } else {
-                        status = 'Normal';
-                        statusClass = 'text-muted';
-                    }
-                    
-                    // Calculate balance percentage for indicator
-                    const balancePercentage = (employee.remaining / employee.currentBalance) * 100;
-                    let fillColor = '#28a745'; // Green
-                    if (balancePercentage < 30) fillColor = '#dc3545'; // Red
-                    else if (balancePercentage < 60) fillColor = '#ffc107'; // Yellow
-                    
-                    row.innerHTML = `
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
-                                    <span class="text-white fw-bold">${employee.name.charAt(0)}</span>
-                                </div>
-                                <div>
-                                    <div class="fw-semibold">${employee.name}</div>
-                                    <small class="text-muted">${employee.email}</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="badge bg-light text-dark">${employee.department}</span>
-                        </td>
-                        <td class="fw-semibold">${employee.currentBalance} days</td>
-                        <td>${employee.usedThisYear} days</td>
-                        <td>${employee.scheduled} days</td>
-                        <td>
-                            <div>${employee.remaining} days</div>
-                            <div class="balance-indicator">
-                                <div class="balance-fill" style="width: ${balancePercentage}%; background-color: ${fillColor};"></div>
-                            </div>
-                        </td>
-                        <td class="fw-semibold ${this.selectedYear === this.currentYear ? 'text-primary' : 'text-muted'}">
-                            ${this.selectedYear === this.currentYear ? employee.nextYearStartingBalance + ' days' : 'N/A'}
-                        </td>
-                        <td>
-                            <span class="trend-badge ${trendClass}">${employee.trend}</span>
-                        </td>
-                        <td class="${statusClass}">${status}</td>
-                    `;
-                    tableBody.appendChild(row);
+                    rowData.push(text);
                 });
-            }
-
-            updateSummaryStats(data) {
-                const totalEmployees = data.length;
-                const avgTimeOff = (data.reduce((sum, emp) => sum + emp.usedThisYear, 0) / totalEmployees).toFixed(1);
-                const totalBalance = data.reduce((sum, emp) => sum + emp.currentBalance, 0);
-                const nextYearBalance = data.reduce((sum, emp) => sum + emp.nextYearStartingBalance, 0);
-                
-                document.getElementById('totalEmployees').textContent = totalEmployees;
-                document.getElementById('avgTimeOff').textContent = avgTimeOff;
-                document.getElementById('totalBalance').textContent = totalBalance + ' days';
-                document.getElementById('nextYearBalance').textContent = nextYearBalance + ' days';
-            }
-
-            setupCharts() {
-                const departmentCtx = document.getElementById('departmentChart').getContext('2d');
-                const balanceCtx = document.getElementById('balanceChart').getContext('2d');
-                
-                // Department Chart
-                this.departmentChart = new Chart(departmentCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: [],
-                        datasets: [{
-                            label: 'Time Off Used (Days)',
-                            data: [],
-                            backgroundColor: 'rgba(67, 97, 238, 0.7)',
-                            borderColor: 'rgba(67, 97, 238, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Days'
-                                }
-                            }
-                        }
-                    }
-                });
-                
-                // Balance Chart
-                this.balanceChart = new Chart(balanceCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Low (< 5 days)', 'Medium (5-15 days)', 'High (> 15 days)'],
-                        datasets: [{
-                            data: [0, 0, 0],
-                            backgroundColor: [
-                                'rgba(220, 53, 69, 0.7)',
-                                'rgba(255, 193, 7, 0.7)',
-                                'rgba(40, 167, 69, 0.7)'
-                            ],
-                            borderColor: [
-                                'rgba(220, 53, 69, 1)',
-                                'rgba(255, 193, 7, 1)',
-                                'rgba(40, 167, 69, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                            }
-                        }
-                    }
-                });
-                
-                this.updateCharts();
-            }
-
-            updateCharts() {
-                const data = this.getFilteredData();
-                
-                // Update department chart
-                const deptData = {};
-                data.forEach(emp => {
-                    if (!deptData[emp.department]) {
-                        deptData[emp.department] = 0;
-                    }
-                    deptData[emp.department] += emp.usedThisYear;
-                });
-                
-                this.departmentChart.data.labels = Object.keys(deptData);
-                this.departmentChart.data.datasets[0].data = Object.values(deptData);
-                this.departmentChart.update();
-                
-                // Update balance chart
-                let low = 0, medium = 0, high = 0;
-                data.forEach(emp => {
-                    if (emp.remaining < 5) low++;
-                    else if (emp.remaining <= 15) medium++;
-                    else high++;
-                });
-                
-                this.balanceChart.data.datasets[0].data = [low, medium, high];
-                this.balanceChart.update();
-            }
-
-            exportData() {
-                const data = this.getFilteredData();
-                const year = this.selectedYear;
-                
-                // Create CSV content
-                let csvContent = 'data:text/csv;charset=utf-8,';
-                
-                // Add headers
-                const headers = [
-                    'Employee Name',
-                    'Email',
-                    'Department',
-                    'Current Balance (Days)',
-                    'Used This Year (Days)',
-                    'Scheduled (Days)',
-                    'Remaining (Days)',
-                    year === this.currentYear ? 'Next Year Starting Balance (Days)' : 'Starting Balance (Days)',
-                    'Trend',
-                    'Status'
-                ];
-                csvContent += headers.join(',') + '\r\n';
-                
-                // Add data rows
-                data.forEach(employee => {
-                    const status = employee.remaining < 5 ? 'Low Balance' : 
-                                  employee.remaining > 20 ? 'High Balance' : 'Normal';
-                    
-                    const row = [
-                        `"${employee.name}"`,
-                        `"${employee.email}"`,
-                        `"${employee.department}"`,
-                        employee.currentBalance,
-                        employee.usedThisYear,
-                        employee.scheduled,
-                        employee.remaining,
-                        year === this.currentYear ? employee.nextYearStartingBalance : 'N/A',
-                        `"${employee.trend}"`,
-                        `"${status}"`
-                    ];
-                    csvContent += row.join(',') + '\r\n';
-                });
-                
-                // Create and trigger download
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement('a');
-                link.setAttribute('href', encodedUri);
-                link.setAttribute('download', `time_off_analytics_${year}_${new Date().toISOString().slice(0,10)}.csv`);
+                csv.push(rowData.join(','));
+            });
+            
+            // Create and download CSV file
+            const csvString = csv.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            if (navigator.msSaveBlob) {
+                // For IE
+                navigator.msSaveBlob(blob, `time_off_${currentYear}.csv`);
+            } else {
+                // For modern browsers
+                link.href = URL.createObjectURL(blob);
+                link.download = `time_off_analytics_${currentYear}_${new Date().toISOString().slice(0,10)}.csv`;
+                link.style.display = 'none';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                
-                // Show success message
-                this.showExportNotification();
             }
-
-            showExportNotification() {
-                // Create notification element
-                const notification = document.createElement('div');
-                notification.className = 'alert alert-success position-fixed';
-                notification.style.cssText = `
-                    top: 20px;
-                    right: 20px;
-                    z-index: 1000;
-                    min-width: 300px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                    border: none;
-                    border-left: 4px solid #28a745;
-                `;
-                notification.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-check-circle fa-lg me-3 text-success"></i>
-                        <div>
-                            <strong>Export Successful!</strong>
-                            <div class="small">Time off data has been exported to CSV</div>
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(notification);
-                
-                // Remove notification after 3 seconds
-                setTimeout(() => {
-                    notification.style.opacity = '0';
-                    notification.style.transition = 'opacity 0.5s ease';
-                    setTimeout(() => {
-                        document.body.removeChild(notification);
-                    }, 500);
-                }, 3000);
-            }
+            
+            // Show success message
+            showExportSuccess();
         }
-
-        // Initialize dashboard when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            window.timeOffAnalytics = new TimeOffAnalytics();
+        
+        function showExportSuccess() {
+            // Create a simple toast notification
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 m-3';
+            toast.style.zIndex = '1050';
+            toast.innerHTML = `
+                <div class="toast show" role="alert">
+                    <div class="toast-header">
+                        <strong class="me-auto"><i class="fas fa-check-circle text-success me-2"></i>Export Successful</strong>
+                        <button type="button" class="btn-close" onclick="this.closest('.toast').remove()"></button>
+                    </div>
+                    <div class="toast-body">
+                        Time off data has been exported to CSV file.
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 3000);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateYearDisplay();
+            
+            // Calculate summary stats from table data
+            updateSummaryStats();
         });
+        
+        function updateSummaryStats() {
+            // This would normally come from your backend
+            // For demo, we're just setting static values
+            document.getElementById('totalEmployees').textContent = '6';
+            document.getElementById('totalBalance').textContent = '130.00';
+            document.getElementById('avgUsed').textContent = '8.67';
+            document.getElementById('nextYearTotal').textContent = '88.00';
+        }
     </script>
 </body>
 </html>
