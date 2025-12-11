@@ -161,6 +161,29 @@
         min-width: 120px;
     }
 
+    /* Analytics table header controls */
+    .analytics-table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .analytics-table-header .year-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .analytics-table-header .year-controls label {
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
     @media (max-width:1200px){.flex-container{flex-direction:column}.left-panel,.right-panel{min-width:100%}.monthly-tables-container{flex-direction:column}.monthly-input-container,.monthly-results-container{flex:1;width:100%}}
     @media (max-width:900px){.calendar-header,.calendar{font-size:13px}.calendar .day{min-height:60px}}
     @media (max-width:700px){
@@ -172,6 +195,10 @@
       .filters .year-nav-container {
           flex-direction: column;
           align-items: stretch;
+      }
+      .analytics-table-header {
+          flex-direction: column;
+          align-items: flex-start;
       }
     }
   </style>
@@ -264,7 +291,8 @@
               <thead>
                 <tr>
                   <th>Agent Name</th><th>Team</th><th>Management Unit</th>
-                  <th>Starting Balance</th><th>Holiday (Current Year)</th><th>Holiday (Next Year)</th><th>Time off In Lieu</th>
+                  <th>Starting Balance (2025)</th><th>Holiday (Current Year)</th><th>Holiday (Next Year)</th>
+                  <th>Starting Balance (2026)</th><th>Time off In Lieu</th>
                 </tr>
               </thead>
               <tbody id="balances-table-body"></tbody>
@@ -418,21 +446,13 @@
               </select>
             </div>
             <div>
-              <h3>Select Year</h3>
-              <div class="year-nav-container">
-                <button onclick="changeAnalyticsYear(-1)">
-                  <i class="fas fa-chevron-left"></i>
-                </button>
-                <select id="analytics-year-select" onchange="updateAnalytics()">
-                  <option value="Select">Please Select</option>
-                  <option value="all">Select All</option>
-                  <option value="2025">2025</option>
-                  <option value="2026">2026</option>
-                </select>
-                <button onclick="changeAnalyticsYear(1)">
-                  <i class="fas fa-chevron-right"></i>
-                </button>
-              </div>
+              <h3>Holiday Year Start Month</h3>
+              <select id="holiday-year-start-month" onchange="updateAnalytics()">
+                <option value="1">January</option>
+                <option value="4">April</option>
+                <option value="7">July</option>
+                <option value="10">October</option>
+              </select>
             </div>
             <div>
               <h3>Select Management Unit</h3>
@@ -453,15 +473,6 @@
                 <option>Team Manchester</option>
                 <option>Team London</option>
                 <option>Team Nashville</option>
-              </select>
-            </div>
-            <div>
-              <h3>Holiday Year Start Month</h3>
-              <select id="holiday-year-start-month" onchange="updateAnalytics()">
-                <option value="1">January</option>
-                <option value="4">April</option>
-                <option value="7">July</option>
-                <option value="10">October</option>
               </select>
             </div>
           </div>
@@ -517,11 +528,28 @@
           </div>
 
           <div class="analytics-table-container">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h3 style="margin: 0;">Detailed Analytics</h3>
+            <div class="analytics-table-header">
+              <h3 style="margin: 0;">Detailed Analytics</h3>
+              <div class="d-flex align-items-center" style="gap: 15px;">
+                <div class="year-controls">
+                  <label for="analytics-year-select">View Year:</label>
+                  <div class="year-nav-container">
+                    <button onclick="changeAnalyticsYear(-1)">
+                      <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <select id="analytics-year-select" onchange="updateAnalytics()">
+                      <option value="2025">2025</option>
+                      <option value="2026">2026</option>
+                    </select>
+                    <button onclick="changeAnalyticsYear(1)">
+                      <i class="fas fa-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
                 <button class="btn" onclick="exportAnalyticsToCSV()">
                     <i class="fas fa-download"></i> Export to CSV
                 </button>
+              </div>
             </div>
             <table class="analytics-table">
               <thead>
@@ -546,19 +574,63 @@
   </div>
 
   <script>
-    // -------- Balances (updated with startingBalance) --------
+    // -------- Balances (updated with startingBalance for 2025 and 2026) --------
     const sampleBalances = [
-      { name:"Craig Farley",  team:"Team Reading",   unit:"Customer Service",     startingBalance:240, holidayCurrent:120, holidayNext:80,  toil:-15 },
-      { name:"Sasha Smith",   team:"Team Sheffield", unit:"Customer Service",     startingBalance:200, holidayCurrent:95,  holidayNext:60,  toil:8  },
-      { name:"Lisa Lowe",     team:"Team Manchester",unit:"Sales & Retentions",   startingBalance:220, holidayCurrent:198, holidayNext:70,  toil:12 },
-      { name:"Sian Gibbs",    team:"Team London",    unit:"Sales & Retentions",   startingBalance:200, holidayCurrent:85,  holidayNext:55,  toil:5  },
-      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service",     startingBalance:240, holidayCurrent:100, holidayNext:65,  toil:10 },
-      { name:"Olivia Jenson", team:"Team Reading",   unit:"Customer Service",     startingBalance:240, holidayCurrent:115, holidayNext:75,  toil:7  },
-      { name:"Ethan Reynolds",team:"Team Sheffield", unit:"Customer Service",     startingBalance:200, holidayCurrent:15,  holidayNext:50,  toil:-3  },
-      { name:"Ava Mitchell",  team:"Team Manchester",unit:"Sales & Retentions",   startingBalance:220, holidayCurrent:105, holidayNext:85,  toil:9  },
-      { name:"Gerard McGlynn",team:"Team Nashville", unit:"Sales & Retentions",   startingBalance:280, holidayCurrent:56,  holidayNext:237,  toil:24  },
-      { name:"Rhys Turner",   team:"Team London",    unit:"Customer Service",     startingBalance:240, holidayCurrent:200, holidayNext:90,  toil:14 },
-      { name:"Tom Collins",   team:"Team Reading",   unit:"Customer Service",     startingBalance:240, holidayCurrent:0,  holidayNext:240,  toil:2  }
+      { 
+        name:"Craig Farley",  team:"Team Reading",   unit:"Customer Service",     
+        startingBalance2025:240, holidayCurrent:120, holidayNext:80, 
+        startingBalance2026:200, toil:-15 
+      },
+      { 
+        name:"Sasha Smith",   team:"Team Sheffield", unit:"Customer Service",     
+        startingBalance2025:200, holidayCurrent:95,  holidayNext:60,  
+        startingBalance2026:180, toil:8  
+      },
+      { 
+        name:"Lisa Lowe",     team:"Team Manchester",unit:"Sales & Retentions",   
+        startingBalance2025:220, holidayCurrent:198, holidayNext:70,  
+        startingBalance2026:190, toil:12 
+      },
+      { 
+        name:"Sian Gibbs",    team:"Team London",    unit:"Sales & Retentions",   
+        startingBalance2025:200, holidayCurrent:85,  holidayNext:55,  
+        startingBalance2026:185, toil:5  
+      },
+      { 
+        name:"John Thompson", team:"Team Nashville", unit:"Customer Service",     
+        startingBalance2025:240, holidayCurrent:100, holidayNext:65,  
+        startingBalance2026:210, toil:10 
+      },
+      { 
+        name:"Olivia Jenson", team:"Team Reading",   unit:"Customer Service",     
+        startingBalance2025:240, holidayCurrent:115, holidayNext:75,  
+        startingBalance2026:205, toil:7  
+      },
+      { 
+        name:"Ethan Reynolds",team:"Team Sheffield", unit:"Customer Service",     
+        startingBalance2025:200, holidayCurrent:15,  holidayNext:50,  
+        startingBalance2026:190, toil:-3  
+      },
+      { 
+        name:"Ava Mitchell",  team:"Team Manchester",unit:"Sales & Retentions",   
+        startingBalance2025:220, holidayCurrent:105, holidayNext:85,  
+        startingBalance2026:195, toil:9  
+      },
+      { 
+        name:"Gerard McGlynn",team:"Team Nashville", unit:"Sales & Retentions",   
+        startingBalance2025:280, holidayCurrent:56,  holidayNext:237,  
+        startingBalance2026:250, toil:24  
+      },
+      { 
+        name:"Rhys Turner",   team:"Team London",    unit:"Customer Service",     
+        startingBalance2025:240, holidayCurrent:200, holidayNext:90,  
+        startingBalance2026:210, toil:14 
+      },
+      { 
+        name:"Tom Collins",   team:"Team Reading",   unit:"Customer Service",     
+        startingBalance2025:240, holidayCurrent:0,  holidayNext:240,  
+        startingBalance2026:240, toil:2  
+      }
     ];
 
     // -------- Time-off details (~6 per person across 2025–2026) --------
@@ -712,15 +784,15 @@
         const tr=document.createElement("tr");
         tr.innerHTML=`
           <td>${x.name}</td><td>${x.team}</td><td>${x.unit}</td>
-          <td><input type="number" class="balance-input" value="${x.startingBalance}"></td>
+          <td><input type="number" class="balance-input" value="${x.startingBalance2025}"></td>
           <td><input type="number" class="balance-input ${clsHC}" value="${x.holidayCurrent}"></td>
           <td><input type="number" class="balance-input ${clsHN}" value="${x.holidayNext}"></td>
+          <td><input type="number" class="balance-input" value="${x.startingBalance2026}"></td>
           <td><input type="number" class="balance-input ${clsTO}" value="${x.toil}"></td>`;
         bBody.appendChild(tr);
       });
 
       // ensure live recolouring when user edits values
-      // (event listener is attached once below, this just ensures freshly added inputs look right)
       document.querySelectorAll('#balances-table .balance-input').forEach(applyColourToInput);
 
       // --- Details table render ---
@@ -865,45 +937,14 @@
         const options = Array.from(yearSelect.options);
         const currentIndex = options.findIndex(opt => opt.value === yearSelect.value);
         
-        // Find next valid year option (skip "Select" and "all")
         let newIndex = currentIndex + delta;
         
         // Wrap around if needed
         if (newIndex < 0) newIndex = options.length - 1;
         if (newIndex >= options.length) newIndex = 0;
         
-        // Skip "Select" and "all" options
-        while (options[newIndex].value === "Select" || options[newIndex].value === "all") {
-            newIndex += delta;
-            if (newIndex < 0) newIndex = options.length - 1;
-            if (newIndex >= options.length) newIndex = 0;
-        }
-        
         yearSelect.value = options[newIndex].value;
         updateAnalytics();
-    }
-
-    // Add sample data for next year starting balance
-    function addNextYearBalances() {
-        sampleBalances.forEach(agent => {
-            // Calculate next year starting balance based on current usage
-            const usedPercentage = agent.holidayCurrent / agent.startingBalance;
-            
-            if (usedPercentage >= 0.8) {
-                // Heavy users get less next year
-                agent.nextYearStartingBalance = Math.round(agent.startingBalance * 0.7);
-            } else if (usedPercentage <= 0.3) {
-                // Light users get more next year
-                agent.nextYearStartingBalance = Math.round(agent.startingBalance * 1.2);
-            } else {
-                // Average users get similar amount
-                agent.nextYearStartingBalance = agent.startingBalance;
-            }
-            
-            // Add some randomness
-            const variation = Math.floor(Math.random() * 21) - 10; // -10 to +10
-            agent.nextYearStartingBalance = Math.max(10, agent.nextYearStartingBalance + variation);
-        });
     }
 
     // Export analytics to CSV
@@ -982,10 +1023,10 @@
       updateCharts(analyticsData, holidayYearStartMonth);
       
       // Update analytics table
-      updateAnalyticsTable(analyticsData);
+      updateAnalyticsTable(analyticsData, year);
     }
 
-    function calculateAnalyticsData(filteredBalances, year, holidayYearStartMonth) {
+    function calculateAnalyticsData(filteredBalances, selectedYear, holidayYearStartMonth) {
       const data = {
         agents: [],
         teams: {},
@@ -998,24 +1039,48 @@
       };
       
       filteredBalances.forEach(agent => {
-        // Use the actual starting balance from the balances data
-        const startingBalance = agent.startingBalance;
+        // Determine which starting balance and holiday data to use based on selected year
+        const is2025 = selectedYear === "2025";
+        const startingBalance = is2025 ? agent.startingBalance2025 : agent.startingBalance2026;
         
-        // Calculate used hours correctly - holidayCurrent is what's LEFT, not what's used
-        const usedHours = startingBalance - agent.holidayCurrent;
+        // For 2025: holidayCurrent is what's LEFT for 2025
+        // For 2026: holidayNext is what's LEFT for 2026 (carried over from 2025)
+        const remainingHours = is2025 ? agent.holidayCurrent : agent.holidayNext;
+        
+        // Calculate used hours
+        const usedHours = startingBalance - remainingHours;
         
         // Calculate percentage used
         const percentageUsed = startingBalance > 0 ? (usedHours / startingBalance) * 100 : 0;
         
-        // Calculate period usage from time off details
-        const periodUsage = calculatePeriodUsage(agent.name, year, holidayYearStartMonth);
+        // Calculate period usage from time off details for the selected year
+        const periodUsage = calculatePeriodUsage(agent.name, selectedYear, holidayYearStartMonth);
         
         // Determine status based on new threshold logic
-        const currentPeriod = getCurrentPeriod(holidayYearStartMonth);
         const timeRemainingInYear = calculateTimeRemainingInYear(holidayYearStartMonth);
         
         let status = "On Track";
         let statusClass = "good";
+        
+        // Determine next year starting balance
+        // For 2025: next year is 2026, so use startingBalance2026
+        // For 2026: next year would be 2027, calculate based on usage
+        let nextYearStartingBalance;
+        if (selectedYear === "2025") {
+            nextYearStartingBalance = agent.startingBalance2026;
+        } else {
+            // For 2026, calculate next year based on usage pattern
+            if (percentageUsed >= 80) {
+                nextYearStartingBalance = Math.round(startingBalance * 0.7);
+            } else if (percentageUsed <= 30) {
+                nextYearStartingBalance = Math.round(startingBalance * 1.2);
+            } else {
+                nextYearStartingBalance = startingBalance;
+            }
+            // Add some randomness
+            const variation = Math.floor(Math.random() * 21) - 10;
+            nextYearStartingBalance = Math.max(10, nextYearStartingBalance + variation);
+        }
         
         // NEW THRESHOLD LOGIC
         if (percentageUsed >= 100) {
@@ -1041,7 +1106,8 @@
           team: agent.team,
           startingBalance: startingBalance,
           usedHours: usedHours,
-          remaining: agent.holidayCurrent,
+          remaining: remainingHours,
+          nextYearStartingBalance: nextYearStartingBalance,
           percentageUsed: percentageUsed,
           status: status,
           statusClass: statusClass,
@@ -1069,7 +1135,7 @@
         data.periodUsage.Q4 += periodUsage.Q4;
         
         // Update monthly trend from time off details
-        const monthlyUsage = calculateMonthlyUsage(agent.name, year);
+        const monthlyUsage = calculateMonthlyUsage(agent.name, selectedYear);
         monthlyUsage.forEach((hours, month) => {
           data.monthlyTrend[month] += hours;
         });
@@ -1132,18 +1198,6 @@
       });
       
       return monthly;
-    }
-
-    function getCurrentPeriod(holidayYearStartMonth) {
-      const currentMonth = new Date().getMonth() + 1;
-      
-      // Calculate adjusted month based on holiday year start
-      const adjustedMonth = ((currentMonth - holidayYearStartMonth + 12) % 12) + 1;
-      
-      if (adjustedMonth <= 3) return 1;
-      if (adjustedMonth <= 6) return 2;
-      if (adjustedMonth <= 9) return 3;
-      return 4;
     }
 
     function updateSummaryCards(data) {
@@ -1349,14 +1403,11 @@
       ];
     }
 
-    function updateAnalyticsTable(data) {
+    function updateAnalyticsTable(data, selectedYear) {
       const tbody = document.getElementById('analytics-table-body');
       tbody.innerHTML = '';
       
       data.agents.forEach(agent => {
-        const agentData = sampleBalances.find(a => a.name === agent.name);
-        const nextYearBalance = agentData ? agentData.nextYearStartingBalance : Math.round(agent.startingBalance * 0.8);
-        
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${agent.name}</td>
@@ -1364,7 +1415,7 @@
           <td>${agent.startingBalance}</td>
           <td>${agent.usedHours.toFixed(1)}</td>
           <td>${agent.remaining.toFixed(1)}</td>
-          <td>${nextYearBalance}</td>
+          <td>${agent.nextYearStartingBalance}</td>
           <td>
             <div class="progress-bar">
               <div class="progress-fill" style="width: ${Math.min(agent.percentageUsed, 100)}%"></div>
@@ -1384,9 +1435,6 @@
     }
 
     function initializeAnalytics() {
-      // Add next year balances to sample data
-      addNextYearBalances();
-      
       // Set default values for analytics filters
       document.getElementById('analytics-agent-select').value = 'all';
       document.getElementById('analytics-year-select').value = '2025';
