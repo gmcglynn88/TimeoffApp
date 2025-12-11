@@ -133,32 +133,68 @@
         background: var(--secondary-color);
     }
 
-    /* Year navigation buttons */
-    .filters .year-nav-container {
+    /* Year selector styling to match app */
+    .year-selector-container {
         display: flex;
         align-items: center;
-        gap: 8px;
-    }
-    
-    .filters .year-nav-container button {
+        gap: 10px;
         background: var(--light-bg);
         border: 1px solid var(--border-color);
-        cursor: pointer;
-        transition: all 0.2s;
-        padding: 6px 10px;
         border-radius: 4px;
-        color: var(--text-color);
+        padding: 6px 10px;
     }
     
-    .filters .year-nav-container button:hover {
+    .year-selector-container label {
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 14px;
+        white-space: nowrap;
+        margin: 0;
+    }
+    
+    .year-selector {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .year-nav-btn {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 3px;
+        color: var(--text-color);
+        cursor: pointer;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        transition: all 0.2s;
+    }
+    
+    .year-nav-btn:hover {
         background: var(--primary-color);
         color: white;
         border-color: var(--primary-color);
     }
     
-    .filters .year-nav-container select {
-        flex: 1;
+    .year-select {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 3px;
+        color: var(--text-color);
+        padding: 4px 8px;
+        font-size: 13px;
+        font-weight: 600;
         min-width: 120px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .year-select:hover {
+        border-color: var(--primary-color);
     }
 
     /* Analytics table header controls */
@@ -170,19 +206,6 @@
         flex-wrap: wrap;
         gap: 10px;
     }
-    
-    .analytics-table-header .year-controls {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .analytics-table-header .year-controls label {
-        font-weight: 600;
-        color: var(--text-color);
-        font-size: 14px;
-        white-space: nowrap;
-    }
 
     @media (max-width:1200px){.flex-container{flex-direction:column}.left-panel,.right-panel{min-width:100%}.monthly-tables-container{flex-direction:column}.monthly-input-container,.monthly-results-container{flex:1;width:100%}}
     @media (max-width:900px){.calendar-header,.calendar{font-size:13px}.calendar .day{min-height:60px}}
@@ -192,11 +215,11 @@
       .bulk-update-panel{padding:8px}
       .analytics-charts {grid-template-columns:1fr}
       .analytics-summary {grid-template-columns:repeat(2,1fr)}
-      .filters .year-nav-container {
-          flex-direction: column;
-          align-items: stretch;
-      }
       .analytics-table-header {
+          flex-direction: column;
+          align-items: flex-start;
+      }
+      .year-selector-container {
           flex-direction: column;
           align-items: flex-start;
       }
@@ -249,8 +272,8 @@
               <select id="year-select" onchange="updateTables()">
                 <option value="Select">Please Select</option>
                 <option value="all">Select All</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
+                <option value="current">Current Year</option>
+                <option value="next">Next Year</option>
               </select>
             </div>
             <div>
@@ -291,8 +314,9 @@
               <thead>
                 <tr>
                   <th>Agent Name</th><th>Team</th><th>Management Unit</th>
-                  <th>Starting Balance (2025)</th><th>Holiday (Current Year)</th><th>Holiday (Next Year)</th>
-                  <th>Starting Balance (2026)</th><th>Time off In Lieu</th>
+                  <th id="current-year-header">Starting Balance (Current Year)</th>
+                  <th>Holiday (Current Year)</th><th>Holiday (Next Year)</th>
+                  <th id="next-year-header">Starting Balance (Next Year)</th><th>Time off In Lieu</th>
                 </tr>
               </thead>
               <tbody id="balances-table-body"></tbody>
@@ -531,17 +555,17 @@
             <div class="analytics-table-header">
               <h3 style="margin: 0;">Detailed Analytics</h3>
               <div class="d-flex align-items-center" style="gap: 15px;">
-                <div class="year-controls">
-                  <label for="analytics-year-select">View Year:</label>
-                  <div class="year-nav-container">
-                    <button onclick="changeAnalyticsYear(-1)">
+                <div class="year-selector-container">
+                  <label>View Year:</label>
+                  <div class="year-selector">
+                    <button class="year-nav-btn" onclick="changeAnalyticsYear(-1)">
                       <i class="fas fa-chevron-left"></i>
                     </button>
-                    <select id="analytics-year-select" onchange="updateAnalytics()">
-                      <option value="2025">2025</option>
-                      <option value="2026">2026</option>
+                    <select class="year-select" id="analytics-year-select" onchange="updateAnalytics()">
+                      <option value="current">Current Year</option>
+                      <option value="next">Next Year</option>
                     </select>
-                    <button onclick="changeAnalyticsYear(1)">
+                    <button class="year-nav-btn" onclick="changeAnalyticsYear(1)">
                       <i class="fas fa-chevron-right"></i>
                     </button>
                   </div>
@@ -574,144 +598,161 @@
   </div>
 
   <script>
-    // -------- Balances (updated with startingBalance for 2025 and 2026) --------
+    // Get current and next year
+    const currentYearNum = new Date().getFullYear();
+    const nextYearNum = currentYearNum + 1;
+    
+    // -------- Balances (updated with startingBalance for current and next year) --------
     const sampleBalances = [
       { 
         name:"Craig Farley",  team:"Team Reading",   unit:"Customer Service",     
-        startingBalance2025:240, holidayCurrent:120, holidayNext:80, 
-        startingBalance2026:200, toil:-15 
+        startingBalanceCurrent:240, holidayCurrent:120, holidayNext:80, 
+        startingBalanceNext:200, toil:-15 
       },
       { 
         name:"Sasha Smith",   team:"Team Sheffield", unit:"Customer Service",     
-        startingBalance2025:200, holidayCurrent:95,  holidayNext:60,  
-        startingBalance2026:180, toil:8  
+        startingBalanceCurrent:200, holidayCurrent:95,  holidayNext:60,  
+        startingBalanceNext:180, toil:8  
       },
       { 
         name:"Lisa Lowe",     team:"Team Manchester",unit:"Sales & Retentions",   
-        startingBalance2025:220, holidayCurrent:198, holidayNext:70,  
-        startingBalance2026:190, toil:12 
+        startingBalanceCurrent:220, holidayCurrent:198, holidayNext:70,  
+        startingBalanceNext:190, toil:12 
       },
       { 
         name:"Sian Gibbs",    team:"Team London",    unit:"Sales & Retentions",   
-        startingBalance2025:200, holidayCurrent:85,  holidayNext:55,  
-        startingBalance2026:185, toil:5  
+        startingBalanceCurrent:200, holidayCurrent:85,  holidayNext:55,  
+        startingBalanceNext:185, toil:5  
       },
       { 
         name:"John Thompson", team:"Team Nashville", unit:"Customer Service",     
-        startingBalance2025:240, holidayCurrent:100, holidayNext:65,  
-        startingBalance2026:210, toil:10 
+        startingBalanceCurrent:240, holidayCurrent:100, holidayNext:65,  
+        startingBalanceNext:210, toil:10 
       },
       { 
         name:"Olivia Jenson", team:"Team Reading",   unit:"Customer Service",     
-        startingBalance2025:240, holidayCurrent:115, holidayNext:75,  
-        startingBalance2026:205, toil:7  
+        startingBalanceCurrent:240, holidayCurrent:115, holidayNext:75,  
+        startingBalanceNext:205, toil:7  
       },
       { 
         name:"Ethan Reynolds",team:"Team Sheffield", unit:"Customer Service",     
-        startingBalance2025:200, holidayCurrent:15,  holidayNext:50,  
-        startingBalance2026:190, toil:-3  
+        startingBalanceCurrent:200, holidayCurrent:15,  holidayNext:50,  
+        startingBalanceNext:190, toil:-3  
       },
       { 
         name:"Ava Mitchell",  team:"Team Manchester",unit:"Sales & Retentions",   
-        startingBalance2025:220, holidayCurrent:105, holidayNext:85,  
-        startingBalance2026:195, toil:9  
+        startingBalanceCurrent:220, holidayCurrent:105, holidayNext:85,  
+        startingBalanceNext:195, toil:9  
       },
       { 
         name:"Gerard McGlynn",team:"Team Nashville", unit:"Sales & Retentions",   
-        startingBalance2025:280, holidayCurrent:56,  holidayNext:237,  
-        startingBalance2026:250, toil:24  
+        startingBalanceCurrent:280, holidayCurrent:56,  holidayNext:237,  
+        startingBalanceNext:250, toil:24  
       },
       { 
         name:"Rhys Turner",   team:"Team London",    unit:"Customer Service",     
-        startingBalance2025:240, holidayCurrent:200, holidayNext:90,  
-        startingBalance2026:210, toil:14 
+        startingBalanceCurrent:240, holidayCurrent:200, holidayNext:90,  
+        startingBalanceNext:210, toil:14 
       },
       { 
         name:"Tom Collins",   team:"Team Reading",   unit:"Customer Service",     
-        startingBalance2025:240, holidayCurrent:0,  holidayNext:240,  
-        startingBalance2026:240, toil:2  
+        startingBalanceCurrent:240, holidayCurrent:0,  holidayNext:240,  
+        startingBalanceNext:240, toil:2  
       }
     ];
 
-    // -------- Time-off details (~6 per person across 2025–2026) --------
+    // -------- Time-off details (current and next year) --------
     const sampleDetails = [
-      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2025-01-15", end:"2025-01-22", deduction:56, days:7 },
-      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2025-03-10", end:"2025-03-12", deduction:24, days:3 },
-      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2025-07-01", end:"2025-07-05", deduction:40, days:5 },
-      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2025-12-23", end:"2025-12-24", deduction:16, days:2 },
-      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2026-04-14", end:"2026-04-16", deduction:24, days:3 },
-      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:"2026-08-08", end:"2026-08-12", deduction:40, days:5 },
+      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:`${currentYearNum}-01-15`, end:`${currentYearNum}-01-22`, deduction:56, days:7 },
+      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:`${currentYearNum}-03-10`, end:`${currentYearNum}-03-12`, deduction:24, days:3 },
+      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:`${currentYearNum}-07-01`, end:`${currentYearNum}-07-05`, deduction:40, days:5 },
+      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:`${currentYearNum}-12-23`, end:`${currentYearNum}-12-24`, deduction:16, days:2 },
+      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:`${nextYearNum}-04-14`, end:`${nextYearNum}-04-16`, deduction:24, days:3 },
+      { name:"Craig Farley", team:"Team Reading", unit:"Customer Service", start:`${nextYearNum}-08-08`, end:`${nextYearNum}-08-12`, deduction:40, days:5 },
 
-      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2025-02-10", end:"2025-02-12", deduction:24, days:3 },
-      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2025-05-27", end:"2025-05-27", deduction:8,  days:1 },
-      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2025-09-14", end:"2025-09-18", deduction:40, days:5 },
-      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2026-01-04", end:"2026-01-06", deduction:24, days:3 },
-      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2026-06-20", end:"2026-06-21", deduction:16, days:2 },
-      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:"2026-10-12", end:"2026-10-16", deduction:40, days:5 },
+      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:`${currentYearNum}-02-10`, end:`${currentYearNum}-02-12`, deduction:24, days:3 },
+      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:`${currentYearNum}-05-27`, end:`${currentYearNum}-05-27`, deduction:8,  days:1 },
+      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:`${currentYearNum}-09-14`, end:`${currentYearNum}-09-18`, deduction:40, days:5 },
+      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:`${nextYearNum}-01-04`, end:`${nextYearNum}-01-06`, deduction:24, days:3 },
+      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:`${nextYearNum}-06-20`, end:`${nextYearNum}-06-21`, deduction:16, days:2 },
+      { name:"Sasha Smith", team:"Team Sheffield", unit:"Customer Service", start:`${nextYearNum}-10-12`, end:`${nextYearNum}-10-16`, deduction:40, days:5 },
 
-      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-01-30", end:"2025-01-31", deduction:16, days:2 },
-      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-04-07", end:"2025-04-11", deduction:40, days:5 },
-      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-08-24", end:"2025-08-28", deduction:40, days:5 },
-      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2026-02-13", end:"2026-02-13", deduction:8,  days:1 },
-      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2026-05-18", end:"2026-05-20", deduction:24, days:3 },
-      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:"2026-11-02", end:"2026-11-06", deduction:40, days:5 },
+      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:`${currentYearNum}-01-30`, end:`${currentYearNum}-01-31`, deduction:16, days:2 },
+      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:`${currentYearNum}-04-07`, end:`${currentYearNum}-04-11`, deduction:40, days:5 },
+      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:`${currentYearNum}-08-24`, end:`${currentYearNum}-08-28`, deduction:40, days:5 },
+      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:`${nextYearNum}-02-13`, end:`${nextYearNum}-02-13`, deduction:8,  days:1 },
+      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:`${nextYearNum}-05-18`, end:`${nextYearNum}-05-20`, deduction:24, days:3 },
+      { name:"Lisa Lowe", team:"Team Manchester", unit:"Sales & Retentions", start:`${nextYearNum}-11-02`, end:`${nextYearNum}-11-06`, deduction:40, days:5 },
 
-      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2025-02-24", end:"2025-02-26", deduction:24, days:3 },
-      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2025-06-10", end:"2025-06-12", deduction:24, days:3 },
-      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2025-10-19", end:"2025-10-23", deduction:40, days:5 },
-      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2026-03-28", end:"2026-03-28", deduction:8,  days:1 },
-      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2026-07-15", end:"2026-07-17", deduction:24, days:3 },
-      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:"2026-12-21", end:"2026-12-24", deduction:32, days:4 },
+      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:`${currentYearNum}-02-24`, end:`${currentYearNum}-02-26`, deduction:24, days:3 },
+      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:`${currentYearNum}-06-10`, end:`${currentYearNum}-06-12`, deduction:24, days:3 },
+      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:`${currentYearNum}-10-19`, end:`${currentYearNum}-10-23`, deduction:40, days:5 },
+      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:`${nextYearNum}-03-28`, end:`${nextYearNum}-03-28`, deduction:8,  days:1 },
+      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:`${nextYearNum}-07-15`, end:`${nextYearNum}-07-17`, deduction:24, days:3 },
+      { name:"Sian Gibbs", team:"Team London", unit:"Sales & Retentions", start:`${nextYearNum}-12-21`, end:`${nextYearNum}-12-24`, deduction:32, days:4 },
 
-      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2025-03-03", end:"2025-03-07", deduction:40, days:5 },
-      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2025-06-22", end:"2025-06-22", deduction:8,  days:1 },
-      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2025-10-10", end:"2025-10-15", deduction:48, days:6 },
-      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2026-01-19", end:"2026-01-21", deduction:24, days:3 },
-      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2026-05-05", end:"2026-05-08", deduction:32, days:4 },
-      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:"2026-09-14", end:"2026-09-18", deduction:40, days:5 },
+      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:`${currentYearNum}-03-03`, end:`${currentYearNum}-03-07`, deduction:40, days:5 },
+      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:`${currentYearNum}-06-22`, end:`${currentYearNum}-06-22`, deduction:8,  days:1 },
+      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:`${currentYearNum}-10-10`, end:`${currentYearNum}-10-15`, deduction:48, days:6 },
+      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:`${nextYearNum}-01-19`, end:`${nextYearNum}-01-21`, deduction:24, days:3 },
+      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:`${nextYearNum}-05-05`, end:`${nextYearNum}-05-08`, deduction:32, days:4 },
+      { name:"John Thompson", team:"Team Nashville", unit:"Customer Service", start:`${nextYearNum}-09-14`, end:`${nextYearNum}-09-18`, deduction:40, days:5 },
 
-      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2025-01-06", end:"2025-01-08", deduction:24, days:3 },
-      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2025-05-12", end:"2025-05-16", deduction:40, days:5 },
-      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2025-09-01", end:"2025-09-01", deduction:8,  days:1 },
-      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2026-02-24", end:"2026-02-26", deduction:24, days:3 },
-      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2026-06-29", end:"2026-07-03", deduction:40, days:5 },
-      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:"2026-11-09", end:"2026-11-10", deduction:16, days:2 },
+      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:`${currentYearNum}-01-06`, end:`${currentYearNum}-01-08`, deduction:24, days:3 },
+      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:`${currentYearNum}-05-12`, end:`${currentYearNum}-05-16`, deduction:40, days:5 },
+      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:`${currentYearNum}-09-01`, end:`${currentYearNum}-09-01`, deduction:8,  days:1 },
+      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:`${nextYearNum}-02-24`, end:`${nextYearNum}-02-26`, deduction:24, days:3 },
+      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:`${nextYearNum}-06-29`, end:`${nextYearNum}-07-03`, deduction:40, days:5 },
+      { name:"Olivia Jenson", team:"Team Reading", unit:"Customer Service", start:`${nextYearNum}-11-09`, end:`${nextYearNum}-11-10`, deduction:16, days:2 },
 
-      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2025-02-03", end:"2025-02-04", deduction:16, days:2 },
-      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2025-04-21", end:"2025-04-25", deduction:40, days:5 },
-      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2025-08-05", end:"2025-08-07", deduction:24, days:3 },
-      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2026-01-11", end:"2026-01-11", deduction:8,  days:1 },
-      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2026-05-25", end:"2026-05-29", deduction:40, days:5 },
-      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:"2026-10-05", end:"2026-10-09", deduction:40, days:5 },
+      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:`${currentYearNum}-02-03`, end:`${currentYearNum}-02-04`, deduction:16, days:2 },
+      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:`${currentYearNum}-04-21`, end:`${currentYearNum}-04-25`, deduction:40, days:5 },
+      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:`${currentYearNum}-08-05`, end:`${currentYearNum}-08-07`, deduction:24, days:3 },
+      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:`${nextYearNum}-01-11`, end:`${nextYearNum}-01-11`, deduction:8,  days:1 },
+      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:`${nextYearNum}-05-25`, end:`${nextYearNum}-05-29`, deduction:40, days:5 },
+      { name:"Ethan Reynolds", team:"Team Sheffield", unit:"Customer Service", start:`${nextYearNum}-10-05`, end:`${nextYearNum}-10-09`, deduction:40, days:5 },
 
-      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-03-17", end:"2025-03-20", deduction:32, days:4 },
-      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-07-27", end:"2025-07-31", deduction:40, days:5 },
-      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2025-12-14", end:"2025-12-15", deduction:16, days:2 },
-      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2026-03-09", end:"2026-03-11", deduction:24, days:3 },
-      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2026-07-20", end:"2026-07-24", deduction:40, days:5 },
-      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:"2026-12-01", end:"2026-12-03", deduction:24, days:3 },
+      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:`${currentYearNum}-03-17`, end:`${currentYearNum}-03-20`, deduction:32, days:4 },
+      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:`${currentYearNum}-07-27`, end:`${currentYearNum}-07-31`, deduction:40, days:5 },
+      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:`${currentYearNum}-12-14`, end:`${currentYearNum}-12-15`, deduction:16, days:2 },
+      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:`${nextYearNum}-03-09`, end:`${nextYearNum}-03-11`, deduction:24, days:3 },
+      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:`${nextYearNum}-07-20`, end:`${nextYearNum}-07-24`, deduction:40, days:5 },
+      { name:"Ava Mitchell", team:"Team Manchester", unit:"Sales & Retentions", start:`${nextYearNum}-12-01`, end:`${nextYearNum}-12-03`, deduction:24, days:3 },
 
-      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2025-01-22", end:"2025-01-23", deduction:16, days:2 },
-      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2025-05-05", end:"2025-05-09", deduction:40, days:5 },
-      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2025-09-28", end:"2025-09-30", deduction:24, days:3 },
-      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2026-02-02", end:"2026-02-02", deduction:8,  days:1 },
-      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2026-06-08", end:"2026-06-12", deduction:40, days:5 },
-      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:"2026-10-19", end:"2026-10-23", deduction:40, days:5 },
+      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:`${currentYearNum}-01-22`, end:`${currentYearNum}-01-23`, deduction:16, days:2 },
+      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:`${currentYearNum}-05-05`, end:`${currentYearNum}-05-09`, deduction:40, days:5 },
+      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:`${currentYearNum}-09-28`, end:`${currentYearNum}-09-30`, deduction:24, days:3 },
+      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:`${nextYearNum}-02-02`, end:`${nextYearNum}-02-02`, deduction:8,  days:1 },
+      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:`${nextYearNum}-06-08`, end:`${nextYearNum}-06-12`, deduction:40, days:5 },
+      { name:"Gerard McGlynn", team:"Team Nashville", unit:"Sales & Retentions", start:`${nextYearNum}-10-19`, end:`${nextYearNum}-10-23`, deduction:40, days:5 },
 
-      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2025-02-17", end:"2025-02-19", deduction:24, days:3 },
-      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2025-06-01", end:"2025-06-05", deduction:40, days:5 },
-      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2025-10-26", end:"2025-10-27", deduction:16, days:2 },
-      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2026-03-01", end:"2026-03-03", deduction:24, days:3 },
-      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2026-07-06", end:"2026-07-10", deduction:40, days:5 },
-      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:"2026-12-14", end:"2026-12-18", deduction:40, days:5 },
+      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:`${currentYearNum}-02-17`, end:`${currentYearNum}-02-19`, deduction:24, days:3 },
+      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:`${currentYearNum}-06-01`, end:`${currentYearNum}-06-05`, deduction:40, days:5 },
+      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:`${currentYearNum}-10-26`, end:`${currentYearNum}-10-27`, deduction:16, days:2 },
+      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:`${nextYearNum}-03-01`, end:`${nextYearNum}-03-03`, deduction:24, days:3 },
+      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:`${nextYearNum}-07-06`, end:`${nextYearNum}-07-10`, deduction:40, days:5 },
+      { name:"Rhys Turner", team:"Team London", unit:"Customer Service", start:`${nextYearNum}-12-14`, end:`${nextYearNum}-12-18`, deduction:40, days:5 },
 
-      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:"2025-01-13", end:"2025-01-13", deduction:8,  days:1 },
-      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:"2025-04-29", end:"2025-05-01", deduction:24, days:3 },
-      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:"2025-09-07", end:"2025-09-11", deduction:40, days:5 },
-      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:"2026-02-09", end:"2026-02-10", deduction:16, days:2 },
-      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:"2026-05-31", end:"2026-06-04", deduction:40, days:5 },
-      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:"2026-10-12", end:"2026-10-14", deduction:24, days:3 }
+      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:`${currentYearNum}-01-13`, end:`${currentYearNum}-01-13`, deduction:8,  days:1 },
+      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:`${currentYearNum}-04-29`, end:`${currentYearNum}-05-01`, deduction:24, days:3 },
+      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:`${currentYearNum}-09-07`, end:`${currentYearNum}-09-11`, deduction:40, days:5 },
+      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:`${nextYearNum}-02-09`, end:`${nextYearNum}-02-10`, deduction:16, days:2 },
+      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:`${nextYearNum}-05-31`, end:`${nextYearNum}-06-04`, deduction:40, days:5 },
+      { name:"Tom Collins", team:"Team Reading", unit:"Customer Service", start:`${nextYearNum}-10-12`, end:`${nextYearNum}-10-14`, deduction:24, days:3 }
     ];
+
+    // Update table headers with actual year numbers
+    function updateTableHeaders() {
+      const currentYearHeader = document.getElementById('current-year-header');
+      const nextYearHeader = document.getElementById('next-year-header');
+      
+      if (currentYearHeader) {
+        currentYearHeader.textContent = `Starting Balance (${currentYearNum})`;
+      }
+      if (nextYearHeader) {
+        nextYearHeader.textContent = `Starting Balance (${nextYearNum})`;
+      }
+    }
 
     // --- Utilities ---
     const toDate=(s)=>{ if(!s) return null; const [y,m,d]=s.split('-').map(Number); return new Date(y,(m||1)-1,d||1); };
@@ -771,7 +812,10 @@
       const passYear=d=>{
         if((fromDate||toDateVal)) return true; // if date range set, ignore year selector
         if(year==="Select"||year==="all") return true;
-        return String(new Date(d).getFullYear())===String(year);
+        const dateYear = new Date(d).getFullYear();
+        if(year==="current") return dateYear === currentYearNum;
+        if(year==="next") return dateYear === nextYearNum;
+        return false;
       };
 
       // --- Balances table render ---
@@ -784,10 +828,10 @@
         const tr=document.createElement("tr");
         tr.innerHTML=`
           <td>${x.name}</td><td>${x.team}</td><td>${x.unit}</td>
-          <td><input type="number" class="balance-input" value="${x.startingBalance2025}"></td>
+          <td><input type="number" class="balance-input" value="${x.startingBalanceCurrent}"></td>
           <td><input type="number" class="balance-input ${clsHC}" value="${x.holidayCurrent}"></td>
           <td><input type="number" class="balance-input ${clsHN}" value="${x.holidayNext}"></td>
-          <td><input type="number" class="balance-input" value="${x.startingBalance2026}"></td>
+          <td><input type="number" class="balance-input" value="${x.startingBalanceNext}"></td>
           <td><input type="number" class="balance-input ${clsTO}" value="${x.toil}"></td>`;
         bBody.appendChild(tr);
       });
@@ -902,7 +946,7 @@
       const ms=document.getElementById('calendar-month-select'); const ys=document.getElementById('calendar-year-select');
       const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
       ms.innerHTML=""; months.forEach((m,i)=>ms.appendChild(new Option(m,i+1)));
-      ys.innerHTML=""; const yr=new Date().getFullYear(); for(let y=yr-1;y<=yr+2;y++) ys.appendChild(new Option(y,y));
+      ys.innerHTML=""; const yr=currentYearNum; for(let y=yr-1;y<=yr+2;y++) ys.appendChild(new Option(y,y));
       ms.value=(new Date().getMonth()+1); ys.value=yr; calendarData=[];
       ['calendar-month-select','calendar-year-select'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{calendarData=[];renderCalendarData();}));
       document.getElementById('bulk-apply-btn').onclick=function(){
@@ -989,7 +1033,9 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `time_off_analytics_${document.getElementById('analytics-year-select').value}_${new Date().toISOString().slice(0,10)}.csv`;
+        const yearSelect = document.getElementById('analytics-year-select');
+        const yearLabel = yearSelect.options[yearSelect.selectedIndex].text;
+        a.download = `time_off_analytics_${yearLabel.toLowerCase().replace(' ', '_')}_${new Date().toISOString().slice(0,10)}.csv`;
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -997,7 +1043,6 @@
     }
 
     function updateAnalytics() {
-      console.log("Updating analytics...");
       const agent = document.getElementById("analytics-agent-select").value;
       const unit = document.getElementById("analytics-management-unit-select").value;
       const team = document.getElementById("analytics-team-select").value;
@@ -1010,8 +1055,6 @@
                (unit === "Select" || unit === "all" || x.unit === unit) &&
                (team === "Select" || team === "all" || x.team === team);
       });
-      
-      console.log("Filtered balances:", filteredBalances.length);
       
       // Calculate analytics data
       const analyticsData = calculateAnalyticsData(filteredBalances, year, holidayYearStartMonth);
@@ -1040,12 +1083,12 @@
       
       filteredBalances.forEach(agent => {
         // Determine which starting balance and holiday data to use based on selected year
-        const is2025 = selectedYear === "2025";
-        const startingBalance = is2025 ? agent.startingBalance2025 : agent.startingBalance2026;
+        const isCurrentYear = selectedYear === "current";
+        const startingBalance = isCurrentYear ? agent.startingBalanceCurrent : agent.startingBalanceNext;
         
-        // For 2025: holidayCurrent is what's LEFT for 2025
-        // For 2026: holidayNext is what's LEFT for 2026 (carried over from 2025)
-        const remainingHours = is2025 ? agent.holidayCurrent : agent.holidayNext;
+        // For current year: holidayCurrent is what's LEFT for current year
+        // For next year: holidayNext is what's LEFT for next year (carried over from current year)
+        const remainingHours = isCurrentYear ? agent.holidayCurrent : agent.holidayNext;
         
         // Calculate used hours
         const usedHours = startingBalance - remainingHours;
@@ -1063,13 +1106,13 @@
         let statusClass = "good";
         
         // Determine next year starting balance
-        // For 2025: next year is 2026, so use startingBalance2026
-        // For 2026: next year would be 2027, calculate based on usage
+        // For current year: next year is next year, so use startingBalanceNext
+        // For next year: next year would be next+1, calculate based on usage
         let nextYearStartingBalance;
-        if (selectedYear === "2025") {
-            nextYearStartingBalance = agent.startingBalance2026;
+        if (selectedYear === "current") {
+            nextYearStartingBalance = agent.startingBalanceNext;
         } else {
-            // For 2026, calculate next year based on usage pattern
+            // For next year, calculate next year based on usage pattern
             if (percentageUsed >= 80) {
                 nextYearStartingBalance = Math.round(startingBalance * 0.7);
             } else if (percentageUsed <= 30) {
@@ -1154,11 +1197,14 @@
       return (12 - adjustedMonth) / 12;
     }
 
-    function calculatePeriodUsage(agentName, year, holidayYearStartMonth) {
+    function calculatePeriodUsage(agentName, yearType, holidayYearStartMonth) {
+      // Determine which year to filter by
+      const targetYear = yearType === "current" ? currentYearNum : nextYearNum;
+      
       // Filter details for this agent and year
       const agentDetails = sampleDetails.filter(detail => 
         detail.name === agentName && 
-        detail.start.startsWith(year)
+        detail.start.startsWith(targetYear.toString())
       );
       
       // Calculate period usage based on holiday year
@@ -1182,11 +1228,14 @@
       return periods;
     }
 
-    function calculateMonthlyUsage(agentName, year) {
+    function calculateMonthlyUsage(agentName, yearType) {
+      // Determine which year to filter by
+      const targetYear = yearType === "current" ? currentYearNum : nextYearNum;
+      
       // Filter details for this agent and year
       const agentDetails = sampleDetails.filter(detail => 
         detail.name === agentName && 
-        detail.start.startsWith(year)
+        detail.start.startsWith(targetYear.toString())
       );
       
       // Calculate monthly usage
@@ -1437,7 +1486,7 @@
     function initializeAnalytics() {
       // Set default values for analytics filters
       document.getElementById('analytics-agent-select').value = 'all';
-      document.getElementById('analytics-year-select').value = '2025';
+      document.getElementById('analytics-year-select').value = 'current';
       document.getElementById('analytics-management-unit-select').value = 'all';
       document.getElementById('analytics-team-select').value = 'all';
       document.getElementById('holiday-year-start-month').value = '1';
@@ -1470,6 +1519,7 @@
 
     window.onload=function(){
       console.log("Page loaded, initializing...");
+      updateTableHeaders(); // Update table headers with actual year numbers
       openTabById('TimeOffBalances');
       updateTables();
       initializeCalculator();
